@@ -20,7 +20,7 @@ const ResumeForm: React.FC = () => {
   const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/skills')
+    fetch(`${import.meta.env.VITE_API_URL}/api/skills`)
       .then((res) => res.json())
       .then((data: Skill[]) => setSkills(data))
       .catch((error: Error) => console.error('Error fetching skills:', error));
@@ -29,7 +29,7 @@ const ResumeForm: React.FC = () => {
   const onSubmit: SubmitHandler<ResumeFormData> = async (data) => {
     try {
       data.skills = selectedSkills;
-      const response = await fetch('http://localhost:3000/api/resumes', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
