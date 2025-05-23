@@ -7,13 +7,15 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import LoadingOverlay from './LoadingOverlay';
 
-// Zod schemas
+// Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
   company: z.string().min(1, 'Company is required'),
   jobTitle: z.string().min(1, 'Job title is required'),
   startDate: z.string().min(1, 'Start date is required').regex(/^\d{4}-\d{2}$/, 'Start date must be YYYY-MM'),
   endDate: z.union([z.string().regex(/^\d{4}-\d{2}$/, 'End date must be YYYY-MM'), z.literal('')]).optional(),
+  isCurrent: z.boolean().default(false),
   description: z.string().optional(),
 }).refine(
   (data) => !data.endDate || (new Date(data.startDate).toString() !== 'Invalid Date' && new Date(data.endDate).toString() !== 'Invalid Date' && new Date(data.startDate) <= new Date(data.endDate)),
@@ -58,13 +60,55 @@ const ResumeFormSchema = z.object({
   certifications: z.array(CertificationSchema).default([]),
 });
 
-// Type definitions
 type ResumeFormData = z.infer<typeof ResumeFormSchema>;
-type WorkExperience = z.infer<typeof WorkExperienceSchema>;
-type Education = z.infer<typeof EducationSchema>;
 type Skill = z.infer<typeof SkillSchema>;
-type Language = z.infer<typeof LanguageSchema>;
-type Certification = z.infer<typeof CertificationSchema>;
+
+// Mock data object
+const mockResumeData: ResumeFormData = {
+  fullName: "John Doe",
+  email: "john.doe@example.com",
+  phone: "+1 (555) 123-4567",
+  address: "123 Main St, Anytown, USA",
+  linkedIn: "https://linkedin.com/in/johndoe",
+  website: "https://johndoe.com",
+  summary: "A motivated professional with experience in software development.",
+  skills: [
+    { id: 1, name: "JavaScript" },
+    { id: 2, name: "React" },
+    { id: -1, name: "GraphQL" }, // Custom skill
+  ],
+  workExperience: [
+    {
+      company: "Tech Corp",
+      jobTitle: "Software Engineer",
+      startDate: "2020-01",
+      endDate: "2023-12",
+      description: "Developed web applications using React and Node.js.",
+    },
+    {
+      company: "Startup Inc",
+      jobTitle: "Intern",
+      startDate: "2019-06",
+      endDate: "2019-12",
+      description: "Assisted in building REST APIs with Express.",
+    },
+  ],
+  education: [
+    {
+      institution: "University of Example",
+      degree: "Bachelor of Science",
+      major: "Computer Science",
+      graduationYear: 2019,
+    },
+  ],
+  languages: [
+    { name: "English", proficiency: "Fluent" },
+    { name: "Spanish", proficiency: "Intermediate" },
+  ],
+  certifications: [
+    { name: "AWS Certified Developer", issuer: "Amazon", issueDate: "2022-05" },
+  ],
+};
 
 const ResumeForm: React.FC = () => {
   const {
@@ -119,8 +163,9 @@ const ResumeForm: React.FC = () => {
   const [preview, setPreview] = useState<ResumeFormData | null>(null);
   const [isEnhancing, setIsEnhancing] = useState<number | null>(null);
   const [isManuallyOrdered, setIsManuallyOrdered] = useState(false);
+  const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
 
-  // Memoize sorted fields
+  // Memoize sorted fields (unchanged)
   const sortedWorkExperienceFields = useMemo(() => {
     console.log('Memoizing sortedWorkExperienceFields', { isManuallyOrdered, fieldIds: workExperienceFields.map(f => f.id) });
     if (isManuallyOrdered) return workExperienceFields;
@@ -134,6 +179,7 @@ const ResumeForm: React.FC = () => {
     });
   }, [workExperienceFields, isManuallyOrdered]);
 
+  // Existing useEffect hooks (unchanged)
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/skills`)
       .then((res) => res.json())
@@ -148,6 +194,72 @@ const ResumeForm: React.FC = () => {
     console.log('Work experience fields updated:', workExperienceFields.map(f => ({ id: f.id, company: f.company })));
   }, [workExperienceFields]);
 
+  // Function to fill form with mock data
+  const fillWithMockData = () => {
+    // Set static fields
+    setValue('fullName', mockResumeData.fullName);
+    setValue('email', mockResumeData.email);
+    setValue('phone', mockResumeData.phone);
+    setValue('address', mockResumeData.address);
+    setValue('linkedIn', mockResumeData.linkedIn);
+    setValue('website', mockResumeData.website);
+    setValue('summary', mockResumeData.summary);
+
+    // Set skills
+    setSelectedSkills(mockResumeData.skills);
+    setValue('skills', mockResumeData.skills);
+
+    // Clear and populate dynamic fields
+    setValue('workExperience', []);
+    mockResumeData.workExperience.forEach((exp) => {
+      appendWorkExperience(exp);
+    });
+
+    setValue('education', []);
+    mockResumeData.education.forEach((edu) => {
+      appendEducation(edu);
+    });
+
+    setValue('languages', []);
+    mockResumeData.languages.forEach((lang) => {
+      appendLanguage(lang);
+    });
+
+    setValue('certifications', []);
+    mockResumeData.certifications.forEach((cert) => {
+      appendCertification(cert);
+    });
+
+    setIsManuallyOrdered(false); // Reset manual ordering to reflect mock data order
+  };
+
+  const handleEnhanceSummary = async () => {
+    const summary = getValues('summary');
+    if (!summary) {
+      toast.error('Please enter a summary to enhance.');
+      return;
+    }
+    setIsEnhancingSummary(true);
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/enhance-summary`, {
+        summary,
+      });
+      const enhancedSummary = response.data.enhancedSummary;
+      if (!enhancedSummary || !enhancedSummary.trim()) {
+        throw new Error('Received empty enhanced summary.');
+      }
+      setValue('summary', enhancedSummary);
+      toast.success('Summary enhanced successfully!');
+    } catch (error: any) {
+      const message = error.response?.data?.error || error.message || 'Failed to enhance summary.';
+      toast.error(message);
+      console.error('Enhancement error:', error);
+    } finally {
+      setIsEnhancingSummary(false);
+    }
+  };
+
+  // Existing functions (unchanged)
   const handleEnhanceDescription = async (index: number) => {
     const { jobTitle, description } = getValues(`workExperience.${index}`);
     if (!description) {
@@ -208,8 +320,8 @@ const ResumeForm: React.FC = () => {
       data.workExperience = data.workExperience
         .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
         .sort((a, b) => {
-          const aEnd = a.endDate || '9999-12';
-          const bEnd = b.endDate || '9999-12';
+          const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
+          const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
           if (aEnd === bEnd) {
             return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
           }
@@ -228,8 +340,8 @@ const ResumeForm: React.FC = () => {
       setFormError(null);
       data.skills = selectedSkills;
       data.workExperience = data.workExperience.sort((a, b) => {
-        const aEnd = a.endDate || '9999-12';
-        const bEnd = b.endDate || '9999-12';
+        const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
+        const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
         if (aEnd === bEnd) {
           return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
         }
@@ -283,10 +395,23 @@ const ResumeForm: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div aria-live="polite" aria-busy={isEnhancing}>
+        {isEnhancing || isEnhancingSummary && <LoadingOverlay />}
+      </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-[80%] max-w-6xl bg-white shadow-2xl rounded-2xl p-10 space-y-8"
       >
+        {/* Development-only mock data button */}
+        {import.meta.env.MODE === 'development' && (
+          <button
+            type="button"
+            onClick={fillWithMockData}
+            className="w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-base font-medium"
+          >
+            Fill with Mock Data
+          </button>
+        )}
         <ToastContainer position="top-right" autoClose={3000} />
         <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Build Your Resume</h2>
 
@@ -294,14 +419,13 @@ const ResumeForm: React.FC = () => {
           <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-base">{formError}</div>
         )}
 
-        {/* Personal Information */}
+        {/* Personal Information (unchanged) */}
         <div className="space-y-2">
           <label className="block text-base font-medium text-gray-700">Full Name</label>
           <input
             {...register('fullName')}
-            className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-              errors.fullName ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.fullName ? 'border-red-500' : 'border-gray-300'
+              }`}
             placeholder="Full Name"
           />
           {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName.message}</p>}
@@ -311,9 +435,8 @@ const ResumeForm: React.FC = () => {
           <label className="block text-base font-medium text-gray-700">Email</label>
           <input
             {...register('email')}
-            className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.email ? 'border-red-500' : 'border-gray-300'
+              }`}
             placeholder="Email"
           />
           {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
@@ -355,6 +478,7 @@ const ResumeForm: React.FC = () => {
           />
         </div>
 
+        {/* Professional Summary */}
         <div className="space-y-2">
           <label className="block text-base font-medium text-gray-700">Professional Summary (Optional)</label>
           <textarea
@@ -363,9 +487,20 @@ const ResumeForm: React.FC = () => {
             placeholder="Professional Summary"
             rows={5}
           />
+          <button
+            type="button"
+            onClick={handleEnhanceSummary}
+            disabled={isEnhancingSummary}
+            className={`mt-2 px-4 py-2 rounded-lg text-base font-medium border ${isEnhancingSummary
+              ? 'text-gray-500 border-gray-500 cursor-not-allowed'
+              : 'text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800'
+              }`}
+          >
+            {isEnhancingSummary ? 'Enhancing...' : 'Enhance With AI ✨'}
+          </button>
         </div>
 
-        {/* Skills */}
+        {/* Skills (unchanged) */}
         <div className="space-y-2">
           <label className="block text-base font-medium text-gray-700">Skills</label>
           <CreatableSelect
@@ -391,7 +526,7 @@ const ResumeForm: React.FC = () => {
           {errors.skills && <p className="mt-1 text-sm text-red-600">{errors.skills.message}</p>}
         </div>
 
-        {/* Work Experience */}
+        {/* Work Experience (unchanged) */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-semibold text-gray-900">Work Experience</h3>
@@ -412,7 +547,6 @@ const ResumeForm: React.FC = () => {
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {sortedWorkExperienceFields.map((field, index) => {
                     const originalIndex = workExperienceFields.findIndex((f) => f.id === field.id);
-                    // Ensure unique draggableId
                     const draggableId = `${field.id}-${index}`;
                     return (
                       <Draggable key={draggableId} draggableId={draggableId} index={index}>
@@ -444,9 +578,8 @@ const ResumeForm: React.FC = () => {
                                 <label className="block text-base font-medium text-gray-700">Company</label>
                                 <input
                                   {...register(`workExperience.${originalIndex}.company`)}
-                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                                    errors.workExperience?.[originalIndex]?.company ? 'border-red-500' : 'border-gray-300'
-                                  }`}
+                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.company ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                   placeholder="Company"
                                 />
                                 {errors.workExperience?.[originalIndex]?.company && (
@@ -457,9 +590,8 @@ const ResumeForm: React.FC = () => {
                                 <label className="block text-base font-medium text-gray-700">Job Title</label>
                                 <input
                                   {...register(`workExperience.${originalIndex}.jobTitle`)}
-                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                                    errors.workExperience?.[originalIndex]?.jobTitle ? 'border-red-500' : 'border-gray-300'
-                                  }`}
+                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.jobTitle ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                   placeholder="Job Title"
                                 />
                                 {errors.workExperience?.[originalIndex]?.jobTitle && (
@@ -471,9 +603,8 @@ const ResumeForm: React.FC = () => {
                                 <input
                                   {...register(`workExperience.${originalIndex}.startDate`)}
                                   type="month"
-                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                                    errors.workExperience?.[originalIndex]?.startDate ? 'border-red-500' : 'border-gray-300'
-                                  }`}
+                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.startDate ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                   placeholder="YYYY-MM"
                                 />
                                 {errors.workExperience?.[originalIndex]?.startDate && (
@@ -481,13 +612,14 @@ const ResumeForm: React.FC = () => {
                                 )}
                               </div>
                               <div className="space-y-2">
-                                <label className="block text-base font-medium text-gray-700">End Date (Optional)</label>
+                                <label className="block text-base font-medium text-gray-700">
+                                  End Date {index === 0 && <span className="text-gray-500">(Optional)</span>}
+                                </label>
                                 <input
                                   {...register(`workExperience.${originalIndex}.endDate`)}
                                   type="month"
-                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                                    errors.workExperience?.[originalIndex]?.endDate ? 'border-red-500' : 'border-gray-300'
-                                  }`}
+                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.endDate ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                   placeholder="YYYY-MM or Present"
                                 />
                                 {errors.workExperience?.[originalIndex]?.endDate && (
@@ -507,11 +639,12 @@ const ResumeForm: React.FC = () => {
                                 type="button"
                                 onClick={() => handleEnhanceDescription(originalIndex)}
                                 disabled={isEnhancing === originalIndex}
-                                className={`mt-2 px-4 py-2 text-white rounded-lg text-base ${
-                                  isEnhancing === originalIndex ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                                }`}
+                                className={`mt-2 px-4 py-2 rounded-lg text-base font-medium border ${isEnhancing === originalIndex
+                                  ? 'text-gray-500 border-gray-500 cursor-not-allowed'
+                                  : 'text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800'
+                                  }`}
                               >
-                                {isEnhancing === originalIndex ? 'Enhancing...' : 'Enhance Description'}
+                                {isEnhancing === originalIndex ? 'Enhancing...' : 'Enhance With AI ✨'}
                               </button>
                             </div>
                           </div>
@@ -536,7 +669,7 @@ const ResumeForm: React.FC = () => {
           </button>
         </div>
 
-        {/* Education */}
+        {/* Education (unchanged) */}
         <div className="space-y-4">
           <h3 className="text-xl font-semibold text-gray-900">Education</h3>
           {errors.education && <p className="mb-2 text-sm text-red-600">{errors.education.message}</p>}
@@ -559,9 +692,8 @@ const ResumeForm: React.FC = () => {
                   <label className="block text-base font-medium text-gray-700">Institution</label>
                   <input
                     {...register(`education.${index}.institution`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                      errors.education?.[index]?.institution ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.education?.[index]?.institution ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Institution"
                   />
                   {errors.education?.[index]?.institution && (
@@ -572,9 +704,8 @@ const ResumeForm: React.FC = () => {
                   <label className="block text-base font-medium text-gray-700">Degree</label>
                   <input
                     {...register(`education.${index}.degree`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                      errors.education?.[index]?.degree ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.education?.[index]?.degree ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Degree"
                   />
                   {errors.education?.[index]?.degree && (
@@ -596,9 +727,8 @@ const ResumeForm: React.FC = () => {
                     type="number"
                     min="1900"
                     max="9999"
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                      errors.education?.[index]?.graduationYear ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.education?.[index]?.graduationYear ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="YYYY"
                   />
                   {errors.education?.[index]?.graduationYear && (
@@ -617,7 +747,7 @@ const ResumeForm: React.FC = () => {
           </button>
         </div>
 
-        {/* Languages */}
+        {/* Languages (unchanged) */}
         <div className="space-y-4">
           <h3 className="text-xl font-semibold text-gray-900">Languages (Optional)</h3>
           {languageFields.map((field, index) => (
@@ -637,9 +767,8 @@ const ResumeForm: React.FC = () => {
                   <label className="block text-base font-medium text-gray-700">Language</label>
                   <input
                     {...register(`languages.${index}.name`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                      errors.languages.iosDropDisabled ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.name ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Language"
                   />
                   {errors.languages?.[index]?.name && (
@@ -650,9 +779,8 @@ const ResumeForm: React.FC = () => {
                   <label className="block text-base font-medium text-gray-700">Proficiency</label>
                   <select
                     {...register(`languages.${index}.proficiency`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                      errors.languages?.[index]?.proficiency ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.proficiency ? 'border-red-500' : 'border-gray-300'
+                      }`}
                   >
                     <option value="">Select Proficiency</option>
                     <option value="Fluent">Fluent</option>
@@ -675,7 +803,7 @@ const ResumeForm: React.FC = () => {
           </button>
         </div>
 
-        {/* Certifications */}
+        {/* Certifications (unchanged) */}
         <div className="space-y-4">
           <h3 className="text-xl font-semibold text-gray-900">Certifications (Optional)</h3>
           {certificationFields.map((field, index) => (
@@ -695,9 +823,8 @@ const ResumeForm: React.FC = () => {
                   <label className="block text-base font-medium text-gray-700">Certification Name</label>
                   <input
                     {...register(`certifications.${index}.name`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                      errors.certifications?.[index]?.name ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.name ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Certification Name"
                   />
                   {errors.certifications?.[index]?.name && (
@@ -708,9 +835,8 @@ const ResumeForm: React.FC = () => {
                   <label className="block text-base font-medium text-gray-700">Issuer</label>
                   <input
                     {...register(`certifications.${index}.issuer`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${
-                      errors.certifications?.[index]?.issuer ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.issuer ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Issuer"
                   />
                   {errors.certifications?.[index]?.issuer && (
@@ -738,19 +864,18 @@ const ResumeForm: React.FC = () => {
           </button>
         </div>
 
-        {/* Submit Button */}
+        {/* Submit Button (unchanged) */}
         <button
           type="submit"
-          className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${
-            isLoading || Object.keys(errors).length > 0 ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading || Object.keys(errors).length > 0 ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           disabled={isLoading || Object.keys(errors).length > 0}
         >
           {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
         </button>
       </form>
 
-      {/* Preview Modal */}
+      {/* Preview Modal (unchanged) */}
       {preview && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[80vh] overflow-y-auto">
@@ -838,9 +963,8 @@ const ResumeForm: React.FC = () => {
               <button
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
-                className={`py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${
-                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                className={`py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 disabled={isLoading}
               >
                 {isLoading ? 'Generating...' : 'Generate PDF'}
