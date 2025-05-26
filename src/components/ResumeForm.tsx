@@ -400,7 +400,7 @@ const ResumeForm: React.FC = () => {
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-[80%] max-w-6xl bg-white shadow-2xl rounded-2xl p-10 space-y-8"
+        className="w-full max-w-6xl bg-white shadow-2xl rounded-2xl p-4 sm:p-10 space-y-8"
       >
         {/* Development-only mock data button */}
         {import.meta.env.MODE === 'development' && (
