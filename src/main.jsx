@@ -11,6 +11,7 @@ createRoot(document.getElementById('root')).render(
       clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
       redirectUri={window.location.origin + '/callback'}
       cacheLocation="localstorage"
+      audience={import.meta.env.VITE_API_AUDIENCE}
       >
       <App />
     </Auth0Provider>

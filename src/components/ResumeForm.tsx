@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import LoadingOverlay from './LoadingOverlay';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
@@ -164,6 +165,7 @@ const ResumeForm: React.FC = () => {
   const [isEnhancing, setIsEnhancing] = useState<number | null>(null);
   const [isManuallyOrdered, setIsManuallyOrdered] = useState(false);
   const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
+  const { getAccessTokenSilently } = useAuth0();
 
   // Memoize sorted fields (unchanged)
   const sortedWorkExperienceFields = useMemo(() => {
@@ -336,6 +338,8 @@ const ResumeForm: React.FC = () => {
     }
 
     try {
+      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+      console.log('Token:', token); // Verify it’s retrieved
       setIsLoading(true);
       setFormError(null);
       data.skills = selectedSkills;
@@ -350,7 +354,10 @@ const ResumeForm: React.FC = () => {
       console.log('Sending payload:', JSON.stringify(data, null, 2));
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(data),
       });
 
