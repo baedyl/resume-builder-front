@@ -17,6 +17,6 @@
     "esModuleInterop": true,
     "baseUrl": "src"
   },
-  "include": ["src"],
+  "include": ["src", "env.d.ts"],
   "exclude": ["node_modules"]
 }

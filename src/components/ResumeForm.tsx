@@ -47,6 +47,7 @@ const CertificationSchema = z.object({
 });
 
 const ResumeFormSchema = z.object({
+  id: z.string().optional(),
   fullName: z.string().min(1, 'Full name is required'),
   email: z.string().email('Invalid email address'),
   phone: z.string().optional(),
@@ -165,7 +166,7 @@ const ResumeForm: React.FC = () => {
   const [isEnhancing, setIsEnhancing] = useState<number | null>(null);
   const [isManuallyOrdered, setIsManuallyOrdered] = useState(false);
   const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, user } = useAuth0();
 
   // Memoize sorted fields (unchanged)
   const sortedWorkExperienceFields = useMemo(() => {
@@ -194,6 +195,8 @@ const ResumeForm: React.FC = () => {
 
   useEffect(() => {
     console.log('Work experience fields updated:', workExperienceFields.map(f => ({ id: f.id, company: f.company })));
+    console.log("Here We Go -> ", user);
+    
   }, [workExperienceFields]);
 
   // Function to fill form with mock data
@@ -351,7 +354,8 @@ const ResumeForm: React.FC = () => {
         }
         return new Date(bEnd).getTime() - new Date(aEnd).getTime();
       });
-      console.log('Sending payload:', JSON.stringify(data, null, 2));
+
+      // console.log('Sending payload:', JSON.stringify(data, null, 2));
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes`, {
         method: 'POST',
         headers: {
