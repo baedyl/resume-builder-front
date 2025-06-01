@@ -193,12 +193,6 @@ const ResumeForm: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
-    console.log('Work experience fields updated:', workExperienceFields.map(f => ({ id: f.id, company: f.company })));
-    console.log("Here We Go -> ", user);
-    
-  }, [workExperienceFields]);
-
   // Function to fill form with mock data
   const fillWithMockData = () => {
     // Set static fields
@@ -240,6 +234,7 @@ const ResumeForm: React.FC = () => {
 
   const handleEnhanceSummary = async () => {
     const summary = getValues('summary');
+    const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
     if (!summary) {
       toast.error('Please enter a summary to enhance.');
       return;
@@ -248,6 +243,11 @@ const ResumeForm: React.FC = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/enhance-summary`, {
         summary,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
       });
       const enhancedSummary = response.data.enhancedSummary;
       if (!enhancedSummary || !enhancedSummary.trim()) {
@@ -267,6 +267,7 @@ const ResumeForm: React.FC = () => {
   // Existing functions (unchanged)
   const handleEnhanceDescription = async (index: number) => {
     const { jobTitle, description } = getValues(`workExperience.${index}`);
+    const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
     if (!description) {
       toast.error('Please enter a description to enhance.');
       return;
@@ -280,7 +281,13 @@ const ResumeForm: React.FC = () => {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/enhance-description`, {
         jobTitle,
         description,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
       });
+
       const enhancedDescription = response.data.enhancedDescription;
       if (!enhancedDescription || !enhancedDescription.trim() || !enhancedDescription.includes('•')) {
         throw new Error('Received empty or invalid enhanced description.');
@@ -342,7 +349,7 @@ const ResumeForm: React.FC = () => {
 
     try {
       const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      console.log('Token:', token); // Verify it’s retrieved
+      // console.log('Token:', token); // Verify it’s retrieved
       setIsLoading(true);
       setFormError(null);
       data.skills = selectedSkills;
@@ -407,7 +414,7 @@ const ResumeForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div aria-live="polite" aria-busy={isEnhancing}>
-        {isEnhancing || isEnhancingSummary && <LoadingOverlay />}
+        {(isEnhancing || isEnhancingSummary) && <LoadingOverlay />}
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
