@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { useForm, SubmitHandler, useFieldArray, FormProvider } from 'react-hook-form';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
@@ -14,6 +14,9 @@ import PersonalInfoSection from './sections/PersonalInfoSection';
 import SummarySection from './sections/SummarySection';
 import WorkExperienceSection from './sections/WorkExperienceSection';
 import EducationSection from './sections/EducationSection';
+import ResumeTemplate from './ResumeTemplate';
+import { ResumeFormData } from '../types/resume';
+import { Resolver } from 'react-hook-form';
 
 // Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
@@ -67,7 +70,6 @@ const ResumeFormSchema = z.object({
   certifications: z.array(CertificationSchema).default([]),
 });
 
-type ResumeFormData = z.infer<typeof ResumeFormSchema>;
 type Skill = z.infer<typeof SkillSchema>;
 
 // Mock data object
@@ -119,7 +121,7 @@ const mockResumeData: ResumeFormData = {
 
 const ResumeForm: React.FC = () => {
   const methods = useForm<ResumeFormData>({
-    resolver: zodResolver(ResumeFormSchema),
+    resolver: zodResolver(ResumeFormSchema) as Resolver<ResumeFormData>,
     defaultValues: {
       fullName: '',
       email: '',
@@ -166,6 +168,8 @@ const ResumeForm: React.FC = () => {
   const [isManuallyOrdered, setIsManuallyOrdered] = useState(false);
   const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
   const { getAccessTokenSilently, user } = useAuth0();
+  const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // Memoize sorted fields (unchanged)
   const sortedWorkExperienceFields = useMemo(() => {
@@ -327,7 +331,16 @@ const ResumeForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<ResumeFormData> = async (data) => {
     if (!preview) {
-      data.workExperience = data.workExperience
+      const filteredData: ResumeFormData = {
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone || '',
+        address: data.address || '',
+        linkedIn: data.linkedIn || '',
+        website: data.website || '',
+        summary: data.summary || '',
+        skills: data.skills || [],
+        workExperience: data.workExperience
         .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
         .sort((a, b) => {
           const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
@@ -336,37 +349,27 @@ const ResumeForm: React.FC = () => {
             return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
           }
           return new Date(bEnd).getTime() - new Date(aEnd).getTime();
-        });
-      data.education = data.education.filter((edu) => edu.institution.trim() && edu.degree.trim());
-      data.languages = data.languages.filter((lang) => lang.name.trim() && lang.proficiency.trim());
-      data.certifications = data.certifications.filter((cert) => cert.name.trim() && cert.issuer.trim());
-      console.log('Filtered and sorted data:', JSON.stringify(data, null, 2));
-      setPreview(data);
+          }),
+        education: data.education.filter((edu) => edu.institution.trim() && edu.degree.trim()),
+        languages: data.languages.filter((lang) => lang.name.trim() && lang.proficiency.trim()),
+        certifications: data.certifications.filter((cert) => cert.name.trim() && cert.issuer.trim()),
+      };
+      setPreview(filteredData);
       return;
     }
 
     try {
       const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      // console.log('Token:', token); // Verify it's retrieved
       setIsLoading(true);
       setFormError(null);
-      data.workExperience = data.workExperience.sort((a, b) => {
-        const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
-        const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
-        if (aEnd === bEnd) {
-          return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
-        }
-        return new Date(bEnd).getTime() - new Date(aEnd).getTime();
-      });
 
-      // console.log('Sending payload:', JSON.stringify(data, null, 2));
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, template: selectedTemplate }),
       });
 
       if (!response.ok) {
@@ -410,6 +413,23 @@ const ResumeForm: React.FC = () => {
 
   const watchedSkills = (watch('skills') as any[]) || [];
 
+  // Add click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setPreview(null);
+      }
+    };
+
+    if (preview) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [preview]);
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div aria-live="polite" aria-busy={Boolean(isEnhancing !== null || isEnhancingSummary)}>
@@ -421,7 +441,7 @@ const ResumeForm: React.FC = () => {
         className="w-full max-w-6xl bg-white shadow-2xl rounded-2xl p-4 sm:p-10 space-y-8"
       >
         {/* Development-only mock data button */}
-        {(import.meta as any).env.MODE === 'development' && (
+          {(import.meta as any).env.MODE === 'development' && (
           <button
             type="button"
             onClick={fillWithMockData}
@@ -437,40 +457,40 @@ const ResumeForm: React.FC = () => {
           <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-base">{formError}</div>
         )}
 
-        {/* Personal Info */}
-        <PersonalInfoSection />
+          {/* Personal Info */}
+          <PersonalInfoSection />
 
-        {/* Summary */}
-        <SummarySection onEnhance={handleEnhanceSummary} isEnhancing={isEnhancingSummary} />
+          {/* Summary */}
+          <SummarySection onEnhance={handleEnhanceSummary} isEnhancing={isEnhancingSummary} />
 
-        {/* Skills */}
-        <SkillsSelect control={control} skills={skills} setSkills={setSkills as React.Dispatch<React.SetStateAction<any>>} />
+          {/* Skills */}
+          <SkillsSelect control={control} skills={skills} setSkills={setSkills as React.Dispatch<React.SetStateAction<any>>} />
 
-        {/* Work Experience */}
-        <WorkExperienceSection
-          register={register}
-          errors={errors}
-          workExperienceFields={workExperienceFields as any}
-          sortedFields={sortedWorkExperienceFields as any}
-          onDragEnd={onDragEnd}
-          removeWorkExperience={removeWorkExperience}
-          appendWorkExperience={(payload: any) => {
-            appendWorkExperience(payload);
-            setIsManuallyOrdered(true);
-          }}
-          resetToChronological={resetToChronological}
-          handleEnhanceDescription={handleEnhanceDescription}
-          isEnhancing={isEnhancing}
-        />
+          {/* Work Experience */}
+          <WorkExperienceSection
+            register={register}
+            errors={errors}
+            workExperienceFields={workExperienceFields as any}
+            sortedFields={sortedWorkExperienceFields as any}
+            onDragEnd={onDragEnd}
+            removeWorkExperience={removeWorkExperience}
+            appendWorkExperience={(payload: any) => {
+              appendWorkExperience(payload);
+              setIsManuallyOrdered(true);
+            }}
+            resetToChronological={resetToChronological}
+            handleEnhanceDescription={handleEnhanceDescription}
+            isEnhancing={isEnhancing}
+          />
 
-        {/* Education */}
-        <EducationSection
-          register={register}
-          errors={errors}
-          educationFields={educationFields as any}
-          appendEducation={appendEducation}
-          removeEducation={removeEducation}
-        />
+          {/* Education */}
+          <EducationSection
+            register={register}
+            errors={errors}
+            educationFields={educationFields as any}
+            appendEducation={appendEducation}
+            removeEducation={removeEducation}
+          />
 
         {/* Languages (unchanged) */}
         <div className="space-y-4">
@@ -589,7 +609,47 @@ const ResumeForm: React.FC = () => {
           </button>
         </div>
 
-        {/* Submit Button (unchanged) */}
+          {/* Template Selection */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Choose Template</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button
+                type="button"
+                onClick={() => setSelectedTemplate('modern')}
+                className={`p-4 border rounded-lg text-center ${selectedTemplate === 'modern'
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-300 hover:border-blue-500'
+                  }`}
+              >
+                <h4 className="font-medium text-gray-900">Modern</h4>
+                <p className="text-sm text-gray-600">Clean and professional design</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedTemplate('classic')}
+                className={`p-4 border rounded-lg text-center ${selectedTemplate === 'classic'
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-300 hover:border-blue-500'
+                  }`}
+              >
+                <h4 className="font-medium text-gray-900">Classic</h4>
+                <p className="text-sm text-gray-600">Traditional and formal layout</p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedTemplate('minimal')}
+                className={`p-4 border rounded-lg text-center ${selectedTemplate === 'minimal'
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-300 hover:border-blue-500'
+                  }`}
+              >
+                <h4 className="font-medium text-gray-900">Minimal</h4>
+                <p className="text-sm text-gray-600">Simple and elegant style</p>
+              </button>
+            </div>
+          </div>
+
+          {/* Submit Button */}
         <button
           type="submit"
           className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading || Object.keys(errors).length > 0 ? 'opacity-50 cursor-not-allowed' : ''
@@ -601,100 +661,36 @@ const ResumeForm: React.FC = () => {
       </form>
       </FormProvider>
 
-      {/* Preview Modal (unchanged) */}
+      {/* Preview Modal */}
       {preview && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[80vh] overflow-y-auto">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Resume Preview</h3>
-            <div className="space-y-6">
-              <div>
-                <h4 className="font-semibold text-gray-700 text-lg">Personal Information</h4>
-                <p><strong>Name:</strong> {preview.fullName}</p>
-                <p><strong>Email:</strong> {preview.email}</p>
-                {preview.phone && <p><strong>Phone:</strong> {preview.phone}</p>}
-                {preview.address && <p><strong>Address:</strong> {preview.address}</p>}
-                {preview.linkedIn && <p><strong>LinkedIn:</strong> {preview.linkedIn}</p>}
-                {preview.website && <p><strong>Website:</strong> {preview.website}</p>}
-              </div>
-              {preview.summary && (
-                <div>
-                  <h4 className="font-semibold text-gray-700 text-lg">Summary</h4>
-                  <p>{preview.summary}</p>
-                </div>
-              )}
-              {watchedSkills.length > 0 && (
-                <div>
-                  <h4 className="font-semibold text-gray-700 text-lg">Skills</h4>
-                  <p>{watchedSkills.map((s: any) => s.name).join(', ')}</p>
-                </div>
-              )}
-              {preview.workExperience.length > 0 && (
-                <div>
-                  <h4 className="font-semibold text-gray-700 text-lg">Work Experience</h4>
-                  {preview.workExperience.map((exp, index) => (
-                    <div key={index} className="mb-3">
-                      <p><strong>{exp.jobTitle}</strong> at {exp.company}</p>
-                      <p>{exp.startDate} - {exp.endDate || 'Present'}</p>
-                      {exp.description && (
-                        <ul className="list-disc ml-5">
-                          {exp.description.split('\n').map((bullet, i) => (
-                            <li key={i}>{bullet.replace(/^•\s*/, '')}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {preview.education.length > 0 && (
-                <div>
-                  <h4 className="font-semibold text-gray-700 text-lg">Education</h4>
-                  {preview.education.map((edu, index) => (
-                    <div key={index} className="mb-3">
-                      <p><strong>{edu.degree}</strong>{edu.major ? `, ${edu.major}` : ''}</p>
-                      <p>{edu.institution}{edu.graduationYear ? `, ${edu.graduationYear}` : ''}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {preview.languages.length > 0 && (
-                <div>
-                  <h4 className="font-semibold text-gray-700 text-lg">Languages</h4>
-                  {preview.languages.map((lang, index) => (
-                    <div key={index} className="mb-3">
-                      <p>{lang.name} – {lang.proficiency}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {preview.certifications.length > 0 && (
-                <div>
-                  <h4 className="font-semibold text-gray-700 text-lg">Certifications</h4>
-                  {preview.certifications.map((cert, index) => (
-                    <div key={index} className="mb-3">
-                      <p><strong>{cert.name}</strong> – {cert.issuer}{cert.issueDate ? `, ${cert.issueDate}` : ''}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="mt-8 flex justify-end space-x-4">
+        <div className="modal-overlay">
+          <div
+            ref={modalRef}
+            className="modal-content"
+          >
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Resume Preview</h3>
+              <div className="flex gap-4 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={() => setPreview(null)}
-                className="py-2 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600 text-base"
+                  className="flex-1 sm:flex-none py-2 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600 text-base"
               >
                 Edit
               </button>
               <button
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
-                className={`py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                  className={`flex-1 sm:flex-none py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 disabled={isLoading}
               >
                 {isLoading ? 'Generating...' : 'Generate PDF'}
               </button>
+              </div>
+            </div>
+            <div className="resume-preview bg-white shadow-lg overflow-x-auto">
+              <ResumeTemplate data={preview} template={selectedTemplate} />
             </div>
           </div>
         </div>

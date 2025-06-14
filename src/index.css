@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Resume Preview Styles */
+.resume-preview {
+  @apply bg-white p-4 sm:p-8 shadow-lg;
+  width: 8.5in;
+  min-height: 11in;
+  margin: 0 auto;
+  transform-origin: top left;
+  transform: scale(0.8);
+}
+
+/* Mobile styles */
+@media (max-width: 640px) {
+  .resume-preview {
+    transform: scale(0.4);
+    margin: -2in -2in; /* Compensate for the scale to center the content */
+  }
+}
+
+@media print {
+  .resume-preview {
+    transform: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+
+/* Template-specific styles */
+.resume-template.modern {
+  @apply space-y-6;
+}
+
+.resume-template.classic {
+  @apply space-y-6;
+}
+
+.resume-template.minimal {
+  @apply space-y-6;
+}
+
+/* Hide elements during print */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Modal styles */
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  @apply bg-white rounded-2xl p-4 sm:p-8 w-full max-w-[95vw] sm:max-w-4xl max-h-[90vh] overflow-y-auto;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
