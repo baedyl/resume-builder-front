@@ -1,6 +1,6 @@
-import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
+/// <reference types="vite/client" />
+import { useForm, SubmitHandler, useFieldArray, FormProvider } from 'react-hook-form';
 import { useState, useEffect, useMemo } from 'react';
-import CreatableSelect from 'react-select/creatable';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
@@ -9,6 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import LoadingOverlay from './LoadingOverlay';
 import { useAuth0 } from '@auth0/auth0-react';
+import SkillsSelect from './SkillsSelect';
+import PersonalInfoSection from './sections/PersonalInfoSection';
+import SummarySection from './sections/SummarySection';
+import WorkExperienceSection from './sections/WorkExperienceSection';
+import EducationSection from './sections/EducationSection';
 
 // Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
@@ -113,14 +118,7 @@ const mockResumeData: ResumeFormData = {
 };
 
 const ResumeForm: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-    setValue,
-    getValues,
-  } = useForm<ResumeFormData>({
+  const methods = useForm<ResumeFormData>({
     resolver: zodResolver(ResumeFormSchema),
     defaultValues: {
       fullName: '',
@@ -137,6 +135,8 @@ const ResumeForm: React.FC = () => {
       certifications: [],
     },
   });
+
+  const { register, handleSubmit, formState: { errors }, control, setValue, getValues, watch } = methods;
 
   const { fields: workExperienceFields, append: appendWorkExperience, remove: removeWorkExperience, move: moveWorkExperience } = useFieldArray({
     control,
@@ -159,7 +159,6 @@ const ResumeForm: React.FC = () => {
   });
 
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [preview, setPreview] = useState<ResumeFormData | null>(null);
@@ -205,7 +204,6 @@ const ResumeForm: React.FC = () => {
     setValue('summary', mockResumeData.summary);
 
     // Set skills
-    setSelectedSkills(mockResumeData.skills);
     setValue('skills', mockResumeData.skills);
 
     // Clear and populate dynamic fields
@@ -349,10 +347,9 @@ const ResumeForm: React.FC = () => {
 
     try {
       const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      // console.log('Token:', token); // Verify it’s retrieved
+      // console.log('Token:', token); // Verify it's retrieved
       setIsLoading(true);
       setFormError(null);
-      data.skills = selectedSkills;
       data.workExperience = data.workExperience.sort((a, b) => {
         const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
         const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
@@ -411,17 +408,20 @@ const ResumeForm: React.FC = () => {
     }
   };
 
+  const watchedSkills = (watch('skills') as any[]) || [];
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div aria-live="polite" aria-busy={isEnhancing}>
+      <div aria-live="polite" aria-busy={Boolean(isEnhancing !== null || isEnhancingSummary)}>
         {(isEnhancing || isEnhancingSummary) && <LoadingOverlay />}
       </div>
+      <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-6xl bg-white shadow-2xl rounded-2xl p-4 sm:p-10 space-y-8"
       >
         {/* Development-only mock data button */}
-        {import.meta.env.MODE === 'development' && (
+        {(import.meta as any).env.MODE === 'development' && (
           <button
             type="button"
             onClick={fillWithMockData}
@@ -437,333 +437,40 @@ const ResumeForm: React.FC = () => {
           <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-base">{formError}</div>
         )}
 
-        {/* Personal Information (unchanged) */}
-        <div className="space-y-2">
-          <label className="block text-base font-medium text-gray-700">Full Name</label>
-          <input
-            {...register('fullName')}
-            className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.fullName ? 'border-red-500' : 'border-gray-300'
-              }`}
-            placeholder="Full Name"
-          />
-          {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName.message}</p>}
-        </div>
+        {/* Personal Info */}
+        <PersonalInfoSection />
 
-        <div className="space-y-2">
-          <label className="block text-base font-medium text-gray-700">Email</label>
-          <input
-            {...register('email')}
-            className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.email ? 'border-red-500' : 'border-gray-300'
-              }`}
-            placeholder="Email"
-          />
-          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
-        </div>
+        {/* Summary */}
+        <SummarySection onEnhance={handleEnhanceSummary} isEnhancing={isEnhancingSummary} />
 
-        <div className="space-y-2">
-          <label className="block text-base font-medium text-gray-700">Phone (Optional)</label>
-          <input
-            {...register('phone')}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-            placeholder="Phone"
-          />
-        </div>
+        {/* Skills */}
+        <SkillsSelect control={control} skills={skills} setSkills={setSkills as React.Dispatch<React.SetStateAction<any>>} />
 
-        <div className="space-y-2">
-          <label className="block text-base font-medium text-gray-700">Address (Optional)</label>
-          <input
-            {...register('address')}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-            placeholder="Address"
-          />
-        </div>
+        {/* Work Experience */}
+        <WorkExperienceSection
+          register={register}
+          errors={errors}
+          workExperienceFields={workExperienceFields as any}
+          sortedFields={sortedWorkExperienceFields as any}
+          onDragEnd={onDragEnd}
+          removeWorkExperience={removeWorkExperience}
+          appendWorkExperience={(payload: any) => {
+            appendWorkExperience(payload);
+            setIsManuallyOrdered(true);
+          }}
+          resetToChronological={resetToChronological}
+          handleEnhanceDescription={handleEnhanceDescription}
+          isEnhancing={isEnhancing}
+        />
 
-        <div className="space-y-2">
-          <label className="block text-base font-medium text-gray-700">LinkedIn (Optional)</label>
-          <input
-            {...register('linkedIn')}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-            placeholder="LinkedIn URL"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-base font-medium text-gray-700">Website (Optional)</label>
-          <input
-            {...register('website')}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-            placeholder="Website URL"
-          />
-        </div>
-
-        {/* Professional Summary */}
-        <div className="space-y-2">
-          <label className="block text-base font-medium text-gray-700">Professional Summary (Optional)</label>
-          <textarea
-            {...register('summary')}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-            placeholder="Professional Summary"
-            rows={5}
-          />
-          <button
-            type="button"
-            onClick={handleEnhanceSummary}
-            disabled={isEnhancingSummary}
-            className={`mt-2 px-4 py-2 rounded-lg text-base font-medium border ${isEnhancingSummary
-              ? 'text-gray-500 border-gray-500 cursor-not-allowed'
-              : 'text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800'
-              }`}
-          >
-            {isEnhancingSummary ? 'Enhancing...' : 'Enhance With AI ✨'}
-          </button>
-        </div>
-
-        {/* Skills (unchanged) */}
-        <div className="space-y-2">
-          <label className="block text-base font-medium text-gray-700">Skills</label>
-          <CreatableSelect
-            isMulti
-            options={skills.map((skill) => ({ value: skill.id, label: skill.name }))}
-            onChange={(selected) =>
-              setSelectedSkills(
-                selected.map((option, index) => ({
-                  id: option.__isNew__ ? -index - 1 : option.value,
-                  name: option.label,
-                }))
-              )
-            }
-            onCreateOption={(inputValue) => {
-              const newSkill = { id: -skills.length - 1, name: inputValue };
-              setSkills([...skills, newSkill]);
-              setSelectedSkills([...selectedSkills, newSkill]);
-            }}
-            value={selectedSkills.map((skill) => ({ value: skill.id, label: skill.name }))}
-            className="basic-multi-select"
-            classPrefix="select"
-          />
-          {errors.skills && <p className="mt-1 text-sm text-red-600">{errors.skills.message}</p>}
-        </div>
-
-        {/* Work Experience (unchanged) */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-xl font-semibold text-gray-900">Work Experience</h3>
-            <button
-              type="button"
-              onClick={resetToChronological}
-              className="text-blue-600 hover:text-blue-800 text-base font-medium"
-            >
-              Reset to Chronological
-            </button>
-          </div>
-          {errors.workExperience && (
-            <p className="mb-2 text-sm text-red-600">{errors.workExperience.message}</p>
-          )}
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="workExperiences">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {sortedWorkExperienceFields.map((field, index) => {
-                    const originalIndex = workExperienceFields.findIndex((f) => f.id === field.id);
-                    const draggableId = `${field.id}-${index}`;
-                    return (
-                      <Draggable key={draggableId} draggableId={draggableId} index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className="p-6 border border-gray-200 rounded-lg space-y-4 mb-4 bg-white cursor-move"
-                          >
-                            <div className="flex justify-between items-center">
-                              <div className="flex items-center space-x-2">
-                                <span className="text-gray-500 cursor-move" {...provided.dragHandleProps}>☰</span>
-                                <h4 className="text-base font-medium text-gray-700">Experience {index + 1}</h4>
-                              </div>
-                              <div className="flex space-x-2">
-                                {workExperienceFields.length > 1 && (
-                                  <button
-                                    type="button"
-                                    onClick={() => removeWorkExperience(originalIndex)}
-                                    className="text-red-600 hover:text-red-800 text-sm"
-                                  >
-                                    Remove
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <label className="block text-base font-medium text-gray-700">Company</label>
-                                <input
-                                  {...register(`workExperience.${originalIndex}.company`)}
-                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.company ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                  placeholder="Company"
-                                />
-                                {errors.workExperience?.[originalIndex]?.company && (
-                                  <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].company.message}</p>
-                                )}
-                              </div>
-                              <div className="space-y-2">
-                                <label className="block text-base font-medium text-gray-700">Job Title</label>
-                                <input
-                                  {...register(`workExperience.${originalIndex}.jobTitle`)}
-                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.jobTitle ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                  placeholder="Job Title"
-                                />
-                                {errors.workExperience?.[originalIndex]?.jobTitle && (
-                                  <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].jobTitle.message}</p>
-                                )}
-                              </div>
-                              <div className="space-y-2">
-                                <label className="block text-base font-medium text-gray-700">Start Date</label>
-                                <input
-                                  {...register(`workExperience.${originalIndex}.startDate`)}
-                                  type="month"
-                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.startDate ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                  placeholder="YYYY-MM"
-                                />
-                                {errors.workExperience?.[originalIndex]?.startDate && (
-                                  <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].startDate.message}</p>
-                                )}
-                              </div>
-                              <div className="space-y-2">
-                                <label className="block text-base font-medium text-gray-700">
-                                  End Date {index === 0 && <span className="text-gray-500">(Optional)</span>}
-                                </label>
-                                <input
-                                  {...register(`workExperience.${originalIndex}.endDate`)}
-                                  type="month"
-                                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.endDate ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                  placeholder="YYYY-MM or Present"
-                                />
-                                {errors.workExperience?.[originalIndex]?.endDate && (
-                                  <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].endDate.message}</p>
-                                )}
-                              </div>
-                            </div>
-                            <div className="space-y-2">
-                              <label className="block text-base font-medium text-gray-700">Description</label>
-                              <textarea
-                                {...register(`workExperience.${originalIndex}.description`)}
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                                placeholder="Key responsibilities and achievements"
-                                rows={4}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => handleEnhanceDescription(originalIndex)}
-                                disabled={isEnhancing === originalIndex}
-                                className={`mt-2 px-4 py-2 rounded-lg text-base font-medium border ${isEnhancing === originalIndex
-                                  ? 'text-gray-500 border-gray-500 cursor-not-allowed'
-                                  : 'text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800'
-                                  }`}
-                              >
-                                {isEnhancing === originalIndex ? 'Enhancing...' : 'Enhance With AI ✨'}
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    );
-                  })}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <button
-            type="button"
-            onClick={() => {
-              appendWorkExperience({ company: '', jobTitle: '', startDate: '', endDate: '', description: '' });
-              setIsManuallyOrdered(true);
-            }}
-            className="text-blue-600 hover:text-blue-800 text-base font-medium"
-          >
-            + Add Work Experience
-          </button>
-        </div>
-
-        {/* Education (unchanged) */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-900">Education</h3>
-          {errors.education && <p className="mb-2 text-sm text-red-600">{errors.education.message}</p>}
-          {educationFields.map((field, index) => (
-            <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
-              <div className="flex justify-between items-center">
-                <h4 className="text-base font-medium text-gray-700">Education {index + 1}</h4>
-                {educationFields.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeEducation(index)}
-                    className="text-red-600 hover:text-red-800 text-sm"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Institution</label>
-                  <input
-                    {...register(`education.${index}.institution`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.education?.[index]?.institution ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    placeholder="Institution"
-                  />
-                  {errors.education?.[index]?.institution && (
-                    <p className="mt-1 text-sm text-red-600">{errors.education[index].institution.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Degree</label>
-                  <input
-                    {...register(`education.${index}.degree`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.education?.[index]?.degree ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    placeholder="Degree"
-                  />
-                  {errors.education?.[index]?.degree && (
-                    <p className="mt-1 text-sm text-red-600">{errors.education[index].degree.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Major (Optional)</label>
-                  <input
-                    {...register(`education.${index}.major`)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                    placeholder="Major"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Graduation Year (Optional)</label>
-                  <input
-                    {...register(`education.${index}.graduationYear`, { valueAsNumber: true })}
-                    type="number"
-                    min="1900"
-                    max="9999"
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.education?.[index]?.graduationYear ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    placeholder="YYYY"
-                  />
-                  {errors.education?.[index]?.graduationYear && (
-                    <p className="mt-1 text-sm text-red-600">{errors.education[index].graduationYear.message}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => appendEducation({ institution: '', degree: '', major: '', graduationYear: undefined })}
-            className="text-blue-600 hover:text-blue-800 text-base font-medium"
-          >
-            + Add Education
-          </button>
-        </div>
+        {/* Education */}
+        <EducationSection
+          register={register}
+          errors={errors}
+          educationFields={educationFields as any}
+          appendEducation={appendEducation}
+          removeEducation={removeEducation}
+        />
 
         {/* Languages (unchanged) */}
         <div className="space-y-4">
@@ -892,6 +599,7 @@ const ResumeForm: React.FC = () => {
           {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
         </button>
       </form>
+      </FormProvider>
 
       {/* Preview Modal (unchanged) */}
       {preview && (
@@ -914,10 +622,10 @@ const ResumeForm: React.FC = () => {
                   <p>{preview.summary}</p>
                 </div>
               )}
-              {selectedSkills.length > 0 && (
+              {watchedSkills.length > 0 && (
                 <div>
                   <h4 className="font-semibold text-gray-700 text-lg">Skills</h4>
-                  <p>{selectedSkills.map((s) => s.name).join(', ')}</p>
+                  <p>{watchedSkills.map((s: any) => s.name).join(', ')}</p>
                 </div>
               )}
               {preview.workExperience.length > 0 && (
