@@ -119,10 +119,14 @@ const mockResumeData: ResumeFormData = {
   ],
 };
 
-const ResumeForm: React.FC = () => {
+interface ResumeFormProps {
+  initialData?: ResumeFormData;
+}
+
+const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const methods = useForm<ResumeFormData>({
     resolver: zodResolver(ResumeFormSchema) as Resolver<ResumeFormData>,
-    defaultValues: {
+    defaultValues: initialData || {
       fullName: '',
       email: '',
       phone: '',
@@ -138,7 +142,7 @@ const ResumeForm: React.FC = () => {
     },
   });
 
-  const { register, handleSubmit, formState: { errors }, control, setValue, getValues, watch } = methods;
+  const { register, handleSubmit, formState: { errors }, control, setValue, getValues, watch, reset } = methods;
 
   const { fields: workExperienceFields, append: appendWorkExperience, remove: removeWorkExperience, move: moveWorkExperience } = useFieldArray({
     control,
@@ -171,6 +175,9 @@ const ResumeForm: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const [isSaving, setIsSaving] = useState(false);
+  const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
+
   // Memoize sorted fields (unchanged)
   const sortedWorkExperienceFields = useMemo(() => {
     console.log('Memoizing sortedWorkExperienceFields', { isManuallyOrdered, fieldIds: workExperienceFields.map(f => f.id) });
@@ -195,6 +202,18 @@ const ResumeForm: React.FC = () => {
         console.error('Error fetching skills:', error);
       });
   }, []);
+
+  // Function to format dates to YYYY-MM
+  const formatDateToYYYYMM = (dateString: string | undefined) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().slice(0, 7);
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return '';
+    }
+  };
 
   // Function to fill form with mock data
   const fillWithMockData = () => {
@@ -329,9 +348,77 @@ const ResumeForm: React.FC = () => {
     setIsManuallyOrdered(false);
   };
 
+  // Function to load resume data
+  const loadResume = (resumeData: ResumeFormData) => {
+    // Format dates in work experience
+    const formattedWorkExperience = resumeData.workExperience.map(exp => ({
+      ...exp,
+      startDate: formatDateToYYYYMM(exp.startDate),
+      endDate: exp.endDate ? formatDateToYYYYMM(exp.endDate) : '',
+    }));
+
+    // Format dates in certifications
+    const formattedCertifications = resumeData.certifications.map(cert => ({
+      ...cert,
+      issueDate: cert.issueDate ? formatDateToYYYYMM(cert.issueDate) : '',
+    }));
+
+    // Create new resume data with formatted dates
+    const formattedResumeData = {
+      ...resumeData,
+      workExperience: formattedWorkExperience,
+      certifications: formattedCertifications,
+    };
+
+    reset(formattedResumeData);
+    setCurrentResumeId(resumeData.id || null);
+    setPreview(null);
+  };
+
+  // Function to save resume
+  const saveResume = async (data: ResumeFormData) => {
+    try {
+      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+      setIsSaving(true);
+
+      const url = currentResumeId
+        ? `${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}`
+        : `${import.meta.env.VITE_API_URL}/api/resumes`;
+
+      const response = await axios({
+        method: currentResumeId ? 'put' : 'post',
+        url,
+        data: { ...data, template: selectedTemplate },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!currentResumeId) {
+        setCurrentResumeId(response.data.id);
+      }
+
+      toast.success('Resume saved successfully!');
+    } catch (error: any) {
+      const message = error.response?.data?.error || error.message || 'Failed to save resume.';
+      toast.error(message);
+      console.error('Save error:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const onSubmit: SubmitHandler<ResumeFormData> = async (data) => {
+    console.log('onSubmit called with data:', data);
+    console.log('Current preview state:', preview);
+    console.log('Current resume ID:', currentResumeId);
+
     if (!preview) {
+      console.log('Creating preview with data');
       const filteredData: ResumeFormData = {
+        ...data,
+        id: currentResumeId || undefined,
         fullName: data.fullName,
         email: data.email,
         phone: data.phone || '',
@@ -341,19 +428,37 @@ const ResumeForm: React.FC = () => {
         summary: data.summary || '',
         skills: data.skills || [],
         workExperience: data.workExperience
-        .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
-        .sort((a, b) => {
-          const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
-          const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
-          if (aEnd === bEnd) {
-            return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
-          }
-          return new Date(bEnd).getTime() - new Date(aEnd).getTime();
+          .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
+          .map(exp => ({
+            ...exp,
+            startDate: exp.startDate,
+            endDate: exp.endDate || '',
+            isCurrent: exp.isCurrent || false
+          }))
+          .sort((a, b) => {
+            const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
+            const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
+            if (aEnd === bEnd) {
+              return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+            }
+            return new Date(bEnd).getTime() - new Date(aEnd).getTime();
           }),
-        education: data.education.filter((edu) => edu.institution.trim() && edu.degree.trim()),
-        languages: data.languages.filter((lang) => lang.name.trim() && lang.proficiency.trim()),
-        certifications: data.certifications.filter((cert) => cert.name.trim() && cert.issuer.trim()),
+        education: data.education
+          .filter((edu) => edu.institution.trim() && edu.degree.trim())
+          .map(edu => ({
+            ...edu,
+            graduationYear: edu.graduationYear || undefined
+          })),
+        languages: data.languages
+          .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
+        certifications: data.certifications
+          .filter((cert) => cert.name.trim() && cert.issuer.trim())
+          .map(cert => ({
+            ...cert,
+            issueDate: cert.issueDate || ''
+          })),
       };
+      console.log('Setting preview with filtered data:', filteredData);
       setPreview(filteredData);
       return;
     }
@@ -363,18 +468,62 @@ const ResumeForm: React.FC = () => {
       setIsLoading(true);
       setFormError(null);
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes`, {
+      // Format the data consistently for both new and existing resumes
+      const formattedData = {
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone || '',
+        address: data.address || '',
+        linkedIn: data.linkedIn || '',
+        website: data.website || '',
+        summary: data.summary || '',
+        template: selectedTemplate,
+        skills: data.skills.map(skill => ({
+          id: skill.id,
+          name: skill.name
+        })),
+        workExperience: data.workExperience.map(exp => ({
+          jobTitle: exp.jobTitle,
+          company: exp.company,
+          location: exp.location || '',
+          startDate: exp.startDate,
+          endDate: exp.endDate || '',
+          description: exp.description || '',
+          isCurrent: exp.isCurrent || false
+        })),
+        education: data.education.map(edu => ({
+          degree: edu.degree,
+          major: edu.major || '',
+          institution: edu.institution,
+          graduationYear: edu.graduationYear || 0,
+          gpa: edu.gpa || 0,
+          description: edu.description || ''
+        })),
+        languages: data.languages.map(lang => ({
+          name: lang.name,
+          proficiency: lang.proficiency
+        })),
+        certifications: data.certifications.map(cert => ({
+          name: cert.name,
+          issuer: cert.issuer,
+          issueDate: cert.issueDate || ''
+        }))
+      };
+
+      console.log('Sending data to server:', formattedData);
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId || 'new'}/pdf`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...data, template: selectedTemplate }),
+        body: JSON.stringify(formattedData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.log('Backend error:', errorData);
+        console.error('Server error response:', errorData);
         if (errorData.details) {
           data.workExperience.forEach((_, index) => {
             const companyError = errorData.details.find((err: { path: string[] }) => err.path.join('.') === `workExperience.${index}.company`);
@@ -398,8 +547,13 @@ const ResumeForm: React.FC = () => {
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
+      // Generate filename: FullName-JobTitle.pdf
+      const safeFullName = (data.fullName || 'Resume').replace(/[^a-zA-Z0-9\- ]/g, '').replace(/\s+/g, ' ').trim().replace(/ /g, '-');
+      const mostRecentJob = (data.workExperience && data.workExperience.length > 0 && data.workExperience[0].jobTitle)
+        ? data.workExperience[0].jobTitle.replace(/[^a-zA-Z0-9\- ]/g, '').replace(/\s+/g, ' ').trim().replace(/ /g, '-')
+        : 'Resume';
       link.href = url;
-      link.download = 'resume.pdf';
+      link.download = `${safeFullName}-${mostRecentJob}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
       setPreview(null);
@@ -430,32 +584,96 @@ const ResumeForm: React.FC = () => {
     };
   }, [preview]);
 
+  // Add useEffect to monitor preview state changes
+  useEffect(() => {
+    console.log('Preview state changed:', preview);
+  }, [preview]);
+
+  const handlePreviewClick = async () => {
+    console.log('Preview button clicked');
+    try {
+      const formData = getValues();
+      console.log('Form data:', formData);
+      
+      if (!preview) {
+        const filteredData: ResumeFormData = {
+          ...formData,
+          id: currentResumeId || undefined,
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone || '',
+          address: formData.address || '',
+          linkedIn: formData.linkedIn || '',
+          website: formData.website || '',
+          summary: formData.summary || '',
+          skills: formData.skills || [],
+          workExperience: formData.workExperience
+            .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
+            .map(exp => ({
+              ...exp,
+              startDate: exp.startDate,
+              endDate: exp.endDate || '',
+              isCurrent: exp.isCurrent || false
+            }))
+            .sort((a, b) => {
+              const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
+              const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
+              if (aEnd === bEnd) {
+                return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+              }
+              return new Date(bEnd).getTime() - new Date(aEnd).getTime();
+            }),
+          education: formData.education
+            .filter((edu) => edu.institution.trim() && edu.degree.trim())
+            .map(edu => ({
+              ...edu,
+              graduationYear: edu.graduationYear || undefined
+            })),
+          languages: formData.languages
+            .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
+          certifications: formData.certifications
+            .filter((cert) => cert.name.trim() && cert.issuer.trim())
+            .map(cert => ({
+              ...cert,
+              issueDate: cert.issueDate || ''
+            })),
+        };
+        console.log('Setting preview with filtered data:', filteredData);
+        setPreview(filteredData);
+      } else {
+        await onSubmit(formData);
+      }
+    } catch (error) {
+      console.error('Error in handlePreviewClick:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div aria-live="polite" aria-busy={Boolean(isEnhancing !== null || isEnhancingSummary)}>
         {(isEnhancing || isEnhancingSummary) && <LoadingOverlay />}
       </div>
       <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-6xl bg-white shadow-2xl rounded-2xl p-4 sm:p-10 space-y-8"
-      >
-        {/* Development-only mock data button */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full max-w-6xl bg-white shadow-2xl rounded-2xl p-4 sm:p-10 space-y-8"
+        >
+          {/* Development-only mock data button */}
           {(import.meta as any).env.MODE === 'development' && (
-          <button
-            type="button"
-            onClick={fillWithMockData}
-            className="w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-base font-medium"
-          >
-            Fill with Mock Data
-          </button>
-        )}
-        <ToastContainer position="top-right" autoClose={3000} />
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Build Your Resume</h2>
+            <button
+              type="button"
+              onClick={fillWithMockData}
+              className="w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-base font-medium"
+            >
+              Fill with Mock Data
+            </button>
+          )}
+          <ToastContainer position="top-right" autoClose={3000} />
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Build Your Resume</h2>
 
-        {formError && (
-          <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-base">{formError}</div>
-        )}
+          {formError && (
+            <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-base">{formError}</div>
+          )}
 
           {/* Personal Info */}
           <PersonalInfoSection />
@@ -492,122 +710,122 @@ const ResumeForm: React.FC = () => {
             removeEducation={removeEducation}
           />
 
-        {/* Languages (unchanged) */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-900">Languages (Optional)</h3>
-          {languageFields.map((field, index) => (
-            <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
-              <div className="flex justify-between items-center">
-                <h4 className="text-base font-medium text-gray-700">Language {index + 1}</h4>
-                <button
-                  type="button"
-                  onClick={() => removeLanguage(index)}
-                  className="text-red-600 hover:text-red-800 text-sm"
-                >
-                  Remove
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Language</label>
-                  <input
-                    {...register(`languages.${index}.name`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.name ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    placeholder="Language"
-                  />
-                  {errors.languages?.[index]?.name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.languages[index].name.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Proficiency</label>
-                  <select
-                    {...register(`languages.${index}.proficiency`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.proficiency ? 'border-red-500' : 'border-gray-300'
-                      }`}
+          {/* Languages (unchanged) */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Languages (Optional)</h3>
+            {languageFields.map((field, index) => (
+              <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
+                <div className="flex justify-between items-center">
+                  <h4 className="text-base font-medium text-gray-700">Language {index + 1}</h4>
+                  <button
+                    type="button"
+                    onClick={() => removeLanguage(index)}
+                    className="text-red-600 hover:text-red-800 text-sm"
                   >
-                    <option value="">Select Proficiency</option>
-                    <option value="Fluent">Fluent</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Basic">Basic</option>
-                  </select>
-                  {errors.languages?.[index]?.proficiency && (
-                    <p className="mt-1 text-sm text-red-600">{errors.languages[index].proficiency.message}</p>
-                  )}
+                    Remove
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="block text-base font-medium text-gray-700">Language</label>
+                    <input
+                      {...register(`languages.${index}.name`)}
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.name ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                      placeholder="Language"
+                    />
+                    {errors.languages?.[index]?.name && (
+                      <p className="mt-1 text-sm text-red-600">{errors.languages[index].name.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-base font-medium text-gray-700">Proficiency</label>
+                    <select
+                      {...register(`languages.${index}.proficiency`)}
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.proficiency ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                    >
+                      <option value="">Select Proficiency</option>
+                      <option value="Fluent">Fluent</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Basic">Basic</option>
+                    </select>
+                    {errors.languages?.[index]?.proficiency && (
+                      <p className="mt-1 text-sm text-red-600">{errors.languages[index].proficiency.message}</p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => appendLanguage({ name: '', proficiency: '' })}
-            className="text-blue-600 hover:text-blue-800 text-base font-medium"
-          >
-            + Add Language
-          </button>
-        </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => appendLanguage({ name: '', proficiency: '' })}
+              className="text-blue-600 hover:text-blue-800 text-base font-medium"
+            >
+              + Add Language
+            </button>
+          </div>
 
-        {/* Certifications (unchanged) */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-900">Certifications (Optional)</h3>
-          {certificationFields.map((field, index) => (
-            <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
-              <div className="flex justify-between items-center">
-                <h4 className="text-base font-medium text-gray-700">Certification {index + 1}</h4>
-                <button
-                  type="button"
-                  onClick={() => removeCertification(index)}
-                  className="text-red-600 hover:text-red-800 text-sm"
-                >
-                  Remove
-                </button>
+          {/* Certifications (unchanged) */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Certifications (Optional)</h3>
+            {certificationFields.map((field, index) => (
+              <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
+                <div className="flex justify-between items-center">
+                  <h4 className="text-base font-medium text-gray-700">Certification {index + 1}</h4>
+                  <button
+                    type="button"
+                    onClick={() => removeCertification(index)}
+                    className="text-red-600 hover:text-red-800 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="block text-base font-medium text-gray-700">Certification Name</label>
+                    <input
+                      {...register(`certifications.${index}.name`)}
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.name ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                      placeholder="Certification Name"
+                    />
+                    {errors.certifications?.[index]?.name && (
+                      <p className="mt-1 text-sm text-red-600">{errors.certifications[index].name.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-base font-medium text-gray-700">Issuer</label>
+                    <input
+                      {...register(`certifications.${index}.issuer`)}
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.issuer ? 'border-red-500' : 'border-gray-300'
+                        }`}
+                      placeholder="Issuer"
+                    />
+                    {errors.certifications?.[index]?.issuer && (
+                      <p className="mt-1 text-sm text-red-600">{errors.certifications[index].issuer.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-base font-medium text-gray-700">Issue Date (Optional)</label>
+                    <input
+                      {...register(`certifications.${index}.issueDate`)}
+                      type="month"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                      placeholder="YYYY-MM"
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Certification Name</label>
-                  <input
-                    {...register(`certifications.${index}.name`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.name ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    placeholder="Certification Name"
-                  />
-                  {errors.certifications?.[index]?.name && (
-                    <p className="mt-1 text-sm text-red-600">{errors.certifications[index].name.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Issuer</label>
-                  <input
-                    {...register(`certifications.${index}.issuer`)}
-                    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.issuer ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    placeholder="Issuer"
-                  />
-                  {errors.certifications?.[index]?.issuer && (
-                    <p className="mt-1 text-sm text-red-600">{errors.certifications[index].issuer.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-base font-medium text-gray-700">Issue Date (Optional)</label>
-                  <input
-                    {...register(`certifications.${index}.issueDate`)}
-                    type="month"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                    placeholder="YYYY-MM"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => appendCertification({ name: '', issuer: '', issueDate: '' })}
-            className="text-blue-600 hover:text-blue-800 text-base font-medium"
-          >
-            + Add Certification
-          </button>
-        </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => appendCertification({ name: '', issuer: '', issueDate: '' })}
+              className="text-blue-600 hover:text-blue-800 text-base font-medium"
+            >
+              + Add Certification
+            </button>
+          </div>
 
           {/* Template Selection */}
           <div className="space-y-4">
@@ -649,44 +867,59 @@ const ResumeForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Submit Button */}
-        <button
-          type="submit"
-          className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading || Object.keys(errors).length > 0 ? 'opacity-50 cursor-not-allowed' : ''
+          {/* Save Button */}
+          <button
+            type="button"
+            onClick={handleSubmit(saveResume)}
+            disabled={isSaving}
+            className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium mb-4 ${
+              isSaving ? 'opacity-50 cursor-not-allowed' : ''
             }`}
-          disabled={isLoading || Object.keys(errors).length > 0}
-        >
-          {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
-        </button>
-      </form>
+          >
+            {isSaving ? 'Saving...' : 'Save Resume'}
+          </button>
+
+          {/* Preview/Generate Button */}
+          <button
+            type="button"
+            onClick={handlePreviewClick}
+            disabled={isLoading}
+            className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
+          </button>
+        </form>
       </FormProvider>
 
       {/* Preview Modal */}
       {preview && (
-        <div className="modal-overlay">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div
             ref={modalRef}
-            className="modal-content"
+            className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <h3 className="text-2xl font-bold text-gray-900">Resume Preview</h3>
               <div className="flex gap-4 w-full sm:w-auto">
-              <button
-                type="button"
-                onClick={() => setPreview(null)}
+                <button
+                  type="button"
+                  onClick={() => setPreview(null)}
                   className="flex-1 sm:flex-none py-2 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600 text-base"
-              >
-                Edit
-              </button>
-              <button
-                type="submit"
-                onClick={handleSubmit(onSubmit)}
-                  className={`flex-1 sm:flex-none py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePreviewClick}
+                  className={`flex-1 sm:flex-none py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${
+                    isLoading ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
-                disabled={isLoading}
-              >
-                {isLoading ? 'Generating...' : 'Generate PDF'}
-              </button>
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Generating...' : 'Generate PDF'}
+                </button>
               </div>
             </div>
             <div className="resume-preview bg-white shadow-lg overflow-x-auto">

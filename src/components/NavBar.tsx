@@ -15,7 +15,7 @@ const NavBar: React.FC = () => {
 
   const mainLinks = [
     { label: 'Home', to: '/' },
-    { label: 'Templates', to: '/templates' },
+    // { label: 'Templates', to: '/templates' },
     // { label: 'Examples', to: '/examples' },
     // { label: 'Pricing', to: '/pricing' },
     { label: 'Blog', to: '/blog' },
@@ -58,10 +58,16 @@ const NavBar: React.FC = () => {
                 </button>
                 {isUserDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg">
-                    <Link to="/build-resume" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                      Build New Resume
+                    <Link
+                      to="/resume"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      New Resume
                     </Link>
-                    <Link to="/my-resumes" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    <Link
+                      to="/my-resumes"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
                       My Resumes
                     </Link>
                     <Link to="/settings" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
@@ -114,10 +120,16 @@ const NavBar: React.FC = () => {
               ))}
               {isAuthenticated ? (
                 <>
-                  <Link to="/build-resume" className="text-gray-700 hover:text-blue-500">
-                    Build New Resume
+                  <Link
+                    to="/resume"
+                    className="text-gray-700 hover:text-blue-500"
+                  >
+                    New Resume
                   </Link>
-                  <Link to="/my-resumes" className="text-gray-700 hover:text-blue-500">
+                  <Link
+                    to="/my-resumes"
+                    className="text-gray-700 hover:text-blue-500"
+                  >
                     My Resumes
                   </Link>
                   <Link to="/settings" className="text-gray-700 hover:text-blue-500">

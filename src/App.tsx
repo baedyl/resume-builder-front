@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import NavBar from './components/NavBar';
 import Callback from './components/Callback';
+import ResumeBuilder from './pages/ResumeBuilder';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -21,12 +22,19 @@ console.log('isAuthenticated:', isAuthenticated);
     <Router>
       <NavBar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route 
+          path="/" 
+          element={isAuthenticated ? <Navigate to="/my-resumes" /> : <Home />} 
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/resume"
           element={isAuthenticated ? <ResumeForm /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/my-resumes"
+          element={isAuthenticated ? <ResumeBuilder /> : <Navigate to="/login" />}
         />
         <Route path="/callback" element={<Callback />} />
       </Routes>

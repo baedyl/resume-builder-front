@@ -4,19 +4,22 @@ export interface Skill {
 }
 
 export interface WorkExperience {
-  company: string;
   jobTitle: string;
+  company: string;
+  location?: string | null;
   startDate: string;
   endDate?: string;
-  isCurrent?: boolean;
   description?: string;
+  isCurrent?: boolean;
 }
 
 export interface Education {
-  institution: string;
   degree: string;
-  major?: string;
-  graduationYear?: number;
+  major?: string | null;
+  institution: string;
+  graduationYear?: number | null;
+  gpa?: number | null;
+  description?: string | null;
 }
 
 export interface Language {
@@ -44,4 +47,5 @@ export interface ResumeFormData {
   education: Education[];
   languages: Language[];
   certifications: Certification[];
+  template?: string;
 } 

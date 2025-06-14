@@ -24,7 +24,7 @@ const Callback = () => {
     useEffect(() => {
         // Once processing is complete, check authentication and navigate
         if (!isProcessing && isAuthenticated) {
-            navigate('/resume');
+            navigate('/my-resumes');
         } else if (!isProcessing) {
             navigate('/'); // Redirect to home or an error page if not authenticated
         }

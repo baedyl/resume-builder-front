@@ -1,6 +1,6 @@
 import React from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, useFormContext } from 'react-hook-form';
 
 interface WorkExperienceField {
   id: string;
@@ -36,6 +36,9 @@ const WorkExperienceSection: React.FC<Props> = ({
   handleEnhanceDescription,
   isEnhancing,
 }) => {
+  const { getValues } = useFormContext();
+  const currentDate = new Date().toISOString().slice(0, 7);
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -52,36 +55,36 @@ const WorkExperienceSection: React.FC<Props> = ({
         <p className="mb-2 text-sm text-red-600">{errors.workExperience.message}</p>
       )}
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="workExperiences" isDropDisabled={false}>
+        <Droppable droppableId="workExperience" isDropDisabled={false}>
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="space-y-4"
+            >
               {sortedFields.map((field, index) => {
                 const originalIndex = workExperienceFields.findIndex((f) => f.id === field.id);
-                const draggableId = `${field.id}-${index}`;
                 return (
-                  <Draggable key={draggableId} draggableId={draggableId} index={index}>
+                  <Draggable
+                    key={field.id}
+                    draggableId={field.id}
+                    index={index}
+                  >
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className="p-6 border border-gray-200 rounded-lg space-y-4 mb-4 bg-white cursor-move"
+                        className="p-6 border border-gray-200 rounded-lg space-y-4"
                       >
                         <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-gray-500 cursor-move" {...provided.dragHandleProps}>☰</span>
-                            <h4 className="text-base font-medium text-gray-700">Experience {index + 1}</h4>
-                          </div>
-                          <div className="flex space-x-2">
-                            {workExperienceFields.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => removeWorkExperience(originalIndex)}
-                                className="text-red-600 hover:text-red-800 text-sm"
-                              >
-                                Remove
-                              </button>
-                            )}
-                          </div>
+                          <h4 className="text-base font-medium text-gray-700">Experience {index + 1}</h4>
+                          <button
+                            type="button"
+                            onClick={() => removeWorkExperience(originalIndex)}
+                            className="text-red-600 hover:text-red-800 text-sm"
+                          >
+                            Remove
+                          </button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
@@ -113,6 +116,8 @@ const WorkExperienceSection: React.FC<Props> = ({
                               type="month"
                               className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.startDate ? 'border-red-500' : 'border-gray-300'}`}
                               placeholder="YYYY-MM"
+                              min="1900-01"
+                              max={currentDate}
                             />
                             {errors.workExperience?.[originalIndex]?.startDate && (
                               <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].startDate.message}</p>
@@ -125,6 +130,8 @@ const WorkExperienceSection: React.FC<Props> = ({
                               type="month"
                               className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.endDate ? 'border-red-500' : 'border-gray-300'}`}
                               placeholder="YYYY-MM or Present"
+                              min={getValues(`workExperience.${originalIndex}.startDate`) || '1900-01'}
+                              max={currentDate}
                             />
                             {errors.workExperience?.[originalIndex]?.endDate && (
                               <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].endDate.message}</p>
@@ -136,18 +143,18 @@ const WorkExperienceSection: React.FC<Props> = ({
                           <textarea
                             {...register(`workExperience.${originalIndex}.description` as const)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                            placeholder="Key responsibilities and achievements"
+                            placeholder="Describe your responsibilities and achievements"
                             rows={4}
                           />
-                          <button
-                            type="button"
-                            onClick={() => handleEnhanceDescription(originalIndex)}
-                            disabled={isEnhancing === originalIndex}
-                            className={`mt-2 px-4 py-2 rounded-lg text-base font-medium border ${isEnhancing === originalIndex ? 'text-gray-500 border-gray-500 cursor-not-allowed' : 'text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800'}`}
-                          >
-                            {isEnhancing === originalIndex ? 'Enhancing...' : 'Enhance With AI ✨'}
-                          </button>
                         </div>
+                        <button
+                          type="button"
+                          onClick={() => handleEnhanceDescription(originalIndex)}
+                          disabled={isEnhancing === originalIndex}
+                          className="text-blue-600 hover:text-blue-800 text-base font-medium"
+                        >
+                          {isEnhancing === originalIndex ? 'Enhancing...' : 'Enhance Description'}
+                        </button>
                       </div>
                     )}
                   </Draggable>
@@ -163,7 +170,7 @@ const WorkExperienceSection: React.FC<Props> = ({
         onClick={() => appendWorkExperience({ company: '', jobTitle: '', startDate: '', endDate: '', description: '' })}
         className="text-blue-600 hover:text-blue-800 text-base font-medium"
       >
-        + Add Work Experience
+        + Add Experience
       </button>
     </div>
   );
