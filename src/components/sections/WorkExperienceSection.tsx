@@ -1,6 +1,6 @@
 import React from 'react';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { UseFormRegister, useFormContext } from 'react-hook-form';
+import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
 interface WorkExperienceField {
   id: string;
@@ -15,8 +15,6 @@ interface Props {
   register: UseFormRegister<any>;
   errors: any;
   workExperienceFields: WorkExperienceField[];
-  sortedFields: WorkExperienceField[];
-  onDragEnd: (result: DropResult) => void;
   removeWorkExperience: (index: number) => void;
   appendWorkExperience: (value: any) => void;
   resetToChronological: () => void;
@@ -28,16 +26,25 @@ const WorkExperienceSection: React.FC<Props> = ({
   register,
   errors,
   workExperienceFields,
-  sortedFields,
-  onDragEnd,
   removeWorkExperience,
   appendWorkExperience,
   resetToChronological,
   handleEnhanceDescription,
   isEnhancing,
 }) => {
-  const { getValues } = useFormContext();
+  const { getValues, setValue } = useFormContext();
   const currentDate = new Date().toISOString().slice(0, 7);
+
+  const moveWorkExperience = (fromIndex: number, toIndex: number) => {
+    if (toIndex < 0 || toIndex >= workExperienceFields.length) return;
+    
+    const currentValues = getValues('workExperience');
+    const newValues = [...currentValues];
+    const [movedItem] = newValues.splice(fromIndex, 1);
+    newValues.splice(toIndex, 0, movedItem);
+    
+    setValue('workExperience', newValues);
+  };
 
   return (
     <div className="space-y-4">
@@ -54,117 +61,116 @@ const WorkExperienceSection: React.FC<Props> = ({
       {errors.workExperience && (
         <p className="mb-2 text-sm text-red-600">{errors.workExperience.message}</p>
       )}
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="workExperience" isDropDisabled={false}>
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="space-y-4"
-            >
-              {sortedFields.map((field, index) => {
-                const originalIndex = workExperienceFields.findIndex((f) => f.id === field.id);
-                return (
-                  <Draggable
-                    key={field.id}
-                    draggableId={field.id}
-                    index={index}
-                  >
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        className="p-6 border border-gray-200 rounded-lg space-y-4"
-                      >
-                        <div className="flex justify-between items-center">
-                          <h4 className="text-base font-medium text-gray-700">Experience {index + 1}</h4>
-                          <button
-                            type="button"
-                            onClick={() => removeWorkExperience(originalIndex)}
-                            className="text-red-600 hover:text-red-800 text-sm"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label className="block text-base font-medium text-gray-700">Company</label>
-                            <input
-                              {...register(`workExperience.${originalIndex}.company` as const)}
-                              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.company ? 'border-red-500' : 'border-gray-300'}`}
-                              placeholder="Company"
-                            />
-                            {errors.workExperience?.[originalIndex]?.company && (
-                              <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].company.message}</p>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block text-base font-medium text-gray-700">Job Title</label>
-                            <input
-                              {...register(`workExperience.${originalIndex}.jobTitle` as const)}
-                              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.jobTitle ? 'border-red-500' : 'border-gray-300'}`}
-                              placeholder="Job Title"
-                            />
-                            {errors.workExperience?.[originalIndex]?.jobTitle && (
-                              <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].jobTitle.message}</p>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block text-base font-medium text-gray-700">Start Date</label>
-                            <input
-                              {...register(`workExperience.${originalIndex}.startDate` as const)}
-                              type="month"
-                              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.startDate ? 'border-red-500' : 'border-gray-300'}`}
-                              placeholder="YYYY-MM"
-                              min="1900-01"
-                              max={currentDate}
-                            />
-                            {errors.workExperience?.[originalIndex]?.startDate && (
-                              <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].startDate.message}</p>
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block text-base font-medium text-gray-700">End Date</label>
-                            <input
-                              {...register(`workExperience.${originalIndex}.endDate` as const)}
-                              type="month"
-                              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[originalIndex]?.endDate ? 'border-red-500' : 'border-gray-300'}`}
-                              placeholder="YYYY-MM or Present"
-                              min={getValues(`workExperience.${originalIndex}.startDate`) || '1900-01'}
-                              max={currentDate}
-                            />
-                            {errors.workExperience?.[originalIndex]?.endDate && (
-                              <p className="mt-1 text-sm text-red-600">{errors.workExperience[originalIndex].endDate.message}</p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <label className="block text-base font-medium text-gray-700">Description</label>
-                          <textarea
-                            {...register(`workExperience.${originalIndex}.description` as const)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                            placeholder="Describe your responsibilities and achievements"
-                            rows={4}
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleEnhanceDescription(originalIndex)}
-                          disabled={isEnhancing === originalIndex}
-                          className="text-blue-600 hover:text-blue-800 text-base font-medium"
-                        >
-                          {isEnhancing === originalIndex ? 'Enhancing...' : 'Enhance Description'}
-                        </button>
-                      </div>
-                    )}
-                  </Draggable>
-                );
-              })}
-              {provided.placeholder}
+      <div className="space-y-4">
+        {workExperienceFields.map((field, index) => (
+          <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <h4 className="text-base font-medium text-gray-700">Experience {index + 1}</h4>
+                {workExperienceFields.length > 1 && (
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      onClick={() => moveWorkExperience(index, index - 1)}
+                      className="p-1 hover:bg-gray-100 rounded"
+                      disabled={index === 0}
+                    >
+                      <FaArrowUp className={index === 0 ? 'text-gray-300' : 'text-gray-600'} size={12} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveWorkExperience(index, index + 1)}
+                      className="p-1 hover:bg-gray-100 rounded"
+                      disabled={index === workExperienceFields.length - 1}
+                    >
+                      <FaArrowDown 
+                        className={index === workExperienceFields.length - 1 ? 'text-gray-300' : 'text-gray-600'} 
+                        size={12} 
+                      />
+                    </button>
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => removeWorkExperience(index)}
+                className="text-red-600 hover:text-red-800 text-sm"
+              >
+                Remove
+              </button>
             </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="block text-base font-medium text-gray-700">Company</label>
+                <input
+                  {...register(`workExperience.${index}.company` as const)}
+                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[index]?.company ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder="Company"
+                />
+                {errors.workExperience?.[index]?.company && (
+                  <p className="mt-1 text-sm text-red-600">{errors.workExperience[index].company.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="block text-base font-medium text-gray-700">Job Title</label>
+                <input
+                  {...register(`workExperience.${index}.jobTitle` as const)}
+                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[index]?.jobTitle ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder="Job Title"
+                />
+                {errors.workExperience?.[index]?.jobTitle && (
+                  <p className="mt-1 text-sm text-red-600">{errors.workExperience[index].jobTitle.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="block text-base font-medium text-gray-700">Start Date</label>
+                <input
+                  {...register(`workExperience.${index}.startDate` as const)}
+                  type="month"
+                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[index]?.startDate ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder="YYYY-MM"
+                  min="1900-01"
+                  max={currentDate}
+                />
+                {errors.workExperience?.[index]?.startDate && (
+                  <p className="mt-1 text-sm text-red-600">{errors.workExperience[index].startDate.message}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="block text-base font-medium text-gray-700">End Date</label>
+                <input
+                  {...register(`workExperience.${index}.endDate` as const)}
+                  type="month"
+                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[index]?.endDate ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder="YYYY-MM or Present"
+                  min={getValues(`workExperience.${index}.startDate`) || '1900-01'}
+                  max={currentDate}
+                />
+                {errors.workExperience?.[index]?.endDate && (
+                  <p className="mt-1 text-sm text-red-600">{errors.workExperience[index].endDate.message}</p>
+                )}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="block text-base font-medium text-gray-700">Description</label>
+              <textarea
+                {...register(`workExperience.${index}.description` as const)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                placeholder="Describe your responsibilities and achievements"
+                rows={4}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => handleEnhanceDescription(index)}
+              disabled={isEnhancing === index}
+              className="text-blue-600 hover:text-blue-800 text-base font-medium"
+            >
+              {isEnhancing === index ? 'Enhancing...' : 'Enhance Description'}
+            </button>
+          </div>
+        ))}
+      </div>
       <button
         type="button"
         onClick={() => appendWorkExperience({ company: '', jobTitle: '', startDate: '', endDate: '', description: '' })}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, useFormContext } from 'react-hook-form';
+import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
 interface EducationField {
   id: string;
@@ -18,6 +19,19 @@ interface Props {
 }
 
 const EducationSection: React.FC<Props> = ({ register, errors, educationFields, appendEducation, removeEducation }) => {
+  const { setValue, getValues } = useFormContext();
+
+  const moveEducation = (fromIndex: number, toIndex: number) => {
+    if (toIndex < 0 || toIndex >= educationFields.length) return;
+    
+    const currentValues = getValues('education');
+    const newValues = [...currentValues];
+    const [movedItem] = newValues.splice(fromIndex, 1);
+    newValues.splice(toIndex, 0, movedItem);
+    
+    setValue('education', newValues);
+  };
+
   return (
     <div className="space-y-4">
       <h3 className="text-xl font-semibold text-gray-900">Education</h3>
@@ -25,7 +39,32 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
       {educationFields.map((field, index) => (
         <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
           <div className="flex justify-between items-center">
-            <h4 className="text-base font-medium text-gray-700">Education {index + 1}</h4>
+            <div className="flex items-center gap-2">
+              <h4 className="text-base font-medium text-gray-700">Education {index + 1}</h4>
+              {educationFields.length > 1 && (
+                <div className="flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => moveEducation(index, index - 1)}
+                    className="p-1 hover:bg-gray-100 rounded"
+                    disabled={index === 0}
+                  >
+                    <FaArrowUp className={index === 0 ? 'text-gray-300' : 'text-gray-600'} size={12} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveEducation(index, index + 1)}
+                    className="p-1 hover:bg-gray-100 rounded"
+                    disabled={index === educationFields.length - 1}
+                  >
+                    <FaArrowDown 
+                      className={index === educationFields.length - 1 ? 'text-gray-300' : 'text-gray-600'} 
+                      size={12} 
+                    />
+                  </button>
+                </div>
+              )}
+            </div>
             {educationFields.length > 1 && (
               <button
                 type="button"

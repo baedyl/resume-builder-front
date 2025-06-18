@@ -6,7 +6,6 @@ import { z } from 'zod';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import LoadingOverlay from './LoadingOverlay';
 import { useAuth0 } from '@auth0/auth0-react';
 import SkillsSelect from './SkillsSelect';
@@ -17,6 +16,8 @@ import EducationSection from './sections/EducationSection';
 import ResumeTemplate from './ResumeTemplate';
 import { ResumeFormData } from '../types/resume';
 import { Resolver } from 'react-hook-form';
+import LanguagesSection from './sections/LanguagesSection';
+import CertificationsSection from './sections/CertificationsSection';
 
 // Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
@@ -144,7 +145,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   const { register, handleSubmit, formState: { errors }, control, setValue, getValues, watch, reset } = methods;
 
-  const { fields: workExperienceFields, append: appendWorkExperience, remove: removeWorkExperience, move: moveWorkExperience } = useFieldArray({
+  const { fields: workExperienceFields, append: appendWorkExperience, remove: removeWorkExperience } = useFieldArray({
     control,
     name: 'workExperience',
   });
@@ -177,20 +178,6 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
-
-  // Memoize sorted fields (unchanged)
-  const sortedWorkExperienceFields = useMemo(() => {
-    console.log('Memoizing sortedWorkExperienceFields', { isManuallyOrdered, fieldIds: workExperienceFields.map(f => f.id) });
-    if (isManuallyOrdered) return workExperienceFields;
-    return [...workExperienceFields].sort((a, b) => {
-      const aEnd = a.endDate || '9999-12';
-      const bEnd = b.endDate || '9999-12';
-      if (aEnd === bEnd) {
-        return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
-      }
-      return new Date(bEnd).getTime() - new Date(aEnd).getTime();
-    });
-  }, [workExperienceFields, isManuallyOrdered]);
 
   // Existing useEffect hooks (unchanged)
   useEffect(() => {
@@ -285,54 +272,38 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     }
   };
 
-  // Existing functions (unchanged)
   const handleEnhanceDescription = async (index: number) => {
-    const { jobTitle, description } = getValues(`workExperience.${index}`);
-    const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-    if (!description) {
-      toast.error('Please enter a description to enhance.');
-      return;
-    }
-    if (!jobTitle) {
-      toast.error('Please enter a job title to enhance the description.');
-      return;
-    }
-    setIsEnhancing(index);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/enhance-description`, {
-        jobTitle,
-        description,
-      }, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
+      setIsEnhancing(index);
+      const currentDescription = getValues(`workExperience.${index}.description`);
+      const jobTitle = getValues(`workExperience.${index}.jobTitle`);
+      const company = getValues(`workExperience.${index}.company`);
+      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
 
-      const enhancedDescription = response.data.enhancedDescription;
-      if (!enhancedDescription || !enhancedDescription.trim() || !enhancedDescription.includes('•')) {
-        throw new Error('Received empty or invalid enhanced description.');
-      }
-      setValue(`workExperience.${index}.description`, enhancedDescription);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/resumes/enhance-description`,
+        {
+          description: currentDescription,
+          jobTitle,
+          company,
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      setValue(`workExperience.${index}.description`, response.data.enhancedDescription);
       toast.success('Description enhanced successfully!');
     } catch (error: any) {
       const message = error.response?.data?.error || error.message || 'Failed to enhance description.';
       toast.error(message);
-      console.error('Enhancement error:', error);
+      console.error('Enhance error:', error);
     } finally {
       setIsEnhancing(null);
     }
-  };
-
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const sourceIndex = result.source.index;
-    const destIndex = result.destination.index;
-    const sourceOriginalIndex = workExperienceFields.findIndex((f) => f.id === sortedWorkExperienceFields[sourceIndex].id);
-    const destOriginalIndex = workExperienceFields.findIndex((f) => f.id === sortedWorkExperienceFields[destIndex].id);
-    console.log(`Dragging from ${sourceIndex} (original: ${sourceOriginalIndex}) to ${destIndex} (original: ${destOriginalIndex})`);
-    moveWorkExperience(sourceOriginalIndex, destOriginalIndex);
-    setIsManuallyOrdered(true);
   };
 
   const resetToChronological = () => {
@@ -689,8 +660,6 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             register={register}
             errors={errors}
             workExperienceFields={workExperienceFields as any}
-            sortedFields={sortedWorkExperienceFields as any}
-            onDragEnd={onDragEnd}
             removeWorkExperience={removeWorkExperience}
             appendWorkExperience={(payload: any) => {
               appendWorkExperience(payload);
@@ -710,122 +679,23 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             removeEducation={removeEducation}
           />
 
-          {/* Languages (unchanged) */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-900">Languages (Optional)</h3>
-            {languageFields.map((field, index) => (
-              <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-base font-medium text-gray-700">Language {index + 1}</h4>
-                  <button
-                    type="button"
-                    onClick={() => removeLanguage(index)}
-                    className="text-red-600 hover:text-red-800 text-sm"
-                  >
-                    Remove
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="block text-base font-medium text-gray-700">Language</label>
-                    <input
-                      {...register(`languages.${index}.name`)}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.name ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      placeholder="Language"
-                    />
-                    {errors.languages?.[index]?.name && (
-                      <p className="mt-1 text-sm text-red-600">{errors.languages[index].name.message}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-base font-medium text-gray-700">Proficiency</label>
-                    <select
-                      {...register(`languages.${index}.proficiency`)}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.proficiency ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                    >
-                      <option value="">Select Proficiency</option>
-                      <option value="Fluent">Fluent</option>
-                      <option value="Intermediate">Intermediate</option>
-                      <option value="Basic">Basic</option>
-                    </select>
-                    {errors.languages?.[index]?.proficiency && (
-                      <p className="mt-1 text-sm text-red-600">{errors.languages[index].proficiency.message}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => appendLanguage({ name: '', proficiency: '' })}
-              className="text-blue-600 hover:text-blue-800 text-base font-medium"
-            >
-              + Add Language
-            </button>
-          </div>
+          {/* Languages */}
+          <LanguagesSection
+            register={register}
+            errors={errors}
+            languageFields={languageFields as any}
+            appendLanguage={appendLanguage}
+            removeLanguage={removeLanguage}
+          />
 
-          {/* Certifications (unchanged) */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-900">Certifications (Optional)</h3>
-            {certificationFields.map((field, index) => (
-              <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-base font-medium text-gray-700">Certification {index + 1}</h4>
-                  <button
-                    type="button"
-                    onClick={() => removeCertification(index)}
-                    className="text-red-600 hover:text-red-800 text-sm"
-                  >
-                    Remove
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="block text-base font-medium text-gray-700">Certification Name</label>
-                    <input
-                      {...register(`certifications.${index}.name`)}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.name ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      placeholder="Certification Name"
-                    />
-                    {errors.certifications?.[index]?.name && (
-                      <p className="mt-1 text-sm text-red-600">{errors.certifications[index].name.message}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-base font-medium text-gray-700">Issuer</label>
-                    <input
-                      {...register(`certifications.${index}.issuer`)}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.issuer ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      placeholder="Issuer"
-                    />
-                    {errors.certifications?.[index]?.issuer && (
-                      <p className="mt-1 text-sm text-red-600">{errors.certifications[index].issuer.message}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-base font-medium text-gray-700">Issue Date (Optional)</label>
-                    <input
-                      {...register(`certifications.${index}.issueDate`)}
-                      type="month"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
-                      placeholder="YYYY-MM"
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => appendCertification({ name: '', issuer: '', issueDate: '' })}
-              className="text-blue-600 hover:text-blue-800 text-base font-medium"
-            >
-              + Add Certification
-            </button>
-          </div>
+          {/* Certifications */}
+          <CertificationsSection
+            register={register}
+            errors={errors}
+            certificationFields={certificationFields as any}
+            appendCertification={appendCertification}
+            removeCertification={removeCertification}
+          />
 
           {/* Template Selection */}
           <div className="space-y-4">
