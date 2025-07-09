@@ -178,6 +178,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Existing useEffect hooks (unchanged)
   useEffect(() => {
@@ -190,11 +192,25 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       });
   }, []);
 
+  // Helper function to clean null/undefined values
+  const cleanValue = (value: any): string => {
+    if (value === null || value === undefined || value === 'null' || value === 'undefined') {
+      return '';
+    }
+    return String(value).trim();
+  };
+
   // Function to format dates to YYYY-MM
   const formatDateToYYYYMM = (dateString: string | undefined) => {
-    if (!dateString) return '';
+    if (!dateString || !dateString.trim()) return '';
     try {
+      // Handle YYYY-MM-DD format directly
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        return dateString.slice(0, 7); // Return YYYY-MM
+      }
+      // Handle other date formats
       const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '';
       return date.toISOString().slice(0, 7);
     } catch (error) {
       console.error('Error formatting date:', error);
@@ -392,18 +408,18 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         id: currentResumeId || undefined,
         fullName: data.fullName,
         email: data.email,
-        phone: data.phone || '',
-        address: data.address || '',
-        linkedIn: data.linkedIn || '',
-        website: data.website || '',
-        summary: data.summary || '',
+        phone: data.phone?.trim() || '',
+        address: data.address?.trim() || '',
+        linkedIn: data.linkedIn?.trim() || '',
+        website: data.website?.trim() || '',
+        summary: data.summary?.trim() || '',
         skills: data.skills || [],
         workExperience: data.workExperience
           .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
           .map(exp => ({
             ...exp,
             startDate: exp.startDate,
-            endDate: exp.endDate || '',
+            endDate: exp.endDate?.trim() || '',
             isCurrent: exp.isCurrent || false
           }))
           .sort((a, b) => {
@@ -423,10 +439,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         languages: data.languages
           .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
         certifications: data.certifications
-          .filter((cert) => cert.name.trim() && cert.issuer.trim())
+          .filter((cert) => cert.name.trim())
           .map(cert => ({
             ...cert,
-            issueDate: cert.issueDate || ''
+            issuer: cert.issuer?.trim() || '',
+            issueDate: cert.issueDate?.trim() || ''
           })),
       };
       console.log('Setting preview with filtered data:', filteredData);
@@ -474,11 +491,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           name: lang.name,
           proficiency: lang.proficiency
         })),
-        certifications: data.certifications.map(cert => ({
-          name: cert.name,
-          issuer: cert.issuer,
-          issueDate: cert.issueDate || ''
-        }))
+        certifications: data.certifications
+          .filter((cert) => cert.name.trim())
+          .map(cert => ({
+            ...cert,
+            issuer: cert.issuer || '',
+            issueDate: cert.issueDate || ''
+          })),
       };
 
       console.log('Sending data to server:', formattedData);
@@ -565,25 +584,25 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     try {
       const formData = getValues();
       console.log('Form data:', formData);
-      
+
       if (!preview) {
         const filteredData: ResumeFormData = {
           ...formData,
           id: currentResumeId || undefined,
           fullName: formData.fullName,
           email: formData.email,
-          phone: formData.phone || '',
-          address: formData.address || '',
-          linkedIn: formData.linkedIn || '',
-          website: formData.website || '',
-          summary: formData.summary || '',
+          phone: formData.phone?.trim() || '',
+          address: formData.address?.trim() || '',
+          linkedIn: formData.linkedIn?.trim() || '',
+          website: formData.website?.trim() || '',
+          summary: formData.summary?.trim() || '',
           skills: formData.skills || [],
           workExperience: formData.workExperience
             .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
             .map(exp => ({
               ...exp,
               startDate: exp.startDate,
-              endDate: exp.endDate || '',
+              endDate: exp.endDate?.trim() || '',
               isCurrent: exp.isCurrent || false
             }))
             .sort((a, b) => {
@@ -603,10 +622,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           languages: formData.languages
             .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
           certifications: formData.certifications
-            .filter((cert) => cert.name.trim() && cert.issuer.trim())
+            .filter((cert) => cert.name.trim())
             .map(cert => ({
               ...cert,
-              issueDate: cert.issueDate || ''
+              issuer: cert.issuer?.trim() || '',
+              issueDate: cert.issueDate?.trim() || ''
             })),
         };
         console.log('Setting preview with filtered data:', filteredData);
@@ -616,6 +636,160 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       }
     } catch (error) {
       console.error('Error in handlePreviewClick:', error);
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+    const formData = new FormData();
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Please upload a PDF, DOC, DOCX, or TXT file.');
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      toast.error('File size must be less than 5MB.');
+      return;
+    }
+
+    setUploadedFile(file);
+    setIsUploading(true);
+
+    formData.append('file', file);
+    // Call API endpoint to upload file to OpenAI
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/resumes/upload`,
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log('Response:', response);
+
+      // Try to parse JSON from the response
+      try {
+        let extracted = response.data.extracted;
+        let parsedData;
+
+        if (typeof extracted === 'string') {
+          // Extract JSON from the response (it might be wrapped in markdown)
+          const jsonMatch = extracted.match(/```json\s*([\s\S]*?)\s*```/) ||
+            extracted.match(/\{[\s\S]*\}/);
+
+          if (jsonMatch) {
+            const jsonStr = jsonMatch[1] || jsonMatch[0];
+            parsedData = JSON.parse(jsonStr);
+          } else {
+            throw new Error('No JSON found in response');
+          }
+        } else if (typeof extracted === 'object' && extracted !== null) {
+          // Already parsed JSON
+          parsedData = extracted;
+        } else {
+          throw new Error('Unexpected format for extracted data');
+        }
+
+        console.log('Parsed data:', parsedData);
+
+        // Transform the data to match our form structure
+        const resumeData: ResumeFormData = {
+          fullName: cleanValue(parsedData.personal_info?.name || parsedData.personal_info?.fullName),
+          email: cleanValue(parsedData.personal_info?.email),
+          phone: cleanValue(parsedData.personal_info?.phone),
+          address: cleanValue(parsedData.personal_info?.location || parsedData.personal_info?.address),
+          linkedIn: cleanValue(parsedData.personal_info?.linkedin_url || parsedData.personal_info?.linkedIn),
+          website: cleanValue(parsedData.personal_info?.website),
+          summary: cleanValue(parsedData.professional_summary || parsedData.summary),
+          skills: parsedData.skills?.technical_skills?.map((skill: string, index: number) => ({
+            id: -index - 1,
+            name: skill
+          })) || parsedData.skills?.map((skill: any, index: number) => ({
+            id: skill.id || -index - 1,
+            name: skill.name
+          })) || [],
+          workExperience: parsedData.work_experience?.map((exp: any) => ({
+            company: cleanValue(exp.company),
+            jobTitle: cleanValue(exp.position || exp.jobTitle),
+            startDate: cleanValue(exp.start_date || exp.startDate),
+            endDate: cleanValue(exp.end_date || exp.endDate),
+            description: exp.responsibilities ? exp.responsibilities.join('\n') : cleanValue(exp.description)
+          })) || [],
+          education: parsedData.education?.map((edu: any) => ({
+            institution: cleanValue(edu.institution),
+            degree: cleanValue(edu.degree),
+            major: cleanValue(edu.field_of_study || edu.major),
+            graduationYear: edu.graduation_year || edu.graduationYear || undefined
+          })) || [],
+          languages: parsedData.skills?.languages?.map((lang: string) => ({
+            name: cleanValue(lang),
+            proficiency: 'Fluent' // Default proficiency since it's not provided
+          })) || parsedData.languages?.map((lang: any) => ({
+            name: cleanValue(lang.name),
+            proficiency: cleanValue(lang.proficiency)
+          })) || [],
+          certifications: parsedData.certifications?.map((cert: any) => ({
+            name: cleanValue(cert.name),
+            issuer: cleanValue(cert.issuing_organization || cert.issuer),
+            issueDate: cleanValue(cert.date_obtained || cert.issue_date || cert.issueDate)
+          })) || []
+        };
+
+        // Clean up empty strings and null values
+        const cleanResumeData = {
+          ...resumeData,
+          phone: resumeData.phone?.trim() || '',
+          address: resumeData.address?.trim() || '',
+          linkedIn: resumeData.linkedIn?.trim() || '',
+          website: resumeData.website?.trim() || '',
+          summary: resumeData.summary?.trim() || '',
+          workExperience: resumeData.workExperience.filter(exp =>
+            exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim()
+          ),
+          education: resumeData.education.filter(edu =>
+            edu.institution.trim() && edu.degree.trim()
+          ),
+          languages: resumeData.languages.filter(lang =>
+            lang.name.trim() && lang.proficiency.trim()
+          ),
+          certifications: resumeData.certifications.filter(cert =>
+            cert.name.trim()
+          )
+        };
+
+        console.log('Transformed resume data:', cleanResumeData);
+
+        // Load the parsed data into the form
+        loadResume(cleanResumeData);
+        toast.success('Resume uploaded and parsed successfully!');
+        return;
+      } catch (parseError) {
+        console.error('Failed to parse JSON:', parseError);
+        toast.error('Failed to parse resume data. Please try again or fill the form manually.');
+      }
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const clearUploadedFile = () => {
+    setUploadedFile(null);
+    const fileInput = document.getElementById('resume-upload') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
     }
   };
 
@@ -645,6 +819,72 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           {formError && (
             <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-base">{formError}</div>
           )}
+
+          {/* File Upload Section */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900">Upload Existing Resume (Optional)</h3>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+              <div className="space-y-4">
+                <div className="flex flex-col items-center">
+                  <svg className="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <p className="text-lg font-medium text-gray-900">Upload your existing resume</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Supported formats: PDF, DOC, DOCX, TXT (Max 5MB)
+                  </p>
+                </div>
+
+                {uploadedFile ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-center gap-3 p-3 bg-green-50 rounded-lg">
+                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-green-800 font-medium">{uploadedFile.name}</span>
+                      <button
+                        type="button"
+                        onClick={clearUploadedFile}
+                        className="text-red-600 hover:text-red-800 text-sm"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    {isUploading && (
+                      <div className="flex items-center justify-center gap-2 text-blue-600">
+                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Processing...</span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <input
+                      id="resume-upload"
+                      type="file"
+                      accept=".pdf,.doc,.docx,.txt"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      disabled={isUploading}
+                    />
+                    <label
+                      htmlFor="resume-upload"
+                      className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${isUploading ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                    >
+                      {isUploading ? 'Uploading...' : 'Choose File'}
+                    </label>
+                    <p className="text-xs text-gray-500">
+                      Your resume data will be automatically parsed and filled into the form below
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
 
           {/* Personal Info */}
           <PersonalInfoSection />
@@ -705,8 +945,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 type="button"
                 onClick={() => setSelectedTemplate('modern')}
                 className={`p-4 border rounded-lg text-center ${selectedTemplate === 'modern'
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-300 hover:border-blue-500'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300 hover:border-blue-500'
                   }`}
               >
                 <h4 className="font-medium text-gray-900">Modern</h4>
@@ -716,8 +956,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 type="button"
                 onClick={() => setSelectedTemplate('classic')}
                 className={`p-4 border rounded-lg text-center ${selectedTemplate === 'classic'
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-300 hover:border-blue-500'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300 hover:border-blue-500'
                   }`}
               >
                 <h4 className="font-medium text-gray-900">Classic</h4>
@@ -727,8 +967,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 type="button"
                 onClick={() => setSelectedTemplate('minimal')}
                 className={`p-4 border rounded-lg text-center ${selectedTemplate === 'minimal'
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-300 hover:border-blue-500'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300 hover:border-blue-500'
                   }`}
               >
                 <h4 className="font-medium text-gray-900">Minimal</h4>
@@ -742,9 +982,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             type="button"
             onClick={handleSubmit(saveResume)}
             disabled={isSaving}
-            className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium mb-4 ${
-              isSaving ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium mb-4 ${isSaving ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
           >
             {isSaving ? 'Saving...' : 'Save Resume'}
           </button>
@@ -754,9 +993,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             type="button"
             onClick={handlePreviewClick}
             disabled={isLoading}
-            className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${
-              isLoading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
           >
             {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
           </button>
@@ -783,9 +1021,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 <button
                   type="button"
                   onClick={handlePreviewClick}
-                  className={`flex-1 sm:flex-none py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${
-                    isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`flex-1 sm:flex-none py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   disabled={isLoading}
                 >
                   {isLoading ? 'Generating...' : 'Generate PDF'}
