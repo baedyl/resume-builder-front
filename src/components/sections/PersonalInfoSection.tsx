@@ -7,7 +7,7 @@ const PersonalInfoSection: React.FC = () => {
     <>
       {/* Personal Information */}
       <div className="space-y-2">
-        <label className="block text-base font-medium text-gray-700">Full Name</label>
+        <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Full Name</label>
         <input
           {...register('fullName')}
           className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.fullName ? 'border-red-500' : 'border-gray-300'}`}
@@ -17,7 +17,7 @@ const PersonalInfoSection: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <label className="block text-base font-medium text-gray-700">Email</label>
+        <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Email</label>
         <input
           {...register('email')}
           className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
@@ -27,7 +27,7 @@ const PersonalInfoSection: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <label className="block text-base font-medium text-gray-700">Phone (Optional)</label>
+        <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Phone (Optional)</label>
         <input
           {...register('phone')}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
@@ -36,7 +36,7 @@ const PersonalInfoSection: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <label className="block text-base font-medium text-gray-700">Address (Optional)</label>
+        <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Address (Optional)</label>
         <input
           {...register('address')}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
@@ -45,7 +45,7 @@ const PersonalInfoSection: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <label className="block text-base font-medium text-gray-700">LinkedIn (Optional)</label>
+        <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">LinkedIn (Optional)</label>
         <input
           {...register('linkedIn')}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
@@ -54,7 +54,7 @@ const PersonalInfoSection: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <label className="block text-base font-medium text-gray-700">Website (Optional)</label>
+        <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Website (Optional)</label>
         <input
           {...register('website')}
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"

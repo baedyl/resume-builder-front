@@ -1,48 +1,84 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaBars } from 'react-icons/fa';
+import { FaBars, FaSun, FaMoon } from 'react-icons/fa';
 
 const NavBar: React.FC = () => {
   const { isAuthenticated, logout, user } = useAuth0();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
   const location = useLocation();
 
   const handleLogout = () => {
     logout({ returnTo: window.location.origin } as any); // Adjust logout logic as needed
   };
 
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
+  // Ensure theme is set on mount
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   const mainLinks = [
+    { label: 'Resumes', to: '/my-resumes' },
     { label: 'Cover Letters', to: '/cover-letters' },
-    // { label: 'Templates', to: '/templates' },
-    // { label: 'Examples', to: '/examples' },
-    // { label: 'Pricing', to: '/pricing' },
     { label: 'Blog', to: '/blog' },
     { label: 'Contact', to: '/contact' },
   ];
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-white dark:bg-gray-900 dark:text-gray-100 shadow-md sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* App Name or Logo */}
           <Link to="/" className="text-gray-700 hover:text-blue-500 transition duration-300">
-            <h1 className="text-3xl font-bold text-gray-900">Resume Builder</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Resume Builder</h1>
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden md:flex space-x-4 items-center">
+            {/* Render main navigation links */}
             {mainLinks.map((link) => (
               <Link
                 key={link.label}
                 to={link.to}
-                className={`text-gray-700 hover:text-blue-500 ${location.pathname === link.to ? 'text-blue-500' : ''
-                  }`}
+                className={`text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors ${location.pathname === link.to ? 'text-blue-500 dark:text-blue-400 font-semibold' : ''}`}
               >
                 {link.label}
               </Link>
             ))}
+            {/* Dark/Light Mode Switcher */}
+            <button
+              onClick={toggleDarkMode}
+              className="focus:outline-none text-xl mr-2"
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
+            </button>
+            {/* User/Profile Dropdown */}
             {isAuthenticated ? (
               <div className="relative">
                 <button
@@ -56,7 +92,7 @@ const NavBar: React.FC = () => {
                   )}
                 </button>
                 {isUserDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg transition-colors">
                     <Link
                       to="/resume"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -105,14 +141,13 @@ const NavBar: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 w-full bg-white shadow-md">
+          <div className="md:hidden absolute top-16 left-0 w-full bg-white dark:bg-gray-900 shadow-md transition-colors">
             <div className="flex flex-col p-4 space-y-2">
               {mainLinks.map((link) => (
                 <Link
                   key={link.label}
                   to={link.to}
-                  className={`text-gray-700 hover:text-blue-500 ${location.pathname === link.to ? 'text-blue-500' : ''
-                    }`}
+                  className={`text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors ${location.pathname === link.to ? 'text-blue-500 dark:text-blue-400 font-semibold' : ''}`}
                 >
                   {link.label}
                 </Link>

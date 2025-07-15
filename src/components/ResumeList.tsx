@@ -107,20 +107,20 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
   }
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-6">My Resumes</h2>
+    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors">
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 transition-colors">My Resumes</h2>
       {resumes.length === 0 ? (
-        <p className="text-gray-600 text-center py-4">No resumes found. Create your first resume!</p>
+        <p className="text-gray-600 dark:text-gray-300 text-center py-4 transition-colors">No resumes found. Create your first resume!</p>
       ) : (
         <div className="space-y-4">
           {resumes.map((resume) => (
             <div
               key={resume.id}
-              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700 transition-colors"
             >
               <div>
-                <h3 className="font-semibold text-lg">{resume.fullName}</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100 transition-colors">{resume.fullName}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">
                   Last updated: {format(new Date(resume.updatedAt), 'MMM d, yyyy')}
                 </p>
               </div>

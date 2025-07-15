@@ -145,11 +145,11 @@ const CoverLetters: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Cover Letters</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Cover Letters</h1>
           {!showForm && (
             <button
               onClick={() => setShowForm(true)}
@@ -161,20 +161,20 @@ const CoverLetters: React.FC = () => {
         </div>
         {showForm ? (
           <>
-            <form onSubmit={handleGenerate} className="space-y-4 text-left w-full max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg border">
+            <form onSubmit={handleGenerate} className="space-y-4 text-left w-full max-w-6xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
               <div>
-                <label htmlFor="fullName" className="block font-medium text-gray-700">Full Name</label>
+                <label htmlFor="fullName" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors">Full Name</label>
                 <input
                   id="fullName"
                   name="fullName"
                   type="text"
                   value={form.fullName}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors"
                 />
               </div>
               <div>
-                <label htmlFor="jobDescription" className="block font-medium text-gray-700">Job Description<span className="text-red-500">*</span></label>
+                <label htmlFor="jobDescription" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors">Job Description<span className="text-red-500">*</span></label>
                 <textarea
                   id="jobDescription"
                   name="jobDescription"
@@ -182,15 +182,15 @@ const CoverLetters: React.FC = () => {
                   onChange={handleInputChange}
                   required
                   rows={3}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors"
                 />
               </div>
-              {formError && <div className="text-red-600 text-sm">{formError}</div>}
+              {formError && <div className="text-red-600 dark:text-red-400 text-sm transition-colors">{formError}</div>}
               <div className="flex gap-4 justify-end">
-                <button type="button" onClick={handleCancel} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel</button>
+                <button type="button" onClick={handleCancel} className="px-4 py-2 bg-gray-500 dark:bg-gray-700 text-white rounded hover:bg-gray-600 dark:hover:bg-gray-600 transition-colors">Cancel</button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                   disabled={loading}
                 >
                   {loading ? (isEdit ? 'Saving...' : 'Generating...') : (isEdit ? 'Save' : 'Generate')}
@@ -198,23 +198,23 @@ const CoverLetters: React.FC = () => {
               </div>
             </form>
             {generated && (
-              <div className="mt-8 w-full max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg border">
+              <div className="mt-8 w-full max-w-6xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
                 <div className="flex items-center mb-2 gap-2">
-                  <h4 className="font-semibold text-lg">Generated Cover Letter</h4>
+                  <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100 transition-colors">Generated Cover Letter</h4>
                   <button
                     type="button"
                     aria-label="Copy cover letter"
-                    className="ml-2 p-1 rounded hover:bg-gray-200 transition"
+                    className="ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                     onClick={handleCopy}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-600 dark:text-gray-300 transition-colors">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 8.25V6.75A2.25 2.25 0 0014.25 4.5h-6A2.25 2.25 0 006 6.75v10.5A2.25 2.25 0 008.25 19.5h1.5" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 8.25h-6A2.25 2.25 0 0010.5 10.5v6A2.25 2.25 0 0012.75 18.75h6A2.25 2.25 0 0021 16.5v-6a2.25 2.25 0 00-2.25-2.25z" />
                     </svg>
                   </button>
                   <button
                     type="button"
-                    className="ml-2 p-1 rounded hover:bg-gray-200 transition"
+                    className="ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
                     onClick={handleGeneratePDF}
                     disabled={pdfLoading || !savedId}
                   >
@@ -222,7 +222,7 @@ const CoverLetters: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    className="ml-2 p-1 rounded hover:bg-gray-200 transition"
+                    className="ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
                     onClick={handleSaveChanges}
                     disabled={loading || !savedId}
                   >
@@ -230,7 +230,7 @@ const CoverLetters: React.FC = () => {
                   </button>
                 </div>
                 <textarea
-                  className="whitespace-pre-wrap bg-gray-100 p-4 rounded border text-gray-800 text-sm overflow-x-auto w-full min-h-[200px] resize-vertical"
+                  className="whitespace-pre-wrap bg-gray-100 dark:bg-gray-900 p-4 rounded border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-100 text-sm overflow-x-auto w-full min-h-[200px] resize-vertical transition-colors"
                   value={editableCover}
                   onChange={e => setEditableCover(e.target.value)}
                 />

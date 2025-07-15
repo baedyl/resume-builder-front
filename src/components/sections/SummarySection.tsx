@@ -10,7 +10,7 @@ const SummarySection: React.FC<Props> = ({ onEnhance, isEnhancing }) => {
   const { register } = useFormContext<any>();
   return (
     <div className="space-y-2">
-      <label className="block text-base font-medium text-gray-700">Professional Summary (Optional)</label>
+      <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Professional Summary (Optional)</label>
       <textarea
         {...register('summary')}
         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"

@@ -49,7 +49,6 @@ const WorkExperienceSection: React.FC<Props> = ({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold text-gray-900">Work Experience</h3>
         <button
           type="button"
           onClick={resetToChronological}
@@ -66,7 +65,7 @@ const WorkExperienceSection: React.FC<Props> = ({
           <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <h4 className="text-base font-medium text-gray-700">Experience {index + 1}</h4>
+                <h4 className="text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Experience {index + 1}</h4>
                 {workExperienceFields.length > 1 && (
                   <div className="flex gap-1">
                     <button
@@ -101,7 +100,7 @@ const WorkExperienceSection: React.FC<Props> = ({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="block text-base font-medium text-gray-700">Company</label>
+                <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Company</label>
                 <input
                   {...register(`workExperience.${index}.company` as const)}
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[index]?.company ? 'border-red-500' : 'border-gray-300'}`}
@@ -112,7 +111,7 @@ const WorkExperienceSection: React.FC<Props> = ({
                 )}
               </div>
               <div className="space-y-2">
-                <label className="block text-base font-medium text-gray-700">Job Title</label>
+                <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Job Title</label>
                 <input
                   {...register(`workExperience.${index}.jobTitle` as const)}
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.workExperience?.[index]?.jobTitle ? 'border-red-500' : 'border-gray-300'}`}
@@ -123,7 +122,7 @@ const WorkExperienceSection: React.FC<Props> = ({
                 )}
               </div>
               <div className="space-y-2">
-                <label className="block text-base font-medium text-gray-700">Start Date</label>
+                <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Start Date</label>
                 <input
                   {...register(`workExperience.${index}.startDate` as const)}
                   type="month"
@@ -137,7 +136,7 @@ const WorkExperienceSection: React.FC<Props> = ({
                 )}
               </div>
               <div className="space-y-2">
-                <label className="block text-base font-medium text-gray-700">End Date</label>
+                <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">End Date</label>
                 <input
                   {...register(`workExperience.${index}.endDate` as const)}
                   type="month"
@@ -152,7 +151,7 @@ const WorkExperienceSection: React.FC<Props> = ({
               </div>
             </div>
             <div className="space-y-2">
-              <label className="block text-base font-medium text-gray-700">Description</label>
+              <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Description</label>
               <textarea
                 {...register(`workExperience.${index}.description` as const)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
