@@ -27,13 +27,13 @@ const ResumeBuilder: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       {selectedResume ? (
         <ResumeForm initialData={selectedResume} />
       ) : (
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-            <h1 className="text-2xl font-bold text-gray-900"></h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors"></h1>
             <div className="flex gap-4">
               <button
                 onClick={() => setSelectedResume({} as ResumeFormData)}

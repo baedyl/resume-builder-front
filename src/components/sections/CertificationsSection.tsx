@@ -38,7 +38,7 @@ const CertificationsSection: React.FC<Props> = ({ register, errors, certificatio
         <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <h4 className="text-base font-medium text-gray-700">Certification {index + 1}</h4>
+              <h4 className="text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Certification {index + 1}</h4>
               {certificationFields.length > 1 && (
                 <div className="flex gap-1">
                   <button
@@ -73,7 +73,7 @@ const CertificationsSection: React.FC<Props> = ({ register, errors, certificatio
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="block text-base font-medium text-gray-700">Certification Name</label>
+              <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Certification Name</label>
               <input
                 {...register(`certifications.${index}.name`)}
                 className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.name ? 'border-red-500' : 'border-gray-300'}`}
@@ -84,7 +84,7 @@ const CertificationsSection: React.FC<Props> = ({ register, errors, certificatio
               )}
             </div>
             <div className="space-y-2">
-              <label className="block text-base font-medium text-gray-700">Issuer</label>
+              <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Issuer</label>
               <input
                 {...register(`certifications.${index}.issuer`)}
                 className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.certifications?.[index]?.issuer ? 'border-red-500' : 'border-gray-300'}`}
@@ -95,7 +95,7 @@ const CertificationsSection: React.FC<Props> = ({ register, errors, certificatio
               )}
             </div>
             <div className="space-y-2">
-              <label className="block text-base font-medium text-gray-700">Issue Date (Optional)</label>
+              <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Issue Date (Optional)</label>
               <input
                 {...register(`certifications.${index}.issueDate`)}
                 type="month"

@@ -18,6 +18,7 @@ import { ResumeFormData } from '../types/resume';
 import { Resolver } from 'react-hook-form';
 import LanguagesSection from './sections/LanguagesSection';
 import CertificationsSection from './sections/CertificationsSection';
+import TemplateSelectionSection from './sections/TemplateSelectionSection';
 
 // Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
@@ -180,6 +181,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [step, setStep] = useState(1);
 
   // Existing useEffect hooks (unchanged)
   useEffect(() => {
@@ -793,74 +795,55 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     }
   };
 
+  // Step navigation
+  const nextStep = async () => {
+    // Validate current step before moving forward
+    let valid = true;
+    if (step === 1) {
+      valid = await methods.trigger(['fullName', 'email', 'languages']);
+    } else if (step === 2) {
+      valid = await methods.trigger(['workExperience']);
+    } else if (step === 3) {
+      valid = await methods.trigger(['education', 'certifications']);
+    }
+    if (valid) setStep((s) => Math.min(s + 1, 3));
+  };
+  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center pt-4 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div aria-live="polite" aria-busy={Boolean(isEnhancing !== null || isEnhancingSummary)}>
         {(isEnhancing || isEnhancingSummary) && <LoadingOverlay />}
       </div>
       <FormProvider {...methods}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-full max-w-6xl bg-white shadow-2xl rounded-2xl p-4 sm:p-10 space-y-8"
-        >
-          {/* Development-only mock data button */}
-          {(import.meta as any).env.MODE === 'development' && (
-            <button
-              type="button"
-              onClick={fillWithMockData}
-              className="w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-base font-medium"
-            >
-              Fill with Mock Data
-            </button>
-          )}
+        <form className="w-full max-w-6xl bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-4 sm:p-10 space-y-8 transition-colors">
           <ToastContainer position="top-right" autoClose={3000} />
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Build Your Resume</h2>
-
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4 mt-2 text-center transition-colors">Build Your Resume</h2>
           {formError && (
-            <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg text-base">{formError}</div>
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg text-base transition-colors">{formError}</div>
           )}
-
-          {/* File Upload Section */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-900">Upload Existing Resume (Optional)</h3>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-              <div className="space-y-4">
-                <div className="flex flex-col items-center">
-                  <svg className="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="text-lg font-medium text-gray-900">Upload your existing resume</p>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Supported formats: PDF, DOC, DOCX, TXT (Max 5MB)
-                  </p>
-                </div>
-
-                {uploadedFile ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-center gap-3 p-3 bg-green-50 rounded-lg">
-                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-green-800 font-medium">{uploadedFile.name}</span>
-                      <button
-                        type="button"
-                        onClick={clearUploadedFile}
-                        className="text-red-600 hover:text-red-800 text-sm"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    {isUploading && (
-                      <div className="flex items-center justify-center gap-2 text-blue-600">
-                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span>Processing...</span>
-                      </div>
-                    )}
+          {/* Stepper Navigation */}
+          <div className="flex justify-center gap-4 mb-8">
+            <button type="button" className={`px-4 py-2 rounded ${step === 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => setStep(1)}>Step 1</button>
+            <button type="button" className={`px-4 py-2 rounded ${step === 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => setStep(2)}>Step 2</button>
+            <button type="button" className={`px-4 py-2 rounded ${step === 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => setStep(3)}>Step 3</button>
+          </div>
+          {/* Step 1: Personal Info, Languages, Upload */}
+          {step === 1 && (
+            <div className="bg-white dark:bg-gray-800 transition-colors rounded-lg p-6 space-y-6">
+              {/* File Upload Section */}
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Upload Existing Resume (Optional)</h3>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                <div className="space-y-4">
+                  <div className="flex flex-col items-center">
+                    <svg className="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p className="text-lg font-medium text-gray-900">Upload your existing resume</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Supported formats: PDF, DOC, DOCX, TXT (Max 5MB)
+                    </p>
                   </div>
-                ) : (
                   <div className="space-y-3">
                     <input
                       id="resume-upload"
@@ -872,8 +855,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                     />
                     <label
                       htmlFor="resume-upload"
-                      className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${isUploading ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
+                      className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer transition-colors ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       {isUploading ? 'Uploading...' : 'Choose File'}
                     </label>
@@ -881,155 +863,117 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                       Your resume data will be automatically parsed and filled into the form below
                     </p>
                   </div>
-                )}
+                </div>
               </div>
+              <PersonalInfoSection />
+              <LanguagesSection
+                register={register}
+                errors={errors}
+                languageFields={languageFields as any}
+                appendLanguage={appendLanguage}
+                removeLanguage={removeLanguage}
+              />
             </div>
-          </div>
-
-          {/* Personal Info */}
-          <PersonalInfoSection />
-
-          {/* Summary */}
-          <SummarySection onEnhance={handleEnhanceSummary} isEnhancing={isEnhancingSummary} />
-
-          {/* Skills */}
-          <SkillsSelect control={control} skills={skills} setSkills={setSkills as React.Dispatch<React.SetStateAction<any>>} />
-
-          {/* Work Experience */}
-          <WorkExperienceSection
-            register={register}
-            errors={errors}
-            workExperienceFields={workExperienceFields as any}
-            removeWorkExperience={removeWorkExperience}
-            appendWorkExperience={(payload: any) => {
-              appendWorkExperience(payload);
-              setIsManuallyOrdered(true);
-            }}
-            resetToChronological={resetToChronological}
-            handleEnhanceDescription={handleEnhanceDescription}
-            isEnhancing={isEnhancing}
-          />
-
-          {/* Education */}
-          <EducationSection
-            register={register}
-            errors={errors}
-            educationFields={educationFields as any}
-            appendEducation={appendEducation}
-            removeEducation={removeEducation}
-          />
-
-          {/* Languages */}
-          <LanguagesSection
-            register={register}
-            errors={errors}
-            languageFields={languageFields as any}
-            appendLanguage={appendLanguage}
-            removeLanguage={removeLanguage}
-          />
-
-          {/* Certifications */}
-          <CertificationsSection
-            register={register}
-            errors={errors}
-            certificationFields={certificationFields as any}
-            appendCertification={appendCertification}
-            removeCertification={removeCertification}
-          />
-
-          {/* Template Selection */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-900">Choose Template</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          )}
+          {/* Step 2: Professional Experience */}
+          {step === 2 && (
+            <div className="bg-white dark:bg-gray-800 transition-colors rounded-lg p-6 space-y-6">
+              <SummarySection onEnhance={handleEnhanceSummary} isEnhancing={isEnhancingSummary} />
+              <SkillsSelect control={control} skills={skills} setSkills={setSkills as React.Dispatch<React.SetStateAction<any>>} />
+              <WorkExperienceSection
+                register={register}
+                errors={errors}
+                workExperienceFields={workExperienceFields as any}
+                removeWorkExperience={removeWorkExperience}
+                appendWorkExperience={(payload: any) => {
+                  appendWorkExperience(payload);
+                  setIsManuallyOrdered(true);
+                }}
+                resetToChronological={resetToChronological}
+                handleEnhanceDescription={handleEnhanceDescription}
+                isEnhancing={isEnhancing}
+              />
+            </div>
+          )}
+          {/* Step 3: Education, Certifications, Template, Generate */}
+          {step === 3 && (
+            <div className="bg-white dark:bg-gray-800 transition-colors rounded-lg p-6 space-y-6">
+              <EducationSection
+                register={register}
+                errors={errors}
+                educationFields={educationFields as any}
+                appendEducation={appendEducation}
+                removeEducation={removeEducation}
+              />
+              <CertificationsSection
+                register={register}
+                errors={errors}
+                certificationFields={certificationFields as any}
+                appendCertification={appendCertification}
+                removeCertification={removeCertification}
+              />
+              <TemplateSelectionSection selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} />
+              {/* Generate Button */}
               <button
                 type="button"
-                onClick={() => setSelectedTemplate('modern')}
-                className={`p-4 border rounded-lg text-center ${selectedTemplate === 'modern'
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-300 hover:border-blue-500'
-                  }`}
+                onClick={handlePreviewClick}
+                disabled={isLoading}
+                className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                <h4 className="font-medium text-gray-900">Modern</h4>
-                <p className="text-sm text-gray-600">Clean and professional design</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedTemplate('classic')}
-                className={`p-4 border rounded-lg text-center ${selectedTemplate === 'classic'
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-300 hover:border-blue-500'
-                  }`}
-              >
-                <h4 className="font-medium text-gray-900">Classic</h4>
-                <p className="text-sm text-gray-600">Traditional and formal layout</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedTemplate('minimal')}
-                className={`p-4 border rounded-lg text-center ${selectedTemplate === 'minimal'
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-300 hover:border-blue-500'
-                  }`}
-              >
-                <h4 className="font-medium text-gray-900">Minimal</h4>
-                <p className="text-sm text-gray-600">Simple and elegant style</p>
+                {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
               </button>
             </div>
+          )}
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mt-8">
+            {step > 1 && (
+              <button type="button" onClick={prevStep} className="px-6 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Previous</button>
+            )}
+            {step < 3 && (
+              <button type="button" onClick={nextStep} className="ml-auto px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Next</button>
+            )}
           </div>
-
-          {/* Save Button */}
+          {/* Save Changes Button (PDF) - always visible */}
           <button
             type="button"
             onClick={handleSubmit(saveResume)}
             disabled={isSaving}
-            className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium mb-4 ${isSaving ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+            className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium mb-4 ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {isSaving ? 'Saving...' : 'Save Resume'}
           </button>
-
-          {/* Preview/Generate Button */}
-          <button
-            type="button"
-            onClick={handlePreviewClick}
-            disabled={isLoading}
-            className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-          >
-            {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
-          </button>
         </form>
       </FormProvider>
-
       {/* Preview Modal */}
       {preview && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-80 flex items-center justify-center z-50 p-4 transition-colors"
+        >
           <div
             ref={modalRef}
-            className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto transition-colors"
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Resume Preview</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Resume Preview</h3>
               <div className="flex gap-4 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => setPreview(null)}
-                  className="flex-1 sm:flex-none py-2 px-6 bg-gray-500 text-white rounded-lg hover:bg-gray-600 text-base"
+                  className="flex-1 sm:flex-none py-2 px-6 bg-gray-500 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-600 dark:hover:bg-gray-600 text-base transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   type="button"
                   onClick={handlePreviewClick}
-                  className={`flex-1 sm:flex-none py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base ${isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                    }`}
+                  className={`flex-1 sm:flex-none py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   disabled={isLoading}
                 >
                   {isLoading ? 'Generating...' : 'Generate PDF'}
                 </button>
               </div>
             </div>
-            <div className="resume-preview bg-white shadow-lg overflow-x-auto">
+            <div className="resume-preview bg-white dark:bg-gray-900 shadow-lg overflow-x-auto transition-colors">
               <ResumeTemplate data={preview} template={selectedTemplate} />
             </div>
           </div>

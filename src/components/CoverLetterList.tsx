@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { CoverLetterFormData } from './CoverLetterForm';
+import { format } from 'date-fns';
 
 interface CoverLetterSummary {
   id: string;
@@ -80,32 +81,32 @@ const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetter
   }
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-6">My Cover Letters</h2>
+    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors">
+      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 transition-colors">My Cover Letters</h2>
       {coverLetters.length === 0 ? (
-        <p className="text-gray-600 text-center py-4">No cover letters found. Create your first cover letter!</p>
+        <p className="text-gray-600 dark:text-gray-300 text-center py-4 transition-colors">No cover letters found. Create your first cover letter!</p>
       ) : (
         <div className="space-y-4">
-          {coverLetters.map((cl) => (
+          {coverLetters.map((letter) => (
             <div
-              key={cl.id}
-              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+              key={letter.id}
+              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700 transition-colors"
             >
               <div>
-                <h3 className="font-semibold text-lg">{cl.fullName || cl.title}</h3>
-                <p className="text-sm text-gray-600">
-                  Last updated: {new Date(cl.updatedAt).toLocaleDateString()}
+                <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100 transition-colors">{letter.fullName || letter.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">
+                  Last updated: {format(new Date(letter.updatedAt), 'MMM d, yyyy')}
                 </p>
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => handleEdit(cl.id)}
+                  onClick={() => handleEdit(letter.id)}
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDelete(cl.id)}
+                  onClick={() => handleDelete(letter.id)}
                   className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                 >
                   Delete

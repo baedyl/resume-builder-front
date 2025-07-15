@@ -32,12 +32,12 @@ const LanguagesSection: React.FC<Props> = ({ register, errors, languageFields, a
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-gray-900">Languages (Optional)</h3>
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors">Languages (Optional)</h3>
       {languageFields.map((field, index) => (
         <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <h4 className="text-base font-medium text-gray-700">Language {index + 1}</h4>
+              <h4 className="text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Language {index + 1}</h4>
               {languageFields.length > 1 && (
                 <div className="flex gap-1">
                   <button
@@ -72,7 +72,7 @@ const LanguagesSection: React.FC<Props> = ({ register, errors, languageFields, a
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="block text-base font-medium text-gray-700">Language</label>
+              <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Language</label>
               <input
                 {...register(`languages.${index}.name`)}
                 className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.name ? 'border-red-500' : 'border-gray-300'}`}
@@ -83,7 +83,7 @@ const LanguagesSection: React.FC<Props> = ({ register, errors, languageFields, a
               )}
             </div>
             <div className="space-y-2">
-              <label className="block text-base font-medium text-gray-700">Proficiency</label>
+              <label className="block text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Proficiency</label>
               <select
                 {...register(`languages.${index}.proficiency`)}
                 className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base ${errors.languages?.[index]?.proficiency ? 'border-red-500' : 'border-gray-300'}`}

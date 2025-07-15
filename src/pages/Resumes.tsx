@@ -19,10 +19,10 @@ const Resumes: React.FC = () => {
   // };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Resumes</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Resumes</h1>
           <button
             onClick={handleCreate}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
