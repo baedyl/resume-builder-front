@@ -832,7 +832,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           {step === 1 && (
             <div className="bg-white dark:bg-gray-800 transition-colors rounded-lg p-6 space-y-6">
               {/* File Upload Section */}
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Upload Existing Resume (Optional)</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors">Upload Existing Resume (Optional)</h3>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
                 <div className="space-y-4">
                   <div className="flex flex-col items-center">
@@ -879,7 +879,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           {step === 2 && (
             <div className="bg-white dark:bg-gray-800 transition-colors rounded-lg p-6 space-y-6">
               <SummarySection onEnhance={handleEnhanceSummary} isEnhancing={isEnhancingSummary} />
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors">Skills</h3>
               <SkillsSelect control={control} skills={skills} setSkills={setSkills as React.Dispatch<React.SetStateAction<any>>} />
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors">Work Experience</h3>
               <WorkExperienceSection
                 register={register}
                 errors={errors}
@@ -898,6 +900,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           {/* Step 3: Education, Certifications, Template, Generate */}
           {step === 3 && (
             <div className="bg-white dark:bg-gray-800 transition-colors rounded-lg p-6 space-y-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors">Education</h3>
               <EducationSection
                 register={register}
                 errors={errors}
@@ -905,6 +908,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 appendEducation={appendEducation}
                 removeEducation={removeEducation}
               />
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors">Certifications (Optional)</h3>
               <CertificationsSection
                 register={register}
                 errors={errors}
@@ -912,6 +916,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 appendCertification={appendCertification}
                 removeCertification={removeCertification}
               />
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 transition-colors">Choose a Template</h3>
               <TemplateSelectionSection selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} />
               {/* Generate Button */}
               <button

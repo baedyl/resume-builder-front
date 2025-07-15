@@ -214,7 +214,7 @@ const CoverLetters: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    className="ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
                     onClick={handleGeneratePDF}
                     disabled={pdfLoading || !savedId}
                   >
@@ -222,7 +222,7 @@ const CoverLetters: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    className="ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
                     onClick={handleSaveChanges}
                     disabled={loading || !savedId}
                   >
