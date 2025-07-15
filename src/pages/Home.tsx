@@ -1,4 +1,6 @@
 // pages/Home.tsx
+import React from 'react';
+
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
