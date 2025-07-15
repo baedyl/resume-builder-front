@@ -18,7 +18,6 @@ const TemplateSelectionSection: React.FC<TemplateSelectionSectionProps> = ({ sel
     : defaultTemplates;
   return (
     <div className="mb-8">
-      <h3 className="text-xl font-semibold text-gray-900 mb-4">Choose a Template</h3>
       <div className="flex gap-4">
         {templates.map((tpl) => (
           <button

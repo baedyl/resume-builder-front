@@ -33,7 +33,6 @@ const CertificationsSection: React.FC<Props> = ({ register, errors, certificatio
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-gray-900">Certifications (Optional)</h3>
       {certificationFields.map((field, index) => (
         <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">
           <div className="flex justify-between items-center">

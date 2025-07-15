@@ -49,7 +49,6 @@ const WorkExperienceSection: React.FC<Props> = ({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-xl font-semibold text-gray-900">Work Experience</h3>
         <button
           type="button"
           onClick={resetToChronological}

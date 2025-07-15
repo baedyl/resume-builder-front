@@ -34,7 +34,6 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-gray-900">Education</h3>
       {errors.education && <p className="mb-2 text-sm text-red-600">{errors.education.message}</p>}
       {educationFields.map((field, index) => (
         <div key={field.id} className="p-6 border border-gray-200 rounded-lg space-y-4">

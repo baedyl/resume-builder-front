@@ -78,7 +78,6 @@ const SkillsSelect: React.FC<SkillsSelectProps> = ({ control, skills, setSkills,
 
         return (
           <div className="space-y-2">
-            <label className="block text-base font-medium text-gray-700">Skills</label>
             <CreatableSelect<SkillOption, true>
               isMulti
               options={skills.map((skill) => ({ value: skill.id, label: skill.name }))}
