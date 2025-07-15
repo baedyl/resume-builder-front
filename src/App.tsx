@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import NavBar from './components/NavBar';
 import Callback from './components/Callback';
 import ResumeBuilder from './pages/ResumeBuilder';
+import CoverLetters from './pages/CoverLetters';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -35,6 +36,10 @@ console.log('isAuthenticated:', isAuthenticated);
         <Route
           path="/my-resumes"
           element={isAuthenticated ? <ResumeBuilder /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/cover-letters"
+          element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />}
         />
         <Route path="/callback" element={<Callback />} />
       </Routes>

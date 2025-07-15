@@ -10,11 +10,11 @@ const NavBar: React.FC = () => {
   const location = useLocation();
 
   const handleLogout = () => {
-        logout({ returnTo: window.location.origin } as any); // Adjust logout logic as needed
-    };
+    logout({ returnTo: window.location.origin } as any); // Adjust logout logic as needed
+  };
 
   const mainLinks = [
-    { label: 'Home', to: '/' },
+    { label: 'Cover Letters', to: '/cover-letters' },
     // { label: 'Templates', to: '/templates' },
     // { label: 'Examples', to: '/examples' },
     // { label: 'Pricing', to: '/pricing' },
@@ -37,9 +37,8 @@ const NavBar: React.FC = () => {
               <Link
                 key={link.label}
                 to={link.to}
-                className={`text-gray-700 hover:text-blue-500 ${
-                  location.pathname === link.to ? 'text-blue-500' : ''
-                }`}
+                className={`text-gray-700 hover:text-blue-500 ${location.pathname === link.to ? 'text-blue-500' : ''
+                  }`}
               >
                 {link.label}
               </Link>
@@ -70,6 +69,7 @@ const NavBar: React.FC = () => {
                     >
                       My Resumes
                     </Link>
+
                     <Link to="/settings" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
                       Settings
                     </Link>
@@ -111,9 +111,8 @@ const NavBar: React.FC = () => {
                 <Link
                   key={link.label}
                   to={link.to}
-                  className={`text-gray-700 hover:text-blue-500 ${
-                    location.pathname === link.to ? 'text-blue-500' : ''
-                  }`}
+                  className={`text-gray-700 hover:text-blue-500 ${location.pathname === link.to ? 'text-blue-500' : ''
+                    }`}
                 >
                   {link.label}
                 </Link>
@@ -131,6 +130,12 @@ const NavBar: React.FC = () => {
                     className="text-gray-700 hover:text-blue-500"
                   >
                     My Resumes
+                  </Link>
+                  <Link
+                    to="/cover-letters"
+                    className="text-gray-700 hover:text-blue-500"
+                  >
+                    Cover Letters
                   </Link>
                   <Link to="/settings" className="text-gray-700 hover:text-blue-500">
                     Settings
