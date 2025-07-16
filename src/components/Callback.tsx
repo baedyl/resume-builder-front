@@ -35,7 +35,7 @@ const Callback = () => {
         return <div>Error: {error.message}</div>;
     }
 
-    return <div>Loading...</div>;
+    return <div className="text-gray-900 dark:text-gray-100 transition-colors">Loading...</div>;
 };
 
 export default Callback;

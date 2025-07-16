@@ -14,7 +14,7 @@ function App() {
 
   // Show a loading state while Auth0 checks authentication
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-gray-900 dark:text-gray-100 transition-colors">Loading...</div>;
   }
 
 console.log('isAuthenticated:', isAuthenticated);

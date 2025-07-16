@@ -73,7 +73,7 @@ const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetter
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <div className="text-center py-4 text-gray-900 dark:text-gray-100 transition-colors">Loading...</div>;
   }
 
   if (error) {
