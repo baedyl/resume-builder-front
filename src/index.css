@@ -36,8 +36,8 @@ dark .resume-preview {
 /* Mobile styles */
 @media (max-width: 640px) {
   .resume-preview {
-    transform: scale(0.4);
-    margin: -2in -2in; /* Compensate for the scale to center the content */
+    transform: scale(0.7);
+    margin: 0in -1.9in; /* Compensate for the scale to center the content */
   }
 }
 

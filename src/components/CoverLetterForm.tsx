@@ -68,19 +68,19 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ initialData, onSave, 
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
+    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
       <ToastContainer position="top-right" autoClose={3000} />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
         <div>
-          <label htmlFor="name" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors">Name</label>
+          <label htmlFor="name" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors text-sm sm:text-base">Name</label>
           <input
             id="name"
             {...register('name')}
-            className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors"
+            className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors p-3 text-sm sm:text-base"
           />
         </div>
         <div>
-          <label htmlFor="jobDescription" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors">Job Description{!initialData?.id && <span className="text-red-500">*</span>}</label>
+          <label htmlFor="jobDescription" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors text-sm sm:text-base">Job Description{!initialData?.id && <span className="text-red-500">*</span>}</label>
           <textarea
             id="jobDescription"
             {...register('jobDescription', {
@@ -92,27 +92,27 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ initialData, onSave, 
               },
             })}
             rows={3}
-            className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors"
+            className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors p-3 text-sm sm:text-base"
           />
-          {errors.jobDescription && <div className="text-red-600 dark:text-red-400 text-sm transition-colors">{errors.jobDescription.message}</div>}
+          {errors.jobDescription && <div className="text-red-600 dark:text-red-400 text-xs sm:text-sm transition-colors">{errors.jobDescription.message}</div>}
         </div>
         <div>
-          <label htmlFor="content" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors">Cover Letter Content</label>
+          <label htmlFor="content" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors text-sm sm:text-base">Cover Letter Content</label>
           <textarea
             id="content"
             {...register('content')}
             rows={10}
-            className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 font-mono text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors"
+            className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 font-mono text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors p-3 text-sm sm:text-base"
           />
-          {errors.content && <div className="text-red-600 dark:text-red-400 text-sm transition-colors">{errors.content.message}</div>}
+          {errors.content && <div className="text-red-600 dark:text-red-400 text-xs sm:text-sm transition-colors">{errors.content.message}</div>}
         </div>
-        <div className="flex gap-4 justify-end">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end">
           {onCancel && (
-            <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-500 dark:bg-gray-700 text-white rounded hover:bg-gray-600 dark:hover:bg-gray-600 transition-colors">Cancel</button>
+            <button type="button" onClick={onCancel} className="px-3 sm:px-4 py-2 bg-gray-500 dark:bg-gray-700 text-white rounded hover:bg-gray-600 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base">Cancel</button>
           )}
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
             disabled={isSubmitting}
           >
             {isSubmitting ? (initialData?.id ? 'Updating...' : 'Creating...') : (initialData?.id ? 'Update' : 'Create')}

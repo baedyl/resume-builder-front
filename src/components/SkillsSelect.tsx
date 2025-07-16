@@ -97,9 +97,40 @@ const SkillsSelect: React.FC<SkillsSelectProps> = ({ control, skills, setSkills,
               components={{ MultiValue: CustomMultiValue }}
               className="basic-multi-select"
               classNamePrefix="select"
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  minHeight: '44px',
+                  fontSize: '14px',
+                  '@media (min-width: 640px)': {
+                    fontSize: '16px',
+                  }
+                }),
+                option: (provided) => ({
+                  ...provided,
+                  fontSize: '14px',
+                  '@media (min-width: 640px)': {
+                    fontSize: '16px',
+                  }
+                }),
+                multiValue: (provided) => ({
+                  ...provided,
+                  fontSize: '12px',
+                  '@media (min-width: 640px)': {
+                    fontSize: '14px',
+                  }
+                }),
+                input: (provided) => ({
+                  ...provided,
+                  fontSize: '14px',
+                  '@media (min-width: 640px)': {
+                    fontSize: '16px',
+                  }
+                })
+              }}
             />
             {fieldState.error && (
-              <p className="mt-1 text-sm text-red-600">{fieldState.error.message}</p>
+              <p className="mt-1 text-xs sm:text-sm text-red-600">{fieldState.error.message}</p>
             )}
           </div>
         );

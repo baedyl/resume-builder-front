@@ -107,33 +107,33 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 transition-colors">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 transition-colors">My Resumes</h2>
+    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 sm:p-6 transition-colors">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 transition-colors">My Resumes</h2>
       {resumes.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-300 text-center py-4 transition-colors">No resumes found. Create your first resume!</p>
+        <p className="text-gray-600 dark:text-gray-300 text-center py-4 transition-colors text-sm sm:text-base">No resumes found. Create your first resume!</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {resumes.map((resume) => (
             <div
               key={resume.id}
-              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700 transition-colors"
+              className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700 transition-colors gap-3 sm:gap-0"
             >
               <div>
-                <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100 transition-colors">{resume.fullName}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">
+                <h3 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-gray-100 transition-colors">{resume.fullName}</h3>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 transition-colors">
                   Last updated: {format(new Date(resume.updatedAt), 'MMM d, yyyy')}
                 </p>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(resume.id)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                  className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(resume.id)}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                  className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm sm:text-base"
                 >
                   Delete
                 </button>

@@ -3,7 +3,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ResumeList from '../components/ResumeList';
 import ResumeForm from '../components/ResumeForm';
 import { ResumeFormData } from '../types/resume';
-import axios from 'axios';
 
 const ResumeBuilder: React.FC = () => {
   const [selectedResume, setSelectedResume] = useState<ResumeFormData | null>(null);
@@ -27,7 +26,7 @@ const ResumeBuilder: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-4 lg:px-4 md:px-0 transition-colors duration-300">
       {selectedResume ? (
         <ResumeForm initialData={selectedResume} />
       ) : (

@@ -152,29 +152,20 @@ const NavBar: React.FC = () => {
                   {link.label}
                 </Link>
               ))}
+              {/* Add dark/light mode switcher to mobile menu */}
+              <button
+                onClick={toggleDarkMode}
+                className="focus:outline-none text-xl self-start"
+                aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
+              </button>
               {isAuthenticated ? (
                 <>
-                  <Link
-                    to="/resume"
-                    className="text-gray-700 hover:text-blue-500"
-                  >
-                    New Resume
-                  </Link>
-                  <Link
-                    to="/my-resumes"
-                    className="text-gray-700 hover:text-blue-500"
-                  >
-                    My Resumes
-                  </Link>
-                  <Link
-                    to="/cover-letters"
-                    className="text-gray-700 hover:text-blue-500"
-                  >
-                    Cover Letters
-                  </Link>
-                  <Link to="/settings" className="text-gray-700 hover:text-blue-500">
+                  {/* <Link to="/settings" className="text-gray-700 hover:text-blue-500">
                     Settings
-                  </Link>
+                  </Link> */}
                   <button
                     onClick={handleLogout}
                     className="text-gray-700 hover:text-blue-500"
