@@ -829,8 +829,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                     <svg className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
-                    <p className="text-base sm:text-lg font-medium text-gray-900">Upload your existing resume</p>
-                    <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                    <p className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100">Upload your existing resume</p>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1">
                       Supported formats: PDF, DOC, DOCX, TXT (Max 5MB)
                     </p>
                   </div>
@@ -849,7 +849,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                     >
                       {isUploading ? 'Uploading...' : 'Choose File'}
                     </label>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-600 dark:text-gray-300">
                       Your resume data will be automatically parsed and filled into the form below
                     </p>
                   </div>
@@ -917,6 +917,15 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               >
                 {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
               </button>
+              {/* Save Resume Button - only visible on step 3 */}
+              <button
+                type="button"
+                onClick={handleSubmit(saveResume)}
+                disabled={isSaving}
+                className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {isSaving ? 'Saving...' : 'Save Resume'}
+              </button>
             </div>
           )}
           {/* Navigation Buttons */}
@@ -928,15 +937,6 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               <button type="button" onClick={nextStep} className="ml-auto px-4 sm:px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm sm:text-base">Next</button>
             )}
           </div>
-          {/* Save Changes Button (PDF) - always visible */}
-          <button
-            type="button"
-            onClick={handleSubmit(saveResume)}
-            disabled={isSaving}
-            className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium mb-4 ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            {isSaving ? 'Saving...' : 'Save Resume'}
-          </button>
         </form>
       </FormProvider>
       {/* Preview Modal */}
