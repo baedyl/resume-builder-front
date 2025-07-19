@@ -8,6 +8,8 @@ import NavBar from './components/NavBar';
 import Callback from './components/Callback';
 import ResumeBuilder from './pages/ResumeBuilder';
 import CoverLetters from './pages/CoverLetters';
+import Blog from './pages/Blog';
+import Article from './pages/Article';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -41,6 +43,8 @@ console.log('isAuthenticated:', isAuthenticated);
           path="/cover-letters"
           element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />}
         />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<Article />} />
         <Route path="/callback" element={<Callback />} />
       </Routes>
     </Router>

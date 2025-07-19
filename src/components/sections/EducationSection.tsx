@@ -34,9 +34,9 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
 
   return (
     <div className="space-y-4">
-      {errors.education && <p className="mb-2 text-xs sm:text-sm text-red-600">{errors.education.message}</p>}
+      {errors.education && <p className="mb-2 text-xs sm:text-sm text-red-600 dark:text-red-400 transition-colors">{errors.education.message}</p>}
       {educationFields.map((field, index) => (
-        <div key={field.id} className="p-4 sm:p-6 border border-gray-200 rounded-lg space-y-4">
+        <div key={field.id} className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-lg space-y-4 bg-white dark:bg-gray-800 transition-colors">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <h4 className="text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Education {index + 1}</h4>
