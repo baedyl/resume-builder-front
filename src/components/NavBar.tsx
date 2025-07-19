@@ -69,15 +69,6 @@ const NavBar: React.FC = () => {
                 {link.label}
               </Link>
             ))}
-            {/* Dark/Light Mode Switcher */}
-            <button
-              onClick={toggleDarkMode}
-              className="focus:outline-none text-xl mr-2"
-              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-              title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
-            </button>
             {/* User/Profile Dropdown */}
             {isAuthenticated ? (
               <div className="relative">
@@ -95,23 +86,23 @@ const NavBar: React.FC = () => {
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg transition-colors">
                     <Link
                       to="/resume"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       New Resume
                     </Link>
                     <Link
                       to="/my-resumes"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       My Resumes
                     </Link>
 
-                    <Link to="/settings" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                    <Link to="/settings" className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                       Settings
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       Logout
                     </button>
@@ -119,15 +110,24 @@ const NavBar: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="flex space-x-4">
-                <Link to="/login" className="text-gray-700 hover:text-blue-500">
+              <div className="flex space-x-4 items-center">
+                <Link to="/login" className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium">
                   Login
                 </Link>
-                <Link to="/register" className="text-gray-700 hover:text-blue-500">
+                <Link to="/register" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                   Sign Up
                 </Link>
               </div>
             )}
+            {/* Dark/Light Mode Switcher - moved to end */}
+            <button
+              onClick={toggleDarkMode}
+              className="focus:outline-none text-xl ml-4"
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
+            </button>
           </div>
 
           {/* Mobile Hamburger Menu Button */}
