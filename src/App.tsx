@@ -10,6 +10,7 @@ import ResumeBuilder from './pages/ResumeBuilder';
 import CoverLetters from './pages/CoverLetters';
 import Blog from './pages/Blog';
 import Article from './pages/Article';
+import Pricing from './pages/Pricing';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -45,6 +46,7 @@ console.log('isAuthenticated:', isAuthenticated);
         />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<Article />} />
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="/callback" element={<Callback />} />
       </Routes>
     </Router>

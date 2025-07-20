@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FaArrowLeft, FaCalendar, FaUser, FaClock, FaBookmark, FaShare, FaStar } from 'react-icons/fa';
 import { getArticleBySlug } from '../utils/articleLoader';
+import Footer from '../components/Footer';
 
 const Article: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -134,6 +135,7 @@ const Article: React.FC = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
