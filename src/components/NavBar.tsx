@@ -44,6 +44,7 @@ const NavBar: React.FC = () => {
   const mainLinks = [
     { label: 'Resumes', to: '/my-resumes' },
     { label: 'Cover Letters', to: '/cover-letters' },
+    { label: 'Job Tracker', to: '/job-tracker' },
     { label: 'Blog', to: '/blog' },
     { label: 'Contact', to: '/contact' },
   ];

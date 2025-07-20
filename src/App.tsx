@@ -8,6 +8,7 @@ import NavBar from './components/NavBar';
 import Callback from './components/Callback';
 import ResumeBuilder from './pages/ResumeBuilder';
 import CoverLetters from './pages/CoverLetters';
+import JobTracker from './pages/JobTracker';
 import Blog from './pages/Blog';
 import Article from './pages/Article';
 
@@ -42,6 +43,10 @@ console.log('isAuthenticated:', isAuthenticated);
         <Route
           path="/cover-letters"
           element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/job-tracker"
+          element={isAuthenticated ? <JobTracker /> : <Navigate to="/login" />}
         />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<Article />} />
