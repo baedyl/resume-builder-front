@@ -9,7 +9,7 @@ interface JobListProps {
 }
 
 const JobList: React.FC<JobListProps> = ({ jobs, onEdit, onDelete, onStatusChange }) => {
-  const [sortBy, setSortBy] = useState<'appliedDate' | 'company' | 'status'>('appliedDate');
+  const [sortBy, setSortBy] = useState<'dateApplied' | 'company' | 'status'>('dateApplied');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const statusColors = {
@@ -45,7 +45,7 @@ const JobList: React.FC<JobListProps> = ({ jobs, onEdit, onDelete, onStatusChang
     let aValue: any = a[sortBy];
     let bValue: any = b[sortBy];
 
-    if (sortBy === 'appliedDate') {
+    if (sortBy === 'dateApplied') {
       aValue = new Date(aValue).getTime();
       bValue = new Date(bValue).getTime();
     } else {
@@ -116,12 +116,12 @@ const JobList: React.FC<JobListProps> = ({ jobs, onEdit, onDelete, onStatusChang
                 </div>
               </th>
               <th
-                onClick={() => handleSort('appliedDate')}
+                onClick={() => handleSort('dateApplied')}
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
               >
                 <div className="flex items-center">
                   Applied Date
-                  {sortBy === 'appliedDate' && (
+                  {sortBy === 'dateApplied' && (
                     <svg className={`ml-1 h-4 w-4 ${sortOrder === 'asc' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                     </svg>
@@ -174,7 +174,7 @@ const JobList: React.FC<JobListProps> = ({ jobs, onEdit, onDelete, onStatusChang
                   </select>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {formatDate(job.appliedDate)}
+                  {formatDate(job.dateApplied)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {job.location || '-'}

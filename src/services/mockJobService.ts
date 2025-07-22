@@ -15,7 +15,7 @@ const mockJobs: JobApplication[] = [
     company: 'Google',
     position: 'Senior Software Engineer',
     status: 'interviewing',
-    appliedDate: '2024-03-01T00:00:00Z',
+    dateApplied: '2024-03-01T00:00:00Z',
     deadline: '2024-03-31T00:00:00Z',
     salary: '$150,000 - $200,000',
     location: 'Mountain View, CA',
@@ -37,7 +37,7 @@ const mockJobs: JobApplication[] = [
     company: 'Microsoft',
     position: 'Frontend Developer',
     status: 'applied',
-    appliedDate: '2024-03-10T00:00:00Z',
+    dateApplied: '2024-03-10T00:00:00Z',
     deadline: '2024-04-15T00:00:00Z',
     salary: '$120,000 - $160,000',
     location: 'Seattle, WA',
@@ -59,7 +59,7 @@ const mockJobs: JobApplication[] = [
     company: 'Apple',
     position: 'iOS Developer',
     status: 'rejected',
-    appliedDate: '2024-02-15T00:00:00Z',
+    dateApplied: '2024-02-15T00:00:00Z',
     deadline: '2024-03-01T00:00:00Z',
     salary: '$130,000 - $180,000',
     location: 'Cupertino, CA',
@@ -81,7 +81,7 @@ const mockJobs: JobApplication[] = [
     company: 'Netflix',
     position: 'Full Stack Engineer',
     status: 'offer',
-    appliedDate: '2024-02-01T00:00:00Z',
+    dateApplied: '2024-02-01T00:00:00Z',
     deadline: '2024-02-28T00:00:00Z',
     salary: '$180,000 - $250,000',
     location: 'Los Gatos, CA',
@@ -103,7 +103,7 @@ const mockJobs: JobApplication[] = [
     company: 'Amazon',
     position: 'Backend Engineer',
     status: 'pending',
-    appliedDate: '2024-03-12T00:00:00Z',
+    dateApplied: '2024-03-12T00:00:00Z',
     deadline: '2024-04-30T00:00:00Z',
     salary: '$140,000 - $190,000',
     location: 'Seattle, WA',
@@ -167,18 +167,18 @@ class MockJobService {
       }
       if (filters.dateFrom) {
         filteredJobs = filteredJobs.filter(job => 
-          new Date(job.appliedDate) >= new Date(filters.dateFrom!)
+          new Date(job.dateApplied) >= new Date(filters.dateFrom!)
         );
       }
       if (filters.dateTo) {
         filteredJobs = filteredJobs.filter(job => 
-          new Date(job.appliedDate) <= new Date(filters.dateTo!)
+          new Date(job.dateApplied) <= new Date(filters.dateTo!)
         );
       }
     }
     
     return filteredJobs.sort((a, b) => 
-      new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime()
+      new Date(b.dateApplied).getTime() - new Date(a.dateApplied).getTime()
     );
   }
 
@@ -237,7 +237,10 @@ class MockJobService {
     const pending = this.jobs.filter(j => j.status === 'pending').length;
     const followUp = this.jobs.filter(j => j.status === 'follow-up').length;
     
-    const responseRate = total > 0 ? ((applied - pending) / applied) * 100 : 0;
+    // Rates
+    const appliedOrPending = applied + pending;
+    const responded = appliedOrPending > 0 ? appliedOrPending - pending : 0;
+    const responseRate = appliedOrPending > 0 ? (responded / appliedOrPending) * 100 : 0;
     const interviewRate = total > 0 ? (interviewing / total) * 100 : 0;
     const offerRate = total > 0 ? (offer / total) * 100 : 0;
     

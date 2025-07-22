@@ -10,51 +10,50 @@ interface JobFormProps {
 
 const JOB_STATUSES: { value: JobStatus; label: string; color: string }[] = [
   { value: 'applied', label: 'Applied', color: 'bg-blue-100 text-blue-800' },
-  { value: 'follow_up', label: 'Follow Up', color: 'bg-yellow-100 text-yellow-800' },
-  { value: 'phone_screen', label: 'Phone Screen', color: 'bg-purple-100 text-purple-800' },
-  { value: 'technical_interview', label: 'Technical Interview', color: 'bg-indigo-100 text-indigo-800' },
-  { value: 'final_interview', label: 'Final Interview', color: 'bg-pink-100 text-pink-800' },
+  { value: 'follow-up', label: 'Follow Up', color: 'bg-yellow-100 text-yellow-800' },
   { value: 'interviewing', label: 'Interviewing', color: 'bg-orange-100 text-orange-800' },
   { value: 'offer', label: 'Offer', color: 'bg-green-100 text-green-800' },
   { value: 'rejected', label: 'Rejected', color: 'bg-red-100 text-red-800' },
   { value: 'withdrawn', label: 'Withdrawn', color: 'bg-gray-100 text-gray-800' },
+  { value: 'pending', label: 'Pending', color: 'bg-purple-100 text-purple-800' },
+  // Removed unsupported statuses: phone-screen, technical-interview, final_interview
 ];
 
 export const JobForm: React.FC<JobFormProps> = ({ job, onSubmit, onCancel, isLoading = false }) => {
-  const [formData, setFormData] = useState<CreateJobRequest>({
-    company: '',
+  const [formData, setFormData] = useState({
     position: '',
-    status: 'applied',
-    appliedDate: new Date().toISOString().split('T')[0],
-    deadline: '',
-    followUpDate: '',
-    salary: '',
+    company: '',
     location: '',
+    maxSalary: '',
+    status: 'applied' as JobStatus,
+    dateApplied: '',
+    followUp: '',
+    comment: '',
     jobUrl: '',
+    description: '',
     notes: '',
     contactPerson: '',
     contactEmail: '',
     contactPhone: '',
-    interviewDate: '',
   });
 
   useEffect(() => {
     if (job) {
       setFormData({
-        company: job.company,
-        position: job.position,
-        status: job.status,
-        appliedDate: job.appliedDate.split('T')[0],
-        deadline: job.deadline?.split('T')[0] || '',
-        followUpDate: job.followUpDate?.split('T')[0] || '',
-        salary: job.salary || '',
+        position: job.position || '',
+        company: job.company || '',
         location: job.location || '',
+        maxSalary: job.salary ? String(job.salary) : '', // Map salary to maxSalary
+        status: job.status || 'applied',
+        dateApplied: job.dateApplied || '',
+        followUp: job.followUpDate || '',
+        comment: (job as any).comment || job.notes || '', // Use job.comment if present, else job.notes
         jobUrl: job.jobUrl || '',
+        description: job.description || '',
         notes: job.notes || '',
         contactPerson: job.contactPerson || '',
         contactEmail: job.contactEmail || '',
         contactPhone: job.contactPhone || '',
-        interviewDate: job.interviewDate?.split('T')[0] || '',
       });
     }
   }, [job]);
@@ -67,13 +66,54 @@ export const JobForm: React.FC<JobFormProps> = ({ job, onSubmit, onCancel, isLoa
     }));
   };
 
+  const toISO = (date: string) => date ? new Date(date).toISOString() : undefined;
+  const isValidEmail = (email: string) => !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidUrl = (url: string) => !url || /^(https?:\/\/)[^\s/$.?#].[^\s]*$/.test(url);
+  const isValidDate = (date: string) => !date || !isNaN(Date.parse(date));
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const submitData = job 
-      ? { ...formData, id: job.id } as UpdateJobRequest
-      : formData as CreateJobRequest;
-    
+    // Required fields
+    if (!formData.position.trim()) {
+      alert('Position is required');
+      return;
+    }
+    if (!formData.company.trim()) {
+      alert('Company is required');
+      return;
+    }
+    if (!formData.location.trim()) {
+      alert('Location is required');
+      return;
+    }
+    if (formData.contactEmail && !isValidEmail(formData.contactEmail)) {
+      alert('Invalid email');
+      return;
+    }
+    if (formData.jobUrl && !isValidUrl(formData.jobUrl)) {
+      alert('Invalid URL');
+      return;
+    }
+    if (formData.dateApplied && !isValidDate(formData.dateApplied)) {
+      alert('Invalid date applied');
+      return;
+    }
+    if (formData.followUp && !isValidDate(formData.followUp)) {
+      alert('Invalid follow up date');
+      return;
+    }
+    const submitData: any = {
+      ...formData,
+      maxSalary: formData.maxSalary ? Number(formData.maxSalary) : undefined,
+      dateApplied: formData.dateApplied ? new Date(formData.dateApplied).toISOString() : undefined,
+      followUp: formData.followUp ? new Date(formData.followUp).toISOString() : undefined,
+    };
+    // Remove empty string or undefined fields
+    Object.keys(submitData).forEach(key => {
+      if (submitData[key] === '' || submitData[key] === undefined) {
+        delete submitData[key];
+      }
+    });
     onSubmit(submitData);
   };
 
@@ -142,14 +182,14 @@ export const JobForm: React.FC<JobFormProps> = ({ job, onSubmit, onCancel, isLoa
 
           {/* Applied Date */}
           <div>
-            <label htmlFor="appliedDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="dateApplied" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Applied Date *
             </label>
             <input
               type="date"
-              id="appliedDate"
-              name="appliedDate"
-              value={formData.appliedDate}
+              id="dateApplied"
+              name="dateApplied"
+              value={formData.dateApplied}
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
@@ -159,7 +199,7 @@ export const JobForm: React.FC<JobFormProps> = ({ job, onSubmit, onCancel, isLoa
           {/* Location */}
           <div>
             <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Location
+              Location *
             </label>
             <input
               type="text"
@@ -167,6 +207,7 @@ export const JobForm: React.FC<JobFormProps> = ({ job, onSubmit, onCancel, isLoa
               name="location"
               value={formData.location}
               onChange={handleChange}
+              required
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
               placeholder="City, State or Remote"
             />
@@ -174,17 +215,80 @@ export const JobForm: React.FC<JobFormProps> = ({ job, onSubmit, onCancel, isLoa
 
           {/* Salary */}
           <div>
-            <label htmlFor="salary" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="maxSalary" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Salary
             </label>
             <input
-              type="text"
-              id="salary"
-              name="salary"
-              value={formData.salary}
+              type="number"
+              id="maxSalary"
+              name="maxSalary"
+              value={formData.maxSalary}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="e.g., $80,000 - $100,000"
+              placeholder="e.g., 80000"
+            />
+          </div>
+
+          {/* Follow Up Date */}
+          <div>
+            <label htmlFor="followUp" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Follow Up Date
+            </label>
+            <input
+              type="date"
+              id="followUp"
+              name="followUp"
+              value={formData.followUp}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            />
+          </div>
+
+          {/* Contact Email */}
+          <div>
+            <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Contact Email
+            </label>
+            <input
+              type="email"
+              id="contactEmail"
+              name="contactEmail"
+              value={formData.contactEmail}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              placeholder="Enter contact email"
+            />
+          </div>
+
+          {/* Contact Person */}
+          <div>
+            <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Contact Person
+            </label>
+            <input
+              type="text"
+              id="contactPerson"
+              name="contactPerson"
+              value={formData.contactPerson}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              placeholder="Enter contact person"
+            />
+          </div>
+
+          {/* Contact Phone */}
+          <div>
+            <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Contact Phone
+            </label>
+            <input
+              type="text"
+              id="contactPhone"
+              name="contactPhone"
+              value={formData.contactPhone}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              placeholder="Enter contact phone"
             />
           </div>
 
@@ -200,121 +304,41 @@ export const JobForm: React.FC<JobFormProps> = ({ job, onSubmit, onCancel, isLoa
               value={formData.jobUrl}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="https://..."
+              placeholder="Enter job posting URL"
             />
           </div>
 
-          {/* Deadline */}
+          {/* Description */}
           <div>
-            <label htmlFor="deadline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Application Deadline
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Description
             </label>
-            <input
-              type="date"
-              id="deadline"
-              name="deadline"
-              value={formData.deadline}
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
               onChange={handleChange}
+              rows={2}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              placeholder="Enter job description"
             />
           </div>
 
-          {/* Follow Up Date */}
+          {/* Notes */}
           <div>
-            <label htmlFor="followUpDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Follow Up Date
+            <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Notes
             </label>
-            <input
-              type="date"
-              id="followUpDate"
-              name="followUpDate"
-              value={formData.followUpDate}
+            <textarea
+              id="notes"
+              name="notes"
+              value={formData.notes}
               onChange={handleChange}
+              rows={4}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              placeholder="Add any additional notes about this application..."
             />
           </div>
-
-          {/* Interview Date */}
-          <div>
-            <label htmlFor="interviewDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Interview Date
-            </label>
-            <input
-              type="date"
-              id="interviewDate"
-              name="interviewDate"
-              value={formData.interviewDate}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-        </div>
-
-        {/* Contact Information */}
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Contact Information</h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div>
-              <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Contact Person
-              </label>
-              <input
-                type="text"
-                id="contactPerson"
-                name="contactPerson"
-                value={formData.contactPerson}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                placeholder="Hiring Manager Name"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Contact Email
-              </label>
-              <input
-                type="email"
-                id="contactEmail"
-                name="contactEmail"
-                value={formData.contactEmail}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                placeholder="email@company.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Contact Phone
-              </label>
-              <input
-                type="tel"
-                id="contactPhone"
-                name="contactPhone"
-                value={formData.contactPhone}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                placeholder="(555) 123-4567"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Notes */}
-        <div>
-          <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Notes
-          </label>
-          <textarea
-            id="notes"
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-            placeholder="Add any additional notes about this application..."
-          />
         </div>
 
         {/* Form Actions */}

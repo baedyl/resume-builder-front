@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { JobApplication, JobStatus, CreateJobRequest } from '../../types/job';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingOverlay from '../LoadingOverlay';
 
 interface AddJobModalProps {
   job?: JobApplication;
@@ -12,21 +15,20 @@ const AddJobModal: React.FC<AddJobModalProps> = ({ job, onClose, onSubmit }) => 
     company: '',
     position: '',
     status: 'applied',
-    appliedDate: new Date().toISOString().split('T')[0],
-    deadline: '',
+    dateApplied: new Date().toISOString().split('T')[0],
     salary: '',
     location: '',
     jobUrl: '',
     description: '',
     notes: '',
     followUpDate: '',
-    interviewDate: '',
     contactPerson: '',
     contactEmail: '',
     contactPhone: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (job) {
@@ -34,15 +36,13 @@ const AddJobModal: React.FC<AddJobModalProps> = ({ job, onClose, onSubmit }) => 
         company: job.company,
         position: job.position,
         status: job.status,
-        appliedDate: job.appliedDate.split('T')[0],
-        deadline: job.deadline?.split('T')[0] || '',
+        dateApplied: job.dateApplied ? job.dateApplied.split('T')[0] : '',
         salary: job.salary || '',
         location: job.location || '',
         jobUrl: job.jobUrl || '',
         description: job.description || '',
         notes: job.notes || '',
-        followUpDate: job.followUpDate?.split('T')[0] || '',
-        interviewDate: job.interviewDate?.split('T')[0] || '',
+        followUpDate: job.followUpDate ? job.followUpDate.split('T')[0] : '',
         contactPerson: job.contactPerson || '',
         contactEmail: job.contactEmail || '',
         contactPhone: job.contactPhone || '',
@@ -69,19 +69,68 @@ const AddJobModal: React.FC<AddJobModalProps> = ({ job, onClose, onSubmit }) => 
     if (!formData.position.trim()) {
       newErrors.position = 'Position is required';
     }
-    if (!formData.appliedDate) {
-      newErrors.appliedDate = 'Applied date is required';
+    if (!formData.dateApplied) {
+      newErrors.dateApplied = 'Applied date is required';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const isValidEmail = (email: string) => !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidUrl = (url: string) => !url || /^(https?:\/\/)[^\s/$.?#].[^\s]*$/.test(url);
+  const isValidDate = (date: string) => !date || !isNaN(Date.parse(date));
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (validateForm()) {
-      onSubmit(formData);
+    // Required fields
+    if (!formData.company.trim()) {
+      toast.error('Company is required');
+      return;
+    }
+    if (!formData.position.trim()) {
+      toast.error('Position is required');
+      return;
+    }
+    if (!formData.location.trim()) {
+      toast.error('Location is required');
+      return;
+    }
+    if (!formData.dateApplied || !isValidDate(formData.dateApplied)) {
+      toast.error('Valid applied date is required');
+      return;
+    }
+    if (formData.contactEmail && !isValidEmail(formData.contactEmail)) {
+      toast.error('Invalid email');
+      return;
+    }
+    if (formData.jobUrl && !isValidUrl(formData.jobUrl)) {
+      toast.error('Invalid URL');
+      return;
+    }
+    if (formData.followUpDate && !isValidDate(formData.followUpDate)) {
+      toast.error('Invalid follow up date');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const submitData = {
+        ...formData,
+        dateApplied: formData.dateApplied ? new Date(formData.dateApplied).toISOString() : undefined,
+        followUpDate: formData.followUpDate ? new Date(formData.followUpDate).toISOString() : undefined,
+      };
+      Object.keys(submitData).forEach(key => {
+        if (submitData[key] === '' || submitData[key] === undefined) {
+          delete submitData[key];
+        }
+      });
+      await onSubmit(submitData);
+      toast.success(job ? 'Job updated successfully!' : 'Job created successfully!');
+      onClose();
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to save job application');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -168,6 +217,7 @@ const AddJobModal: React.FC<AddJobModalProps> = ({ job, onClose, onSubmit }) => 
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                 >
+                  <option value="">Select status (optional)</option>
                   {statusOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -182,15 +232,15 @@ const AddJobModal: React.FC<AddJobModalProps> = ({ job, onClose, onSubmit }) => 
                 </label>
                 <input
                   type="date"
-                  name="appliedDate"
-                  value={formData.appliedDate}
+                  name="dateApplied"
+                  value={formData.dateApplied}
                   onChange={handleChange}
                   className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white ${
-                    errors.appliedDate ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+                    errors.dateApplied ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
                   }`}
                 />
-                {errors.appliedDate && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.appliedDate}</p>
+                {errors.dateApplied && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.dateApplied}</p>
                 )}
               </div>
 
@@ -334,6 +384,7 @@ const AddJobModal: React.FC<AddJobModalProps> = ({ job, onClose, onSubmit }) => 
           </div>
         </form>
       </div>
+      {isLoading && <LoadingOverlay />}
     </div>
   );
 };

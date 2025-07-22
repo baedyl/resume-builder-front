@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { jobService } from '../services/jobService';
+import { useAuth0 } from '@auth0/auth0-react';
+import { createJobService } from '../services/jobService';
 import { JobApplication, JobStats, JobStatus } from '../types/job';
 import type { JobFilters } from '../types/job';
 import JobStatsCard from '../components/job-tracking/JobStatsCard';
@@ -9,8 +10,12 @@ import AddJobModal from '../components/job-tracking/AddJobModal';
 import FollowUpsWidget from '../components/job-tracking/FollowUpsWidget';
 import DeadlinesWidget from '../components/job-tracking/DeadlinesWidget';
 import LoadingOverlay from '../components/LoadingOverlay';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const JobTracker: React.FC = () => {
+  const { getAccessTokenSilently } = useAuth0();
+  const jobService = createJobService(getAccessTokenSilently);
   const [jobs, setJobs] = useState<JobApplication[]>([]);
   const [stats, setStats] = useState<JobStats | null>(null);
   const [filters, setFilters] = useState<JobFilters>({});
@@ -21,6 +26,7 @@ const JobTracker: React.FC = () => {
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const loadData = async () => {
@@ -47,8 +53,9 @@ const JobTracker: React.FC = () => {
       const newJob = await jobService.createJob(jobData);
       setJobs(prev => [newJob, ...prev]);
       setShowAddModal(false);
-      await loadData(); // Refresh stats
+      // await loadData(); // Refresh stats
     } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to add job');
       setError(err instanceof Error ? err.message : 'Failed to add job');
     }
   };
@@ -58,8 +65,10 @@ const JobTracker: React.FC = () => {
       const updatedJob = await jobService.updateJob(id, jobData);
       setJobs(prev => prev.map(job => job.id === id ? updatedJob : job));
       setSelectedJob(null);
-      await loadData(); // Refresh stats
+      // await loadData(); // Refresh stats
+      // toast.success('Job updated successfully!');
     } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update job');
       setError(err instanceof Error ? err.message : 'Failed to update job');
     }
   };
@@ -72,8 +81,10 @@ const JobTracker: React.FC = () => {
     try {
       await jobService.deleteJob(id);
       setJobs(prev => prev.filter(job => job.id !== id));
-      await loadData(); // Refresh stats
+      // await loadData(); // Refresh stats
+      toast.success('Job deleted successfully!');
     } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete job');
       setError(err instanceof Error ? err.message : 'Failed to delete job');
     }
   };
@@ -83,6 +94,16 @@ const JobTracker: React.FC = () => {
       setFilters(prev => ({ ...prev, status: undefined }));
     } else {
       setFilters(prev => ({ ...prev, status }));
+    }
+  };
+
+  const handleStatusUpdate = async (id: string, status: JobStatus) => {
+    try {
+      await jobService.updateJob(id, { status });
+      await loadData();
+      toast.success('Job status updated!');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update status');
     }
   };
 
@@ -148,7 +169,7 @@ const JobTracker: React.FC = () => {
               jobs={jobs}
               onEdit={setSelectedJob}
               onDelete={handleDeleteJob}
-              onStatusChange={handleUpdateJob}
+              onStatusChange={handleStatusUpdate}
             />
           </div>
 
@@ -179,6 +200,7 @@ const JobTracker: React.FC = () => {
           onSubmit={(data) => handleUpdateJob(selectedJob.id, data)}
         />
       )}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

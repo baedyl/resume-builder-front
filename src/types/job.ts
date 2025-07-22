@@ -3,7 +3,7 @@ export interface JobApplication {
   company: string;
   position: string;
   status: JobStatus;
-  appliedDate: string;
+  dateApplied: string;
   deadline?: string;
   salary?: string;
   location?: string;
@@ -56,7 +56,7 @@ export interface CreateJobRequest {
   company: string;
   position: string;
   status: JobStatus;
-  appliedDate: string;
+  dateApplied: string;
   deadline?: string;
   salary?: string;
   location?: string;

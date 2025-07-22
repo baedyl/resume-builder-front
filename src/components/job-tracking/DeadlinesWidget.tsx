@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { jobService } from '../../services/jobService';
+import { useAuth0 } from '@auth0/auth0-react';
+import { createJobService } from '../../services/jobService';
 import { JobDeadline } from '../../types/job';
 
 const DeadlinesWidget: React.FC = () => {
+  const { getAccessTokenSilently } = useAuth0();
+  const jobService = createJobService(getAccessTokenSilently);
   const [deadlines, setDeadlines] = useState<JobDeadline[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadDeadlines();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadDeadlines = async () => {

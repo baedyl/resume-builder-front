@@ -55,7 +55,7 @@ const JobStatsCard: React.FC<JobStatsCardProps> = ({ stats, onStatusClick }) => 
           {rateConfig.map((rate) => (
             <div key={rate.label} className="text-center">
               <div className={`text-3xl font-bold ${rate.color}`}>
-                {rate.value.toFixed(1)}%
+                {rate.value !== undefined && rate.value !== null ? rate.value.toFixed(1) : '0.0'}%
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {rate.label}
