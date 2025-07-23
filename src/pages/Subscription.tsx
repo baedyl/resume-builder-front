@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useSubscription } from '../contexts/SubscriptionContext';
-import { FaCrown, FaCheck, FaTimes, FaSpinner } from 'react-icons/fa';
+import { FaCrown, FaCheck, FaTimes, FaSpinner, FaCalendar, FaExclamationTriangle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { PREMIUM_FEATURES, STRIPE_PRICE_IDS } from '../constants/subscription';
+import { SubscriptionError } from '../types/subscription';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const Subscription: React.FC = () => {
   const { 
@@ -15,60 +18,66 @@ const Subscription: React.FC = () => {
   
   const [actionLoading, setActionLoading] = useState(false);
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = async (): Promise<void> => {
     try {
       setActionLoading(true);
-      await upgradeToProduction('price_1Rj0WsClD8P2gKzIoEThGR9o');
+      await upgradeToProduction(STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
     } catch (error) {
-      toast.error('Failed to upgrade subscription');
+      const message = error instanceof SubscriptionError 
+        ? error.message 
+        : 'Failed to upgrade subscription. Please try again.';
+      toast.error(message);
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleCancel = async () => {
-    if (!confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
-      return;
-    }
+  const handleCancel = async (): Promise<void> => {
+    const confirmed = window.confirm(
+      'Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.'
+    );
+    
+    if (!confirmed) return;
 
     try {
       setActionLoading(true);
       await cancelSubscription();
-      toast.success('Subscription canceled successfully');
+      toast.success('Subscription canceled successfully. You\'ll retain access until your billing period ends.');
     } catch (error) {
-      toast.error('Failed to cancel subscription');
+      const message = error instanceof SubscriptionError 
+        ? error.message 
+        : 'Failed to cancel subscription. Please try again.';
+      toast.error(message);
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleResume = async () => {
+  const handleResume = async (): Promise<void> => {
     try {
       setActionLoading(true);
       await resumeSubscription();
-      toast.success('Subscription resumed successfully');
+      toast.success('Subscription resumed successfully!');
     } catch (error) {
-      toast.error('Failed to resume subscription');
+      const message = error instanceof SubscriptionError 
+        ? error.message 
+        : 'Failed to resume subscription. Please try again.';
+      toast.error(message);
     } finally {
       setActionLoading(false);
     }
   };
 
-  const features = [
-    'AI Cover Letter Generation',
-    'Advanced Job Application Tracking',
-    'Resume Enhancement for Job Applications',
-    'Priority Customer Support',
-    'Export to Multiple Formats',
-    'Unlimited Resume Templates'
-  ];
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <LoadingOverlay />;
   }
 
   return (
@@ -84,7 +93,7 @@ const Subscription: React.FC = () => {
           </p>
         </div>
 
-        {/* Current Status */}
+        {/* Current Status Card */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -106,17 +115,27 @@ const Subscription: React.FC = () => {
             </div>
           </div>
 
+          {/* Subscription Details */}
           {subscription && isPremium && (
-            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <div className="space-y-3 text-sm">
               {subscription.subscriptionEnd && (
-                <p>
-                  Next billing date: {new Date(subscription.subscriptionEnd).toLocaleDateString()}
-                </p>
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
+                  <FaCalendar className="mr-2" />
+                  <span>Next billing date: {formatDate(subscription.subscriptionEnd)}</span>
+                </div>
               )}
+              
               {subscription.cancelAtPeriodEnd && (
-                <p className="text-orange-600 dark:text-orange-400">
-                  Your subscription will cancel at the end of the current period.
-                </p>
+                <div className="flex items-center text-orange-600 dark:text-orange-400">
+                  <FaExclamationTriangle className="mr-2" />
+                  <span>Your subscription will cancel at the end of the current period.</span>
+                </div>
+              )}
+              
+              {subscription.subscriptionStart && (
+                <div className="text-gray-500 dark:text-gray-500 text-xs">
+                  Premium since: {formatDate(subscription.subscriptionStart)}
+                </div>
               )}
             </div>
           )}
@@ -128,28 +147,30 @@ const Subscription: React.FC = () => {
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-bold text-white">Premium Plan</h3>
               <div className="text-white">
-                <span className="text-3xl font-bold">$9.99</span>
+                <span className="text-3xl font-bold">$24.99</span>
                 <span className="text-sm opacity-75">/month</span>
               </div>
             </div>
           </div>
 
           <div className="p-6">
+            {/* Features List */}
             <ul className="space-y-3 mb-6">
-              {features.map((feature, index) => (
+              {PREMIUM_FEATURES.map((feature, index) => (
                 <li key={index} className="flex items-center">
-                  <FaCheck className="w-5 h-5 text-green-500 mr-3" />
+                  <FaCheck className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
                   <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                 </li>
               ))}
             </ul>
 
+            {/* Action Buttons */}
             <div className="space-y-3">
               {!isPremium ? (
                 <button
                   onClick={handleUpgrade}
                   disabled={actionLoading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {actionLoading ? (
                     <>
@@ -205,7 +226,7 @@ const Subscription: React.FC = () => {
           </div>
         </div>
 
-        {/* Feature Comparison */}
+        {/* Feature Comparison Table */}
         <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Plan Comparison
@@ -215,9 +236,9 @@ const Subscription: React.FC = () => {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="text-left py-2 text-gray-700 dark:text-gray-300">Feature</th>
-                  <th className="text-center py-2 text-gray-700 dark:text-gray-300">Free</th>
-                  <th className="text-center py-2 text-gray-700 dark:text-gray-300">Premium</th>
+                  <th className="text-left py-3 text-gray-700 dark:text-gray-300 font-medium">Feature</th>
+                  <th className="text-center py-3 text-gray-700 dark:text-gray-300 font-medium">Free</th>
+                  <th className="text-center py-3 text-gray-700 dark:text-gray-300 font-medium">Premium</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -228,8 +249,8 @@ const Subscription: React.FC = () => {
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700">
                   <td className="py-3 text-gray-700 dark:text-gray-300">Resume Templates</td>
-                  <td className="text-center py-3">3 templates</td>
-                  <td className="text-center py-3">Unlimited</td>
+                  <td className="text-center py-3 text-gray-500">3 templates</td>
+                  <td className="text-center py-3 text-green-600 font-medium">Unlimited</td>
                 </tr>
                 <tr className="border-b border-gray-100 dark:border-gray-700">
                   <td className="py-3 text-gray-700 dark:text-gray-300">AI Cover Letter Generation</td>

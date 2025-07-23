@@ -11,6 +11,7 @@ import FollowUpsWidget from '../components/job-tracking/FollowUpsWidget';
 import DeadlinesWidget from '../components/job-tracking/DeadlinesWidget';
 import LoadingOverlay from '../components/LoadingOverlay';
 import PremiumGate from '../components/PremiumGate';
+import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -116,7 +117,7 @@ const JobTracker: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <PremiumGate 
         feature="Job Application Tracking" 
-        description="Track your job applications, manage deadlines, follow-ups, and get insights into your job search progress with detailed analytics."
+        description={FEATURE_DESCRIPTIONS.JOB_TRACKER}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}

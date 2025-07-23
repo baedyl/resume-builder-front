@@ -1,20 +1,16 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { createSubscriptionService, SubscriptionStatus } from '../services/subscriptionService';
-
-interface SubscriptionContextType {
-  subscription: SubscriptionStatus | null;
-  isLoading: boolean;
-  isPremium: boolean;
-  refreshSubscription: () => Promise<void>;
-  upgradeToProduction: (priceId: string) => Promise<void>;
-  cancelSubscription: () => Promise<void>;
-  resumeSubscription: () => Promise<void>;
-}
+import { createSubscriptionService } from '../services/subscriptionService';
+import { 
+  SubscriptionStatus, 
+  SubscriptionContextType, 
+  SubscriptionError 
+} from '../types/subscription';
+import { SUBSCRIPTION_PLANS } from '../constants/subscription';
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
 
-export const useSubscription = () => {
+export const useSubscription = (): SubscriptionContextType => {
   const context = useContext(SubscriptionContext);
   if (context === undefined) {
     throw new Error('useSubscription must be used within a SubscriptionProvider');
@@ -29,12 +25,16 @@ interface SubscriptionProviderProps {
 export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ children }) => {
   const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
 
-  const subscriptionService = createSubscriptionService(getAccessTokenSilently);
+  // Create service instance only once
+  const subscriptionService = useMemo(() => {
+    if (!isAuthenticated) return null;
+    return createSubscriptionService(getAccessTokenSilently);
+  }, [getAccessTokenSilently, isAuthenticated]);
 
-  const refreshSubscription = async () => {
-    if (!isAuthenticated) {
+  const refreshSubscription = useCallback(async (): Promise<void> => {
+    if (!isAuthenticated || !subscriptionService) {
       setSubscription(null);
       setIsLoading(false);
       return;
@@ -43,57 +43,76 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({ chil
     try {
       setIsLoading(true);
       const status = await subscriptionService.getSubscriptionStatus();
-      console.log('Subscription status received:', status);
       setSubscription(status);
     } catch (error) {
       console.error('Error fetching subscription status:', error);
-      // Set to free tier on error
+      // Set to free tier on error - service already handles fallback
       setSubscription({
-        planType: 'free',
+        planType: SUBSCRIPTION_PLANS.FREE,
         subscriptionStatus: undefined
       });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isAuthenticated, subscriptionService]);
 
-  const upgradeToProduction = async (priceId: string) => {
+  const upgradeToProduction = useCallback(async (priceId: string): Promise<void> => {
+    if (!subscriptionService) {
+      throw new SubscriptionError('Subscription service not available', 'SERVICE_UNAVAILABLE');
+    }
+
     try {
       await subscriptionService.redirectToCheckout(priceId);
     } catch (error) {
-      console.error('Error upgrading subscription:', error);
-      throw error;
+      if (error instanceof SubscriptionError) {
+        throw error;
+      }
+      throw new SubscriptionError('Failed to upgrade subscription', 'UPGRADE_ERROR', error);
     }
-  };
+  }, [subscriptionService]);
 
-  const cancelSubscription = async () => {
+  const cancelSubscription = useCallback(async (): Promise<void> => {
+    if (!subscriptionService) {
+      throw new SubscriptionError('Subscription service not available', 'SERVICE_UNAVAILABLE');
+    }
+
     try {
       await subscriptionService.cancelSubscription();
       await refreshSubscription(); // Refresh to get updated status
     } catch (error) {
-      console.error('Error canceling subscription:', error);
-      throw error;
+      if (error instanceof SubscriptionError) {
+        throw error;
+      }
+      throw new SubscriptionError('Failed to cancel subscription', 'CANCEL_ERROR', error);
     }
-  };
+  }, [subscriptionService, refreshSubscription]);
 
-  const resumeSubscription = async () => {
+  const resumeSubscription = useCallback(async (): Promise<void> => {
+    if (!subscriptionService) {
+      throw new SubscriptionError('Subscription service not available', 'SERVICE_UNAVAILABLE');
+    }
+
     try {
       await subscriptionService.resumeSubscription();
       await refreshSubscription(); // Refresh to get updated status
     } catch (error) {
-      console.error('Error resuming subscription:', error);
-      throw error;
+      if (error instanceof SubscriptionError) {
+        throw error;
+      }
+      throw new SubscriptionError('Failed to resume subscription', 'RESUME_ERROR', error);
     }
-  };
+  }, [subscriptionService, refreshSubscription]);
 
+  // Only refresh subscription when authentication status changes or user changes
   useEffect(() => {
     refreshSubscription();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user?.sub]); // Use user.sub to detect user changes
 
-  const isPremium = subscription?.planType === 'premium' && subscription?.subscriptionStatus === 'active';
-  
-  console.log('Current subscription:', subscription);
-  console.log('Is premium calculated:', isPremium);
+  // Calculate premium status using service method for consistency
+  const isPremium = useMemo(() => {
+    if (!subscription || !subscriptionService) return false;
+    return subscriptionService.isPremiumUser(subscription);
+  }, [subscription, subscriptionService]);
 
   const value: SubscriptionContextType = {
     subscription,

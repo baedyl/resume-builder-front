@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingOverlay from './LoadingOverlay';
 import PremiumGate from './PremiumGate';
+import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 
 const ResumeApplicationForm: React.FC = () => {
   const { id: resumeId } = useParams<{ id: string }>();
@@ -130,7 +131,7 @@ const ResumeApplicationForm: React.FC = () => {
       
       <PremiumGate 
         feature="AI Resume Enhancement" 
-        description="Get your resume optimized by AI for specific job descriptions. Improve your chances with ATS-friendly keywords and tailored content."
+        description={FEATURE_DESCRIPTIONS.RESUME_ENHANCEMENT}
       >
         <div className="max-w-4xl mx-auto">
           {/* Header */}

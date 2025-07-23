@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CoverLetterList from '../components/CoverLetterList';
 import PremiumGate from '../components/PremiumGate';
+import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ToastContainer, toast } from 'react-toastify';
@@ -150,7 +151,7 @@ const CoverLetters: React.FC = () => {
       <ToastContainer position="top-right" autoClose={3000} />
       <PremiumGate 
         feature="Cover Letter Generation" 
-        description="Generate AI-powered cover letters tailored to specific job descriptions and enhance your application success rate."
+        description={FEATURE_DESCRIPTIONS.COVER_LETTERS}
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
