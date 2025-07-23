@@ -170,8 +170,9 @@ const Pricing: React.FC = () => {
                     )}
                   </div>
 
-                  <button
-                    className={`w-full py-3 px-6 rounded-md font-medium transition-colors ${
+                  <Link
+                    to="/register"
+                    className={`w-full py-3 px-6 rounded-md font-medium transition-colors inline-block text-center ${
                       plan.popular
                         ? 'bg-blue-600 text-white hover:bg-blue-700'
                         : plan.price === 0
@@ -180,7 +181,7 @@ const Pricing: React.FC = () => {
                     }`}
                   >
                     {plan.cta}
-                  </button>
+                  </Link>
                 </div>
 
                 {/* Features */}
