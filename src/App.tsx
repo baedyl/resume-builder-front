@@ -16,6 +16,7 @@ import JobTracker from './pages/JobTracker';
 import Blog from './pages/Blog';
 import Article from './pages/Article';
 import Subscription from './pages/Subscription';
+import Pricing from './pages/Pricing';
 import LoadingOverlay from './components/LoadingOverlay';
 
 // Placeholder components for missing pages
@@ -143,6 +144,7 @@ function App() {
             path="/subscription"
             element={isAuthenticated ? <Subscription /> : <Navigate to="/login" />}
           />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

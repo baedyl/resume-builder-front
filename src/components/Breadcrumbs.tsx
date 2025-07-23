@@ -21,6 +21,7 @@ const Breadcrumbs: React.FC = () => {
     'about': 'About',
     'settings': 'Settings',
     'subscription': 'Subscription',
+    'pricing': 'Pricing',
     'terms': 'Terms of Service',
     'privacy': 'Privacy Policy',
     'resume': 'Resume Builder',

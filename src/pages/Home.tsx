@@ -1,7 +1,7 @@
 // pages/Home.tsx
 
 import { Link } from 'react-router-dom';
-import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaShieldAlt, FaClock, FaFileAlt } from 'react-icons/fa';
+import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaClipboardList, FaClock, FaFileAlt } from 'react-icons/fa';
 
 const Home: React.FC = () => {
   return (
@@ -130,12 +130,12 @@ const Home: React.FC = () => {
               </p>
             </div>
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center mb-6">
-                <FaShieldAlt className="text-red-600 text-xl" />
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-6">
+                <FaClipboardList className="text-purple-600 text-xl" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">ATS Optimized</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Job Tracking</h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Our resumes are designed to pass through Applicant Tracking Systems and reach human recruiters.
+                Organize your job applications, track deadlines, and follow up on opportunities to stay on top of your job search.
               </p>
             </div>
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
@@ -379,14 +379,23 @@ const Home: React.FC = () => {
           <p className="text-xl text-blue-100 mb-8">
             Join thousands of professionals who have already landed their dream jobs with our resume builder.
           </p>
-          <a
-            href="/resume"
-            className="inline-flex items-center px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 shadow-lg"
-          >
-            <FaRocket className="mr-2" />
-            Start Building Your Resume Now
-          </a>
-                               <p className="text-blue-100 mt-4 text-sm">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+            <a
+              href="/resume"
+              className="inline-flex items-center px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 shadow-lg"
+            >
+              <FaRocket className="mr-2" />
+              Start Building Your Resume Now
+            </a>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center px-8 py-4 border-2 border-white text-white text-lg font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-all duration-200 transform hover:scale-105"
+            >
+              <FaFileAlt className="mr-2" />
+              View Pricing Plans
+            </Link>
+          </div>
+          <p className="text-blue-100 text-sm">
             No credit card required • AI-powered insights • Export to PDF
           </p>
         </div>
@@ -440,13 +449,23 @@ const Home: React.FC = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/job-tracker" className="text-gray-300 hover:text-white transition-colors">
+                    Job Tracker
+                  </Link>
+                </li>
+                <li>
                   <Link to="/my-resumes" className="text-gray-300 hover:text-white transition-colors">
                     My Resumes
                   </Link>
                 </li>
                 <li>
-                  <Link to="#templates" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/my-resumes" className="text-gray-300 hover:text-white transition-colors">
                     Templates
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/pricing" className="text-gray-300 hover:text-white transition-colors">
+                    Pricing
                   </Link>
                 </li>
               </ul>
