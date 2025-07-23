@@ -32,6 +32,13 @@ const Home: React.FC = () => {
                 Start Building Free
               </a>
               <a
+                href="/pricing"
+                className="inline-flex items-center px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <FaStar className="mr-2" />
+                View Pricing
+              </a>
+              <a
                 href="#templates"
                 className="inline-flex items-center px-8 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-lg font-semibold rounded-lg hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
               >
