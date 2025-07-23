@@ -1,7 +1,7 @@
 export const metadata = {
   title: "The Ultimate Guide to ATS-Optimized Resumes",
   excerpt: "Master the art of creating resumes that pass through Applicant Tracking Systems and reach human recruiters with this comprehensive guide.",
-  author: "David Belford",
+  author: "David Zachman",
   authorTitle: "HR Technology Expert",
   date: "March 10, 2024",
   readTime: "12 min read",

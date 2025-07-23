@@ -1,7 +1,7 @@
 export const metadata = {
   title: "How to Use AI to Write a Resume That Stands Out",
   excerpt: "Discover how artificial intelligence can help you create compelling resume content that catches the attention of hiring managers and ATS systems.",
-  author: "Bello Is'haga",
+  author: "Emmanuel Dylan",
   authorTitle: "AI Career Strategist",
   date: "March 12, 2024",
   readTime: "10 min read",
