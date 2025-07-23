@@ -8,21 +8,26 @@ const Resumes: React.FC = () => {
   const navigate = useNavigate();
 
   const handleCreate = () => {
-    // Navigate to the resume builder page for creating a new resume
-    navigate('/resume-builder');
+    // Navigate to the main resume builder page for creating a new resume
+    navigate('/my-resumes');
   };
 
-  // Optionally, handle edit if you want to support inline editing here
-  // const handleEdit = (resume: ResumeFormData) => {
-  //   setSelectedResume(resume);
-  //   // Or navigate to builder with resume data
-  // };
+  // Handle edit by navigating to the main resume builder
+  const handleEdit = (resume: ResumeFormData) => {
+    // Navigate to the main resume builder with the selected resume
+    navigate('/my-resumes', { state: { selectedResume: resume } });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Resumes</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 transition-colors">My Resumes</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              View and manage all your resume documents
+            </p>
+          </div>
           <button
             onClick={handleCreate}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -30,7 +35,7 @@ const Resumes: React.FC = () => {
             Create New Resume
           </button>
         </div>
-        <ResumeList onSelectResume={setSelectedResume} />
+        <ResumeList onSelectResume={handleEdit} />
       </div>
     </div>
   );

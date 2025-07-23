@@ -3,6 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { CoverLetterFormData } from './CoverLetterForm';
 import { format } from 'date-fns';
+import LoadingOverlay from './LoadingOverlay';
 
 interface CoverLetterSummary {
   id: string;
@@ -73,7 +74,9 @@ const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetter
   };
 
   if (isLoading) {
-    return <div className="text-center py-4 text-gray-900 dark:text-gray-100 transition-colors">Loading...</div>;
+    return <div aria-live="polite" aria-busy={true}>
+      <LoadingOverlay />
+    </div>
   }
 
   if (error) {

@@ -1,5 +1,6 @@
 // pages/Home.tsx
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaShieldAlt, FaClock, FaFileAlt } from 'react-icons/fa';
 
 const Home: React.FC = () => {
@@ -429,24 +430,24 @@ const Home: React.FC = () => {
               <h4 className="text-lg font-semibold text-white mb-4">Product</h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="/resume" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/resume" className="text-gray-300 hover:text-white transition-colors">
                     Resume Builder
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/cover-letters" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/cover-letters" className="text-gray-300 hover:text-white transition-colors">
                     Cover Letters
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/my-resumes" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/my-resumes" className="text-gray-300 hover:text-white transition-colors">
                     My Resumes
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#templates" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="#templates" className="text-gray-300 hover:text-white transition-colors">
                     Templates
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -456,29 +457,29 @@ const Home: React.FC = () => {
               <h4 className="text-lg font-semibold text-white mb-4">Company</h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="/about" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/blog" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/blog" className="text-gray-300 hover:text-white transition-colors">
                     Blog
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/contact" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
                     Contact
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/privacy" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/terms" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/terms" className="text-gray-300 hover:text-white transition-colors">
                     Terms of Service
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -491,15 +492,15 @@ const Home: React.FC = () => {
                 © 2024 Resume Builder. All rights reserved.
               </p>
               <div className="flex space-x-6 mt-4 md:mt-0">
-                <a href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Privacy Policy
-                </a>
-                <a href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
+                </Link>
+                <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Terms of Service
-                </a>
-                <a href="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
+                </Link>
+                <Link to="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Cookie Policy
-                </a>
+                </Link>
               </div>
             </div>
           </div>

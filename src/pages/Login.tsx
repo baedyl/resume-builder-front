@@ -1,4 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
     const { loginWithRedirect } = useAuth0();
@@ -18,12 +19,12 @@ const Login: React.FC = () => {
                     Log in
                 </button>
                 <div className="mt-4 text-center">
-                    <a href="/forgot-password" className="text-blue-500 hover:underline text-sm sm:text-base">Forgot Password?</a>
+                    <Link to="/forgot-password" className="text-blue-500 hover:underline text-sm sm:text-base">Forgot Password?</Link>
                 </div>
                 <div className="mt-4 text-center">
                     <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 transition-colors">
                         Don't have an account?{' '}
-                        <a href="/register" className="text-blue-500 hover:underline">Sign up here</a>
+                        <Link to="/register" className="text-blue-500 hover:underline">Sign up here</Link>
                     </p>
                 </div>
             </div>

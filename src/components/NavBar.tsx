@@ -97,7 +97,12 @@ const NavBar: React.FC = () => {
                     >
                       My Resumes
                     </Link>
-
+                    <Link 
+                      to="/subscription" 
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      Subscription
+                    </Link>
                     <Link to="/settings" className="block px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                       Settings
                     </Link>
