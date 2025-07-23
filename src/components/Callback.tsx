@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
+import LoadingOverlay from './LoadingOverlay';
 
 const Callback = () => {
     const { handleRedirectCallback, isAuthenticated, error } = useAuth0();
@@ -35,7 +36,9 @@ const Callback = () => {
         return <div>Error: {error.message}</div>;
     }
 
-    return <div className="text-gray-900 dark:text-gray-100 transition-colors">Loading...</div>;
+    return <div aria-live="polite" aria-busy={true}>
+        <LoadingOverlay />
+    </div>
 };
 
 export default Callback;

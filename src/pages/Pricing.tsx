@@ -29,7 +29,7 @@ const Pricing: React.FC = () => {
     },
     {
       name: 'Professional',
-      price: billingCycle === 'monthly' ? 25 : 250,
+      price: billingCycle === 'monthly' ? 24.99 : 249.99,
       description: 'Everything you need for your job search',
       features: [
         'Unlimited resume generation',
@@ -49,7 +49,7 @@ const Pricing: React.FC = () => {
     },
     {
       name: 'Exclusive',
-      price: billingCycle === 'monthly' ? 65 : 650,
+      price: billingCycle === 'monthly' ? 64.99 : 649.99,
       description: 'Complete career success package with personal assistance',
       features: [
         'Everything in Professional',
@@ -145,9 +145,14 @@ const Pricing: React.FC = () => {
                   
                   <div className="mb-6">
                     {plan.price === 0 ? (
+                      <div>
                       <div className="text-4xl font-bold text-gray-900 dark:text-white">
                         Free
                       </div>
+                      <div className="text-gray-600 dark:text-gray-300">
+                        Forever
+                      </div>
+                    </div>
                     ) : (
                       <div>
                         <div className="text-4xl font-bold text-gray-900 dark:text-white">

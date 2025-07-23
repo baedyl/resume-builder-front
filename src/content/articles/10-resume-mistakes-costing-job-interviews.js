@@ -1,7 +1,7 @@
 export const metadata = {
   title: "10 Resume Mistakes That Are Costing You Job Interviews",
   excerpt: "Learn the most common resume mistakes that recruiters see every day and how to avoid them to increase your chances of landing interviews.",
-  author: "Sarah Johnson",
+  author: "Amelie Lobe",
   authorTitle: "Career Coach & Resume Expert",
   date: "March 15, 2024",
   readTime: "8 min read",

@@ -1,5 +1,6 @@
 // pages/Register.tsx
 import { useAuth0 } from '@auth0/auth0-react';
+import { Link } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const { loginWithRedirect } = useAuth0();
@@ -8,7 +9,7 @@ const Register: React.FC = () => {
     loginWithRedirect({ screen_hint: 'signup' } as any);
   };
 
-  console.log('Redirect URI:', window.location.origin + '/callback'); // Adjust the path if needed
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-300 px-4">
@@ -29,9 +30,9 @@ const Register: React.FC = () => {
         <div className="mt-4 text-center text-xs sm:text-sm text-gray-600 dark:text-gray-300 transition-colors">
           <p>
             By signing up, you agree to our{' '}
-            <a href="/terms" className="text-blue-500 hover:underline">Terms of Service</a>{' '}
+            <Link to="/terms" className="text-blue-500 hover:underline">Terms of Service</Link>{' '}
             and{' '}
-            <a href="/privacy" className="text-blue-500 hover:underline">Privacy Policy</a>.
+            <Link to="/privacy" className="text-blue-500 hover:underline">Privacy Policy</Link>.
           </p>
         </div>
       </div>

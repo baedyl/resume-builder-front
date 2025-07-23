@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ResumeFormData } from '../types/resume';
 import { format } from 'date-fns';
+import LoadingOverlay from './LoadingOverlay';
 
 interface Resume {
   id: string;
@@ -16,6 +18,7 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { getAccessTokenSilently } = useAuth0();
+  const navigate = useNavigate();
 
   const formatDateToYYYYMM = (dateString: string | undefined) => {
     if (!dateString) return '';
@@ -77,18 +80,24 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
         },
       });
 
-      // Format dates in the response data
+      // Format dates in the response data with proper null checks
       const formattedData = {
         ...response.data,
-        workExperience: response.data.workExperience.map((exp: any) => ({
+        workExperience: (response.data.workExperience || []).map((exp: any) => ({
           ...exp,
           startDate: formatDateToYYYYMM(exp.startDate),
           endDate: exp.endDate ? formatDateToYYYYMM(exp.endDate) : '',
         })),
-        certifications: response.data.certifications.map((cert: any) => ({
+        education: (response.data.education || []).map((edu: any) => ({
+          ...edu,
+          graduationYear: edu.graduationYear || '',
+        })),
+        certifications: (response.data.certifications || []).map((cert: any) => ({
           ...cert,
           issueDate: cert.issueDate ? formatDateToYYYYMM(cert.issueDate) : '',
         })),
+        skills: response.data.skills || [],
+        languages: response.data.languages || [],
       };
 
       onSelectResume(formattedData);
@@ -98,8 +107,14 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
     }
   };
 
+  const handleApply = (id: string) => {
+    navigate(`/resume/${id}/apply`);
+  };
+
   if (isLoading) {
-    return <div className="text-center py-4 text-gray-900 dark:text-gray-100 transition-colors">Loading...</div>;
+    return <div aria-live="polite" aria-busy={true}>
+      <LoadingOverlay />
+    </div>
   }
 
   if (error) {
@@ -125,6 +140,12 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
                 </p>
               </div>
               <div className="flex gap-2">
+                <button
+                  onClick={() => handleApply(resume.id)}
+                  className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm sm:text-base"
+                >
+                  Apply
+                </button>
                 <button
                   onClick={() => handleEdit(resume.id)}
                   className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"

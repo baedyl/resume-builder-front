@@ -1,6 +1,7 @@
 // pages/Home.tsx
-import React from 'react';
-import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaShieldAlt, FaClock, FaFileAlt } from 'react-icons/fa';
+
+import { Link } from 'react-router-dom';
+import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaClipboardList, FaClock, FaFileAlt } from 'react-icons/fa';
 
 const Home: React.FC = () => {
   return (
@@ -136,12 +137,12 @@ const Home: React.FC = () => {
               </p>
             </div>
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center mb-6">
-                <FaShieldAlt className="text-red-600 text-xl" />
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-6">
+                <FaClipboardList className="text-purple-600 text-xl" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">ATS Optimized</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Job Tracking</h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Our resumes are designed to pass through Applicant Tracking Systems and reach human recruiters.
+                Organize your job applications, track deadlines, and follow up on opportunities to stay on top of your job search.
               </p>
             </div>
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
@@ -318,11 +319,11 @@ const Home: React.FC = () => {
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                  S
+                  A
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Sarah Johnson</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Software Engineer</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Amelie Lobe</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Product Manager</div>
                 </div>
               </div>
             </div>
@@ -341,11 +342,11 @@ const Home: React.FC = () => {
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                  M
+                  B
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Mike Chen</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Marketing Manager</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Bello Is'haga</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">SEO Specialist</div>
                 </div>
               </div>
             </div>
@@ -367,8 +368,8 @@ const Home: React.FC = () => {
                   E
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Emily Rodriguez</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Product Manager</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Emily Belford</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Software Engineer</div>
                 </div>
               </div>
             </div>
@@ -385,14 +386,23 @@ const Home: React.FC = () => {
           <p className="text-xl text-blue-100 mb-8">
             Join thousands of professionals who have already landed their dream jobs with our resume builder.
           </p>
-          <a
-            href="/resume"
-            className="inline-flex items-center px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 shadow-lg"
-          >
-            <FaRocket className="mr-2" />
-            Start Building Your Resume Now
-          </a>
-                               <p className="text-blue-100 mt-4 text-sm">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+            <a
+              href="/resume"
+              className="inline-flex items-center px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 shadow-lg"
+            >
+              <FaRocket className="mr-2" />
+              Start Building Your Resume Now
+            </a>
+            <Link
+              to="/pricing"
+              className="inline-flex items-center px-8 py-4 border-2 border-white text-white text-lg font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-all duration-200 transform hover:scale-105"
+            >
+              <FaFileAlt className="mr-2" />
+              View Pricing Plans
+            </Link>
+          </div>
+          <p className="text-blue-100 text-sm">
             No credit card required • AI-powered insights • Export to PDF
           </p>
         </div>
@@ -436,24 +446,34 @@ const Home: React.FC = () => {
               <h4 className="text-lg font-semibold text-white mb-4">Product</h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="/resume" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/resume" className="text-gray-300 hover:text-white transition-colors">
                     Resume Builder
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/cover-letters" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/cover-letters" className="text-gray-300 hover:text-white transition-colors">
                     Cover Letters
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/my-resumes" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/job-tracker" className="text-gray-300 hover:text-white transition-colors">
+                    Job Tracker
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/my-resumes" className="text-gray-300 hover:text-white transition-colors">
                     My Resumes
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#templates" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/my-resumes" className="text-gray-300 hover:text-white transition-colors">
                     Templates
-                  </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/pricing" className="text-gray-300 hover:text-white transition-colors">
+                    Pricing
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -463,29 +483,29 @@ const Home: React.FC = () => {
               <h4 className="text-lg font-semibold text-white mb-4">Company</h4>
               <ul className="space-y-3">
                 <li>
-                  <a href="/about" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/blog" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/blog" className="text-gray-300 hover:text-white transition-colors">
                     Blog
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/contact" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
                     Contact
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/privacy" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/terms" className="text-gray-300 hover:text-white transition-colors">
+                  <Link to="/terms" className="text-gray-300 hover:text-white transition-colors">
                     Terms of Service
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -498,15 +518,15 @@ const Home: React.FC = () => {
                 © 2024 Resume Builder. All rights reserved.
               </p>
               <div className="flex space-x-6 mt-4 md:mt-0">
-                <a href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
+                <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Privacy Policy
-                </a>
-                <a href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
+                </Link>
+                <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Terms of Service
-                </a>
-                <a href="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
+                </Link>
+                <Link to="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Cookie Policy
-                </a>
+                </Link>
               </div>
             </div>
           </div>

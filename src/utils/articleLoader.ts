@@ -24,13 +24,13 @@ const articleFiles = import.meta.glob('../content/articles/*.js', { eager: true 
 export function getAllArticles(): ArticleData[] {
   const articles: ArticleData[] = [];
 
-  console.log('Available article files:', Object.keys(articleFiles));
+
 
   for (const path in articleFiles) {
     const file = articleFiles[path] as { metadata: ArticleMetadata; content: string };
     const slug = path.replace('../content/articles/', '').replace('.js', '');
     
-    console.log(`Processing article: ${slug}`);
+
     
     try {
       articles.push({
@@ -39,13 +39,13 @@ export function getAllArticles(): ArticleData[] {
         content: file.content
       });
       
-      console.log(`Successfully loaded article: ${slug}`);
+
     } catch (error) {
       console.error(`Error loading article ${slug}:`, error);
     }
   }
 
-  console.log(`Total articles found: ${articles.length}`);
+
   return articles.sort((a, b) => new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime());
 }
 
