@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaBars, FaSun, FaMoon } from 'react-icons/fa';
@@ -7,6 +7,7 @@ const NavBar: React.FC = () => {
   const { isAuthenticated, logout, user } = useAuth0();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') === 'dark' ||
@@ -15,6 +16,29 @@ const NavBar: React.FC = () => {
     return false;
   });
   const location = useLocation();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    if (isUserDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserDropdownOpen]);
+
+  // Close dropdown when navigating
+  useEffect(() => {
+    setIsUserDropdownOpen(false);
+    setIsMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout({ returnTo: window.location.origin } as any); // Adjust logout logic as needed
@@ -40,6 +64,14 @@ const NavBar: React.FC = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [isDarkMode]);
+
+  // Get user initials for fallback avatar
+  const getUserInitials = (name?: string) => {
+    if (!name) return 'U';
+    const names = name.trim().split(' ');
+    if (names.length === 1) return names[0].charAt(0).toUpperCase();
+    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+  };
 
   const mainLinks = [
     { label: 'Resumes', to: '/my-resumes' },
@@ -72,15 +104,24 @@ const NavBar: React.FC = () => {
             ))}
             {/* User/Profile Dropdown */}
             {isAuthenticated ? (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
                   className="flex items-center"
+                  title="User Profile"
                 >
                   {user?.picture ? (
-                    <img src={user.picture} alt="User" className="h-8 w-8 rounded-full" />
+                    <img 
+                      src={user.picture} 
+                      alt="User Profile" 
+                      className="h-8 w-8 rounded-full object-cover border-2 border-transparent hover:border-blue-500 transition-colors" 
+                    />
                   ) : (
-                    <span className="text-gray-700">{user?.name || 'User'}</span>
+                    <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center hover:from-blue-600 hover:to-purple-700 transition-colors shadow-sm">
+                      <span className="text-white text-sm font-semibold">
+                        {getUserInitials(user?.name || user?.email)}
+                      </span>
+                    </div>
                   )}
                 </button>
                 {isUserDropdownOpen && (

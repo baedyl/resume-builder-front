@@ -4,7 +4,7 @@ import { createJobService } from '../../services/jobService';
 import { JobFollowUp } from '../../types/job';
 
 const FollowUpsWidget: React.FC = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, user } = useAuth0();
   const jobService = createJobService(getAccessTokenSilently);
   const [followUps, setFollowUps] = useState<JobFollowUp[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ const FollowUpsWidget: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await jobService.getFollowUps();
+      const data = await jobService.getFollowUps(user?.sub);
       setFollowUps(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load follow-ups');

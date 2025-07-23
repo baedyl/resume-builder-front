@@ -4,7 +4,7 @@ import { createJobService } from '../../services/jobService';
 import { JobDeadline } from '../../types/job';
 
 const DeadlinesWidget: React.FC = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, user } = useAuth0();
   const jobService = createJobService(getAccessTokenSilently);
   const [deadlines, setDeadlines] = useState<JobDeadline[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ const DeadlinesWidget: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await jobService.getDeadlines();
+      const data = await jobService.getDeadlines(user?.sub);
       setDeadlines(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load deadlines');

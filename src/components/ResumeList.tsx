@@ -80,18 +80,24 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
         },
       });
 
-      // Format dates in the response data
+      // Format dates in the response data with proper null checks
       const formattedData = {
         ...response.data,
-        workExperience: response.data.workExperience.map((exp: any) => ({
+        workExperience: (response.data.workExperience || []).map((exp: any) => ({
           ...exp,
           startDate: formatDateToYYYYMM(exp.startDate),
           endDate: exp.endDate ? formatDateToYYYYMM(exp.endDate) : '',
         })),
-        certifications: response.data.certifications.map((cert: any) => ({
+        education: (response.data.education || []).map((edu: any) => ({
+          ...edu,
+          graduationYear: edu.graduationYear || '',
+        })),
+        certifications: (response.data.certifications || []).map((cert: any) => ({
           ...cert,
           issueDate: cert.issueDate ? formatDateToYYYYMM(cert.issueDate) : '',
         })),
+        skills: response.data.skills || [],
+        languages: response.data.languages || [],
       };
 
       onSelectResume(formattedData);

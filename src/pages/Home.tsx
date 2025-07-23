@@ -312,11 +312,11 @@ const Home: React.FC = () => {
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                  S
+                  A
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Sarah Johnson</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Software Engineer</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Amelie Lobe</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Product Manager</div>
                 </div>
               </div>
             </div>
@@ -335,11 +335,11 @@ const Home: React.FC = () => {
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                  M
+                  B
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Mike Chen</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Marketing Manager</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Bello Is'haga</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">SEO Specialist</div>
                 </div>
               </div>
             </div>
@@ -361,8 +361,8 @@ const Home: React.FC = () => {
                   E
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Emily Rodriguez</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Product Manager</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Emily Belford</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Software Engineer</div>
                 </div>
               </div>
             </div>
