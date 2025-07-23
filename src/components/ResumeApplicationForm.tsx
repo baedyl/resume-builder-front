@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
@@ -58,8 +58,10 @@ const ResumeApplicationForm: React.FC = () => {
       // Navigate to resume builder with enhanced data
       toast.success('Resume enhanced successfully! Redirecting to builder...');
       
-      // Extract enhanced data from response and format dates
+      // Extract enhanced data from response - data is nested under 'enhanced'
       const enhancedData = response.data.enhanced;
+      
+
       
       // Format dates for form inputs (YYYY-MM format)
       const formatDateToYYYYMM = (dateString: string | undefined | null) => {
@@ -75,30 +77,62 @@ const ResumeApplicationForm: React.FC = () => {
 
       // Format the enhanced data for the resume form
       const formattedData = {
-        ...enhancedData,
+        // Personal Information
+        fullName: enhancedData.fullName || '',
+        email: enhancedData.email || '',
+        phone: enhancedData.phone || '',
+        address: enhancedData.address || '',
+        linkedIn: enhancedData.linkedIn || '',
+        website: enhancedData.website || '',
+        
+        // Professional Summary
+        summary: enhancedData.summary || '',
+        
+        // Work Experience
         workExperience: enhancedData.workExperience?.map((exp: any, index: number) => ({
-          ...exp,
-          id: exp.id || Date.now() + index, // Add temporary ID if missing
+          id: exp.id || Date.now() + index,
+          jobTitle: exp.jobTitle || '',
+          company: exp.company || '',
+          location: exp.location || '',
           startDate: formatDateToYYYYMM(exp.startDate),
           endDate: formatDateToYYYYMM(exp.endDate),
+          description: exp.description || '',
+          responsibilities: exp.responsibilities || []
         })) || [],
+        
+        // Education
         education: enhancedData.education?.map((edu: any, index: number) => ({
-          ...edu,
-          id: edu.id || Date.now() + index + 1000, // Add temporary ID if missing
-          graduationYear: edu.graduationYear || '',
+          id: edu.id || Date.now() + index + 1000,
+          institution: edu.institution || '',
+          degree: edu.degree || '',
+          major: edu.major || '', // fieldOfStudy in response is called major
+          graduationYear: edu.graduationYear?.toString() || '',
+          gpa: edu.gpa || '',
+          description: edu.description || ''
         })) || [],
+        
+        // Certifications
         certifications: enhancedData.certifications?.map((cert: any, index: number) => ({
-          ...cert,
-          id: cert.id || Date.now() + index + 2000, // Add temporary ID if missing
+          id: cert.id || Date.now() + index + 2000,
+          name: cert.name || '',
+          issuer: cert.issuer || '', // issuingOrganization in response is called issuer
           issueDate: formatDateToYYYYMM(cert.issueDate),
+          expirationDate: formatDateToYYYYMM(cert.expirationDate),
+          credentialId: cert.credentialId || ''
         })) || [],
+        
+        // Skills - already in correct format
         skills: enhancedData.skills?.map((skill: any, index: number) => ({
-          ...skill,
-          id: skill.id || Date.now() + index + 3000, // Add temporary ID if missing
+          id: skill.id || Date.now() + index + 3000,
+          name: skill.name || '',
+          category: skill.category || 'Technical'
         })) || [],
+        
+        // Languages - already in correct format
         languages: enhancedData.languages?.map((lang: any, index: number) => ({
-          ...lang,
-          id: lang.id || Date.now() + index + 4000, // Add temporary ID if missing
+          id: lang.id || Date.now() + index + 4000,
+          name: lang.name || '',
+          proficiency: lang.proficiency || 'Fluent'
         })) || []
       };
       

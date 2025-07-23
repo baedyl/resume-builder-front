@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useParams, Link } from 'react-router-dom';
 import { FaArrowLeft, FaCalendar, FaUser, FaClock, FaBookmark, FaShare, FaStar } from 'react-icons/fa';
 import { getArticleBySlug } from '../utils/articleLoader';

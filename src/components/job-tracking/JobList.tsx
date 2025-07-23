@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { JobApplication, JobStatus } from '../../types/job';
 
 interface JobListProps {

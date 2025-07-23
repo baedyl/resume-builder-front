@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CoverLetterList from '../components/CoverLetterList';
 import PremiumGate from '../components/PremiumGate';
 import { FEATURE_DESCRIPTIONS } from '../constants/subscription';

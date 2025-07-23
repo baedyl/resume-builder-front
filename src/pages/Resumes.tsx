@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ResumeList from '../components/ResumeList';
 import { ResumeFormData } from '../types/resume';
 import { useNavigate } from 'react-router-dom';

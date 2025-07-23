@@ -9,7 +9,7 @@ const Register: React.FC = () => {
     loginWithRedirect({ screen_hint: 'signup' } as any);
   };
 
-  console.log('Redirect URI:', window.location.origin + '/callback'); // Adjust the path if needed
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-300 px-4">

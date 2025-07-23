@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { JobStats, JobStatus } from '../../types/job';
 
 interface JobStatsCardProps {

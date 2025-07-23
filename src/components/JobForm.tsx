@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { JobApplication, CreateJobRequest, UpdateJobRequest, JobStatus } from '../types/job';
 
 interface JobFormProps {

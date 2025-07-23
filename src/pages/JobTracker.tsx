@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { createJobService } from '../services/jobService';
 import { JobApplication, JobStats, JobStatus } from '../types/job';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaCalendar, FaUser, FaArrowRight, FaBookmark, FaShare } from 'react-icons/fa';
 import { getAllArticles } from '../utils/articleLoader';
@@ -35,7 +35,7 @@ const Blog: React.FC = () => {
   }));
 
   // Reset displayed count when filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setDisplayedCount(10);
   }, [searchTerm, selectedCategory]);
 

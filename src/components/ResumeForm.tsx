@@ -399,12 +399,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   };
 
   const onSubmit: SubmitHandler<ResumeFormData> = async (data) => {
-    console.log('onSubmit called with data:', data);
-    console.log('Current preview state:', preview);
-    console.log('Current resume ID:', currentResumeId);
+    
 
     if (!preview) {
-      console.log('Creating preview with data');
+      
       const filteredData: ResumeFormData = {
         ...data,
         id: currentResumeId || undefined,
@@ -448,7 +446,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             issueDate: cert.issueDate?.trim() || ''
           })),
       };
-      console.log('Setting preview with filtered data:', filteredData);
+
       setPreview(filteredData);
       return;
     }
@@ -502,7 +500,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           })),
       };
 
-      console.log('Sending data to server:', formattedData);
+      
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId || 'new'}/pdf`, {
         method: 'POST',
@@ -576,14 +574,14 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   // Add useEffect to monitor preview state changes
   useEffect(() => {
-    console.log('Preview state changed:', preview);
+    
   }, [preview]);
 
   const handlePreviewClick = async () => {
-    console.log('Preview button clicked');
+    
     try {
       const formData = getValues();
-      console.log('Form data:', formData);
+
 
       if (!preview) {
         const filteredData: ResumeFormData = {
@@ -629,7 +627,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               issueDate: cert.issueDate?.trim() || ''
             })),
         };
-        console.log('Setting preview with filtered data:', filteredData);
+
         setPreview(filteredData);
       } else {
         await onSubmit(formData);
@@ -676,12 +674,14 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         }
       );
 
-      console.log('Response:', response);
+
 
       // Try to parse JSON from the response
       try {
-        let extracted = response.data.extracted;
+        let extracted = response.data.extracted || response.data;
         let parsedData;
+
+
 
         if (typeof extracted === 'string') {
           // Extract JSON from the response (it might be wrapped in markdown)
@@ -698,10 +698,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           // Already parsed JSON
           parsedData = extracted;
         } else {
-          throw new Error('Unexpected format for extracted data');
+          throw new Error(`Unexpected format for extracted data. Type: ${typeof extracted}, Value: ${JSON.stringify(extracted)}`);
         }
 
-        console.log('Parsed data:', parsedData);
+
 
         // Transform the data to match our form structure
         const resumeData: ResumeFormData = {
@@ -768,7 +768,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           )
         };
 
-        console.log('Transformed resume data:', cleanResumeData);
+
 
         // Load the parsed data into the form
         loadResume(cleanResumeData);

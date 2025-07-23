@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useSubscription } from '../contexts/SubscriptionContext';
 import { FaCrown, FaLock, FaSpinner } from 'react-icons/fa';
 import { STRIPE_PRICE_IDS } from '../constants/subscription';

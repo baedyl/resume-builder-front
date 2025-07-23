@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { ResumeFormData } from '../types/resume';
 
 interface ResumeTemplateProps {

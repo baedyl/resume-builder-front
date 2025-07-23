@@ -92,7 +92,7 @@ function App() {
     </div>
   }
 
-  console.log('isAuthenticated:', isAuthenticated);
+  
 
   return (
     <Router>

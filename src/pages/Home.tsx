@@ -1,5 +1,5 @@
 // pages/Home.tsx
-import React from 'react';
+
 import { Link } from 'react-router-dom';
 import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaShieldAlt, FaClock, FaFileAlt } from 'react-icons/fa';
 
