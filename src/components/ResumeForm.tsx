@@ -339,11 +339,19 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   // Function to load resume data
   const loadResume = (resumeData: ResumeFormData) => {
+    // Clear existing field arrays first
+    setValue('workExperience', []);
+    setValue('education', []);
+    setValue('languages', []);
+    setValue('certifications', []);
+    
     // Format dates in work experience
     const formattedWorkExperience = resumeData.workExperience.map(exp => ({
       ...exp,
       startDate: formatDateToYYYYMM(exp.startDate),
       endDate: exp.endDate ? formatDateToYYYYMM(exp.endDate) : '',
+      isCurrent: exp.isCurrent || (!exp.endDate || exp.endDate === ''),
+      location: exp.location || '',
     }));
 
     // Format dates in certifications
@@ -722,8 +730,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           workExperience: parsedData.work_experience?.map((exp: any) => ({
             company: cleanValue(exp.company),
             jobTitle: cleanValue(exp.position || exp.jobTitle),
-            startDate: cleanValue(exp.start_date || exp.startDate),
-            endDate: cleanValue(exp.end_date || exp.endDate),
+            startDate: formatDateToYYYYMM(cleanValue(exp.start_date || exp.startDate)),
+            endDate: formatDateToYYYYMM(cleanValue(exp.end_date || exp.endDate)),
+            isCurrent: !exp.end_date && !exp.endDate,
+            location: cleanValue(exp.location || ''),
             description: exp.responsibilities ? exp.responsibilities.join('\n') : cleanValue(exp.description)
           })) || [],
           education: parsedData.education?.map((edu: any) => ({
