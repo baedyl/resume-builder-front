@@ -59,15 +59,22 @@ const LanguagesSection: React.FC<Props> = ({ register, errors, languageFields, a
             </div>
             <div className="space-y-2">
               <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Proficiency</label>
-              <select
+              <input
                 {...register(`languages.${index}.proficiency`)}
+                list={`proficiency-options-${index}`}
                 className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.languages?.[index]?.proficiency ? 'border-red-500' : 'border-gray-300'}`}
-              >
-                <option value="">Select Proficiency</option>
+                placeholder="Enter or select proficiency level"
+              />
+              <datalist id={`proficiency-options-${index}`}>
+                <option value="Native">Native</option>
                 <option value="Fluent">Fluent</option>
+                <option value="Advanced">Advanced</option>
                 <option value="Intermediate">Intermediate</option>
                 <option value="Basic">Basic</option>
-              </select>
+                <option value="Beginner">Beginner</option>
+                <option value="Conversational">Conversational</option>
+                <option value="Professional">Professional</option>
+              </datalist>
               {errors.languages?.[index]?.proficiency && (
                 <p className="mt-1 text-xs sm:text-sm text-red-600">{errors.languages[index].proficiency.message}</p>
               )}
