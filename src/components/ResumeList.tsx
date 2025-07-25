@@ -21,10 +21,12 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
   const navigate = useNavigate();
 
   const formatDateToYYYYMM = (dateString: string | undefined) => {
-    if (!dateString) return '';
+    if (!dateString || !dateString.trim()) return '';
     try {
+      // Handle ISO date format from API
       const date = new Date(dateString);
-      return date.toISOString().slice(0, 7);
+      if (isNaN(date.getTime())) return '';
+      return date.toISOString().slice(0, 7); // Return YYYY-MM
     } catch (error) {
       console.error('Error formatting date:', error);
       return '';
@@ -83,21 +85,38 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
       // Format dates in the response data with proper null checks
       const formattedData = {
         ...response.data,
-        workExperience: (response.data.workExperience || []).map((exp: any) => ({
-          ...exp,
+        // Map workExperiences (API) to workExperience (form)
+        workExperience: (response.data.workExperiences || []).map((exp: any) => ({
+          company: exp.company || '',
+          jobTitle: exp.jobTitle || '',
+          location: exp.location || '',
           startDate: formatDateToYYYYMM(exp.startDate),
           endDate: exp.endDate ? formatDateToYYYYMM(exp.endDate) : '',
+          description: exp.description || '',
+          isCurrent: !exp.endDate || exp.endDate === '',
         })),
-        education: (response.data.education || []).map((edu: any) => ({
-          ...edu,
-          graduationYear: edu.graduationYear || '',
+        // Map educations (API) to education (form)
+        education: (response.data.educations || []).map((edu: any) => ({
+          institution: edu.institution || '',
+          degree: edu.degree || '',
+          major: edu.major || '',
+          graduationYear: edu.graduationYear || undefined,
+          gpa: edu.gpa || undefined,
+          description: edu.description || '',
         })),
+        // Map certifications (already correct field name)
         certifications: (response.data.certifications || []).map((cert: any) => ({
-          ...cert,
+          name: cert.name || '',
+          issuer: cert.issuer || '',
           issueDate: cert.issueDate ? formatDateToYYYYMM(cert.issueDate) : '',
         })),
+        // Map languages (already correct field name)
+        languages: (response.data.languages || []).map((lang: any) => ({
+          name: lang.name || '',
+          proficiency: lang.proficiency || '',
+        })),
+        // Map skills (already correct field name)
         skills: response.data.skills || [],
-        languages: response.data.languages || [],
       };
 
       onSelectResume(formattedData);
