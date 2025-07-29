@@ -58,9 +58,16 @@ class SubscriptionService {
           'Authorization': `Bearer ${token}`
         }
       });
+      
+      // Log successful response for debugging
+      console.log('API Response:', response.data);
+      
       return response.data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Request failed';
+      console.error('API Error:', error);
+      console.error('Error Response:', error.response?.data);
+      
+      const message = error.response?.data?.message || error.response?.data?.error || error.message || 'Request failed';
       const code = error.response?.data?.code || error.code;
       throw new SubscriptionError(message, code, error.response?.data);
     }
@@ -73,30 +80,54 @@ class SubscriptionService {
         SUBSCRIPTION_ENDPOINTS.CREATE_CHECKOUT,
         { priceId }
       );
-      return response.sessionId;
+      
+      // Handle both direct sessionId and nested response structures
+      const sessionId = response.sessionId || (response as any).sessionId;
+      
+      if (!sessionId) {
+        throw new SubscriptionError('No session ID received from checkout creation', 'NO_SESSION_ID');
+      }
+      
+      return sessionId;
     } catch (error) {
+      if (error instanceof SubscriptionError) {
+        throw error;
+      }
       throw new SubscriptionError('Failed to create checkout session', 'CHECKOUT_ERROR', error);
     }
   }
 
   async redirectToCheckout(priceId: string): Promise<void> {
     try {
+      console.log('Creating checkout session for price ID:', priceId);
       const sessionId = await this.createCheckoutSession(priceId);
+      console.log('Checkout session created successfully:', sessionId);
       
       // Dynamically import Stripe to reduce bundle size
       const { loadStripe } = await import('@stripe/stripe-js');
+      
+      if (!this.config.stripePublicKey) {
+        throw new SubscriptionError('Stripe public key is not configured', 'STRIPE_CONFIG_ERROR');
+      }
+      
+      console.log('Loading Stripe with public key:', this.config.stripePublicKey);
       const stripe = await loadStripe(this.config.stripePublicKey);
       
       if (!stripe) {
         throw new SubscriptionError('Failed to load Stripe', 'STRIPE_LOAD_ERROR');
       }
       
+      console.log('Redirecting to Stripe checkout with session ID:', sessionId);
       const { error } = await stripe.redirectToCheckout({ sessionId });
       
       if (error) {
+        console.error('Stripe redirect error:', error);
         throw new SubscriptionError(error.message || 'Checkout redirect failed', 'STRIPE_REDIRECT_ERROR');
       }
+      
+      console.log('Successfully redirected to Stripe checkout');
     } catch (error) {
+      console.error('Error in redirectToCheckout:', error);
       if (error instanceof SubscriptionError) {
         throw error;
       }

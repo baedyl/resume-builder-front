@@ -1031,10 +1031,19 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               <button
                 onClick={async () => {
                   try {
+                    console.log('Starting upgrade process from ResumeForm...');
                     await upgradeToProduction(STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
+                    console.log('Upgrade process completed successfully');
                   } catch (error) {
                     console.error('Error upgrading to premium:', error);
-                    toast.error('Failed to upgrade subscription. Please try again.');
+                    
+                    let message = 'Failed to upgrade subscription. Please try again.';
+                    
+                    if (error instanceof Error) {
+                      message = error.message;
+                    }
+                    
+                    toast.error(message);
                   }
                 }}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"

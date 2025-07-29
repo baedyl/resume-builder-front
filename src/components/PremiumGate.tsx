@@ -25,13 +25,19 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
   const handleUpgrade = async (): Promise<void> => {
     try {
       setUpgrading(true);
+      console.log('Starting upgrade process...');
       await upgradeToProduction(STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
+      console.log('Upgrade process completed successfully');
     } catch (error) {
       console.error('Error upgrading to premium:', error);
       
-      const message = error instanceof SubscriptionError 
-        ? error.message 
-        : 'Failed to upgrade subscription. Please try again.';
+      let message = 'Failed to upgrade subscription. Please try again.';
+      
+      if (error instanceof SubscriptionError) {
+        message = error.message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
       
       toast.error(message);
     } finally {
