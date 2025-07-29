@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSubscription } from '../contexts/SubscriptionContext';
 import { FaCrown, FaLock, FaSpinner } from 'react-icons/fa';
-import { STRIPE_PRICE_IDS, getPriceDisplayText, isPromotionalPricingActive } from '../constants/subscription';
+import { STRIPE_PRICE_IDS, getPriceDisplayText, isPromotionalPricingActive, getPriceIdInfo, getDebugInfo } from '../constants/subscription';
 import { SubscriptionError } from '../types/subscription';
 import { toast } from 'react-toastify';
 import LoadingOverlay from './LoadingOverlay';
@@ -25,7 +25,12 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
   const handleUpgrade = async (): Promise<void> => {
     try {
       setUpgrading(true);
-      console.log('Starting upgrade process...');
+      
+      // Log price ID information for debugging
+      const priceInfo = getPriceIdInfo();
+      console.log('Price ID info:', priceInfo);
+      console.log('Starting upgrade process with price ID:', STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
+      
       await upgradeToProduction(STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
       console.log('Upgrade process completed successfully');
     } catch (error) {
@@ -54,6 +59,10 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
   if (isPremium) {
     return <>{children}</>;
   }
+
+  // Debug information (remove this in production)
+  const debugInfo = getDebugInfo();
+  console.log('PremiumGate Debug Info:', debugInfo);
 
   // Premium gate for non-premium users
   return (

@@ -66,6 +66,17 @@ class SubscriptionService {
     } catch (error: any) {
       console.error('API Error:', error);
       console.error('Error Response:', error.response?.data);
+      console.error('Error Status:', error.response?.status);
+      console.error('Error Headers:', error.response?.headers);
+      
+      // Log the full error object for debugging
+      console.error('Full error object:', {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        config: error.config
+      });
       
       const message = error.response?.data?.message || error.response?.data?.error || error.message || 'Request failed';
       const code = error.response?.data?.code || error.code;
@@ -75,30 +86,63 @@ class SubscriptionService {
 
   async createCheckoutSession(priceId: string): Promise<string> {
     try {
+      console.log('Creating checkout session with price ID:', priceId);
+      console.log('API endpoint:', SUBSCRIPTION_ENDPOINTS.CREATE_CHECKOUT);
+      
+      const requestData = { priceId };
+      console.log('Request data:', requestData);
+      
       const response = await this.makeAuthenticatedRequest<{ sessionId: string }>(
         'POST',
         SUBSCRIPTION_ENDPOINTS.CREATE_CHECKOUT,
-        { priceId }
+        requestData
       );
+      
+      console.log('Checkout session response:', response);
       
       // Handle both direct sessionId and nested response structures
       const sessionId = response.sessionId || (response as any).sessionId;
       
       if (!sessionId) {
+        console.error('No session ID in response:', response);
         throw new SubscriptionError('No session ID received from checkout creation', 'NO_SESSION_ID');
       }
       
+      console.log('Successfully extracted session ID:', sessionId);
       return sessionId;
     } catch (error) {
+      console.error('Error creating checkout session:', error);
+      
       if (error instanceof SubscriptionError) {
         throw error;
       }
+      
+      // Provide more specific error messages based on the error
+      if (error.message?.includes('Invalid Stripe request')) {
+        throw new SubscriptionError(
+          `Invalid Stripe request. Please verify that price ID '${priceId}' exists in your Stripe account and is configured correctly.`,
+          'INVALID_STRIPE_REQUEST'
+        );
+      }
+      
       throw new SubscriptionError('Failed to create checkout session', 'CHECKOUT_ERROR', error);
     }
   }
 
   async redirectToCheckout(priceId: string): Promise<void> {
     try {
+      // Validate price ID format
+      if (!priceId || typeof priceId !== 'string') {
+        throw new SubscriptionError('Invalid price ID provided', 'INVALID_PRICE_ID');
+      }
+      
+      if (!priceId.startsWith('price_')) {
+        throw new SubscriptionError(
+          `Invalid price ID format: ${priceId}. Price IDs should start with 'price_'`,
+          'INVALID_PRICE_ID_FORMAT'
+        );
+      }
+      
       console.log('Creating checkout session for price ID:', priceId);
       const sessionId = await this.createCheckoutSession(priceId);
       console.log('Checkout session created successfully:', sessionId);

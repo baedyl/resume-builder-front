@@ -16,6 +16,35 @@ export const STRIPE_PRICE_IDS = {
   PREMIUM_MONTHLY: 'price_1RqG24BfzIcY9By9KVsHQFwt'
 } as const;
 
+// Helper function to validate price ID
+export const validatePriceId = (priceId: string): boolean => {
+  return priceId && typeof priceId === 'string' && priceId.startsWith('price_');
+};
+
+// Helper function to get price ID info for debugging
+export const getPriceIdInfo = (): { priceId: string; isValid: boolean } => {
+  const priceId = STRIPE_PRICE_IDS.PREMIUM_MONTHLY;
+  return {
+    priceId,
+    isValid: validatePriceId(priceId)
+  };
+};
+
+// Helper function to get debugging information
+export const getDebugInfo = () => {
+  return {
+    priceId: STRIPE_PRICE_IDS.PREMIUM_MONTHLY,
+    priceIdValid: validatePriceId(STRIPE_PRICE_IDS.PREMIUM_MONTHLY),
+    apiUrl: import.meta.env.VITE_API_URL,
+    stripePublicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY ? 'Configured' : 'Not configured',
+    promotionalPricing: {
+      isActive: isPromotionalPricingActive(),
+      promotionalPrice: PROMOTIONAL_PRICING.PROMOTIONAL_PRICE,
+      regularPrice: PROMOTIONAL_PRICING.REGULAR_PRICE
+    }
+  };
+};
+
 // Promotional pricing configuration
 export const PROMOTIONAL_PRICING = {
   START_DATE: new Date('2024-01-01'), // Set to a past date to enable promotion
