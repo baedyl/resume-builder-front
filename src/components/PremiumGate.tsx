@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSubscription } from '../contexts/SubscriptionContext';
 import { FaCrown, FaLock, FaSpinner } from 'react-icons/fa';
-import { STRIPE_PRICE_IDS, getPriceDisplayText, isPromotionalPricingActive, getPriceIdInfo, getDebugInfo } from '../constants/subscription';
+import { STRIPE_PRICE_IDS, getPriceDisplayText, isPromotionalPricingActive, getPriceIdInfo, getDebugInfo, debugPriceId } from '../constants/subscription';
 import { SubscriptionError } from '../types/subscription';
 import { toast } from 'react-toastify';
 import LoadingOverlay from './LoadingOverlay';
@@ -31,17 +31,31 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
       console.log('Price ID info:', priceInfo);
       console.log('Starting upgrade process with price ID:', STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
       
+      // Debug price configuration
+      debugPriceId();
+      
+      console.log('Calling upgradeToProduction...');
       await upgradeToProduction(STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
       console.log('Upgrade process completed successfully');
+      
+      // Don't show error toast on success - the redirect should happen automatically
+      console.log('No error occurred - redirect should be in progress');
+      
     } catch (error) {
       console.error('Error upgrading to premium:', error);
+      console.error('Error type:', typeof error);
+      console.error('Error constructor:', error?.constructor?.name);
       
       let message = 'Failed to upgrade subscription. Please try again.';
       
       if (error instanceof SubscriptionError) {
         message = error.message;
+        console.log('SubscriptionError caught:', error.message);
       } else if (error instanceof Error) {
         message = error.message;
+        console.log('Generic Error caught:', error.message);
+      } else {
+        console.log('Unknown error type:', error);
       }
       
       toast.error(message);

@@ -13,8 +13,19 @@ export const SUBSCRIPTION_STATUS = {
 
 // Stripe price IDs
 export const STRIPE_PRICE_IDS = {
-  PREMIUM_MONTHLY: 'price_1RqG24BfzIcY9By9KVsHQFwt'
+  PREMIUM_MONTHLY: 'price_1RqIAcBfzIcY9By9nqAq41AF'
 } as const;
+
+// Note: This price ID should correspond to the promotional price ($12.50)
+// If you have a separate price ID for the promotional price, update it here
+
+// Debug function to check price ID
+export const debugPriceId = () => {
+  console.log('Current price ID:', STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
+  console.log('Promotional pricing active:', isPromotionalPricingActive());
+  console.log('Current price should be:', getCurrentPrice());
+  console.log('Price display text:', getPriceDisplayText());
+};
 
 // Helper function to validate price ID
 export const validatePriceId = (priceId: string): boolean => {

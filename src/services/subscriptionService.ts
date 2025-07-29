@@ -91,6 +91,9 @@ class SubscriptionService {
       
       const requestData = { priceId };
       console.log('Request data:', requestData);
+      console.log('Request data type:', typeof requestData);
+      console.log('Price ID being sent:', priceId);
+      console.log('Price ID type:', typeof priceId);
       
       const response = await this.makeAuthenticatedRequest<{ sessionId: string }>(
         'POST',
@@ -108,7 +111,19 @@ class SubscriptionService {
         throw new SubscriptionError('No session ID received from checkout creation', 'NO_SESSION_ID');
       }
       
+      // Validate session ID format
+      if (!sessionId.startsWith('cs_')) {
+        console.error('Invalid session ID format:', sessionId);
+        throw new SubscriptionError('Invalid session ID format received from server', 'INVALID_SESSION_ID_FORMAT');
+      }
+      
       console.log('Successfully extracted session ID:', sessionId);
+      console.log('Session ID format validation: PASSED');
+      
+      // Test the session ID by constructing the checkout URL
+      const testCheckoutUrl = `https://checkout.stripe.com/pay/${sessionId}`;
+      console.log('Test checkout URL:', testCheckoutUrl);
+      
       return sessionId;
     } catch (error) {
       console.error('Error creating checkout session:', error);
@@ -154,6 +169,11 @@ class SubscriptionService {
         throw new SubscriptionError('Stripe public key is not configured', 'STRIPE_CONFIG_ERROR');
       }
       
+      // Validate Stripe public key format
+      if (!this.config.stripePublicKey.startsWith('pk_')) {
+        console.warn('Stripe public key does not start with "pk_". This might cause issues.');
+      }
+      
       console.log('Loading Stripe with public key:', this.config.stripePublicKey);
       const stripe = await loadStripe(this.config.stripePublicKey);
       
@@ -162,6 +182,9 @@ class SubscriptionService {
       }
       
       console.log('Redirecting to Stripe checkout with session ID:', sessionId);
+      console.log('Stripe instance:', stripe);
+      console.log('Stripe public key used:', this.config.stripePublicKey);
+      
       const { error } = await stripe.redirectToCheckout({ sessionId });
       
       if (error) {
@@ -170,6 +193,19 @@ class SubscriptionService {
       }
       
       console.log('Successfully redirected to Stripe checkout');
+      console.log('Redirect completed - user should be on Stripe checkout page');
+      
+      // Add a fallback in case redirect doesn't work
+      setTimeout(() => {
+        console.log('Fallback: Checking if redirect worked...');
+        // If we're still on the same page after 2 seconds, the redirect might have failed
+        if (window.location.href.includes('resume-builder')) {
+          console.warn('Redirect might have failed - user still on resume builder page');
+          // Optionally show a manual link to the checkout
+          const checkoutUrl = `https://checkout.stripe.com/pay/${sessionId}`;
+          console.log('Manual checkout URL:', checkoutUrl);
+        }
+      }, 2000);
     } catch (error) {
       console.error('Error in redirectToCheckout:', error);
       if (error instanceof SubscriptionError) {
