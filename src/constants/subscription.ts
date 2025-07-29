@@ -13,7 +13,7 @@ export const SUBSCRIPTION_STATUS = {
 
 // Stripe price IDs
 export const STRIPE_PRICE_IDS = {
-  PREMIUM_MONTHLY: 'price_1RqIAcBfzIcY9By9nqAq41AF'
+  PREMIUM_MONTHLY: 'price_1RqG24BfzIcY9By9KVsHQFwt'
 } as const;
 
 // Note: This price ID should correspond to the promotional price ($12.50)
