@@ -13,8 +13,39 @@ export const SUBSCRIPTION_STATUS = {
 
 // Stripe price IDs
 export const STRIPE_PRICE_IDS = {
-  PREMIUM_MONTHLY: 'price_1Rj0WsClD8P2gKzIoEThGR9o'
+  PREMIUM_MONTHLY: 'price_1RqG24BfzIcY9By9KVsHQFwt'
 } as const;
+
+// Promotional pricing configuration
+export const PROMOTIONAL_PRICING = {
+  START_DATE: new Date('2024-01-01'), // Set to a past date to enable promotion
+  END_DATE: new Date('2024-09-30'),
+  PROMOTIONAL_PRICE: 12.50, // 50% off $24.99
+  REGULAR_PRICE: 24.99
+} as const;
+
+// Function to check if promotional pricing is active
+export const isPromotionalPricingActive = (): boolean => {
+  const now = new Date();
+  return now >= PROMOTIONAL_PRICING.START_DATE && now <= PROMOTIONAL_PRICING.END_DATE;
+};
+
+// Function to get current price
+export const getCurrentPrice = (): number => {
+  return isPromotionalPricingActive() ? PROMOTIONAL_PRICING.PROMOTIONAL_PRICE : PROMOTIONAL_PRICING.REGULAR_PRICE;
+};
+
+// Function to get price display text
+export const getPriceDisplayText = (): string => {
+  const currentPrice = getCurrentPrice();
+  const isPromo = isPromotionalPricingActive();
+  
+  if (isPromo) {
+    return `Limited Time: $${currentPrice}/month (Regular $${PROMOTIONAL_PRICING.REGULAR_PRICE}/month)`;
+  }
+  
+  return `Starting at $${currentPrice}/month`;
+};
 
 // Premium features list
 export const PREMIUM_FEATURES = [

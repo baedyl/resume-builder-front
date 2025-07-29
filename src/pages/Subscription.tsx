@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSubscription } from '../contexts/SubscriptionContext';
 import { FaCrown, FaCheck, FaTimes, FaSpinner, FaCalendar, FaExclamationTriangle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { PREMIUM_FEATURES, STRIPE_PRICE_IDS } from '../constants/subscription';
+import { PREMIUM_FEATURES, STRIPE_PRICE_IDS, getCurrentPrice, isPromotionalPricingActive } from '../constants/subscription';
 import { SubscriptionError } from '../types/subscription';
 import LoadingOverlay from '../components/LoadingOverlay';
 
@@ -147,8 +147,15 @@ const Subscription: React.FC = () => {
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-bold text-white">Premium Plan</h3>
               <div className="text-white">
-                <span className="text-3xl font-bold">$24.99</span>
+                <span className="text-3xl font-bold">${getCurrentPrice()}</span>
                 <span className="text-sm opacity-75">/month</span>
+                {isPromotionalPricingActive() && (
+                  <div className="text-xs mt-1">
+                    <span className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full font-medium">
+                      🎉 Limited Time Offer!
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

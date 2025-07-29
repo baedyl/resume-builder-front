@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSubscription } from '../contexts/SubscriptionContext';
 import { FaCrown, FaLock, FaSpinner } from 'react-icons/fa';
-import { STRIPE_PRICE_IDS } from '../constants/subscription';
+import { STRIPE_PRICE_IDS, getPriceDisplayText, isPromotionalPricingActive } from '../constants/subscription';
 import { SubscriptionError } from '../types/subscription';
 import { toast } from 'react-toastify';
 import LoadingOverlay from './LoadingOverlay';
@@ -110,8 +110,15 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
             
             {/* Pricing info */}
             <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-              <p>Starting at $24.99/month</p>
+              <p className={isPromotionalPricingActive() ? 'text-green-600 dark:text-green-400 font-medium' : ''}>
+                {getPriceDisplayText()}
+              </p>
               <p>Cancel anytime • Instant access to all features</p>
+              {isPromotionalPricingActive() && (
+                <p className="text-green-600 dark:text-green-400 font-medium">
+                  🎉 Limited time offer until September 30th!
+                </p>
+              )}
             </div>
           </div>
           

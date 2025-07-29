@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { getCurrentPrice, isPromotionalPricingActive } from '../constants/subscription';
 
 const Pricing: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
@@ -29,7 +30,7 @@ const Pricing: React.FC = () => {
     },
     {
       name: 'Professional',
-      price: billingCycle === 'monthly' ? 24.99 : 249.99,
+      price: billingCycle === 'monthly' ? getCurrentPrice() : 249.99,
       description: 'Everything you need for your job search',
       features: [
         'Unlimited resume generation',
@@ -161,6 +162,16 @@ const Pricing: React.FC = () => {
                         <div className="text-gray-600 dark:text-gray-300">
                           per {billingCycle === 'monthly' ? 'month' : 'year'}
                         </div>
+                        {plan.name === 'Professional' && billingCycle === 'monthly' && isPromotionalPricingActive() && (
+                          <div className="mt-2">
+                            <div className="text-sm text-green-600 dark:text-green-400 font-medium">
+                              🎉 Limited Time Offer!
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              Regular price: $24.99/month
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                     {plan.trial && (

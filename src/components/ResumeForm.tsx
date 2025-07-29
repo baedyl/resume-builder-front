@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import LoadingOverlay from './LoadingOverlay';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useSubscription } from '../contexts/SubscriptionContext';
-import { STRIPE_PRICE_IDS } from '../constants/subscription';
+import { STRIPE_PRICE_IDS, getPriceDisplayText, isPromotionalPricingActive } from '../constants/subscription';
 import SkillsSelect from './SkillsSelect';
 import PersonalInfoSection from './sections/PersonalInfoSection';
 import SummarySection from './sections/SummarySection';
@@ -1044,8 +1044,15 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               
               {/* Pricing info */}
               <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
-                <p>Starting at $24.99/month</p>
+                <p className={isPromotionalPricingActive() ? 'text-green-600 dark:text-green-400 font-medium' : ''}>
+                  {getPriceDisplayText()}
+                </p>
                 <p>Cancel anytime • Instant access to all features</p>
+                {isPromotionalPricingActive() && (
+                  <p className="text-green-600 dark:text-green-400 font-medium">
+                    🎉 Limited time offer until September 30th!
+                  </p>
+                )}
               </div>
             </div>
             
