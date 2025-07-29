@@ -163,9 +163,11 @@ const WorkExperienceSection: React.FC<Props> = ({
               type="button"
               onClick={() => handleEnhanceDescription(index)}
               disabled={isEnhancing === index}
-              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm sm:text-base font-medium transition-colors"
+              className={`mt-2 px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium border ${isEnhancing === index
+                ? 'text-gray-500 border-gray-500 cursor-not-allowed'
+                : 'text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800'}`}
             >
-              {isEnhancing === index ? 'Enhancing...' : 'Enhance Description'}
+              {isEnhancing === index ? 'Enhancing...' : 'Enhance Description ✨'}
             </button>
           </div>
         ))}

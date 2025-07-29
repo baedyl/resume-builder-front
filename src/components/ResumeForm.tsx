@@ -8,6 +8,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingOverlay from './LoadingOverlay';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useSubscription } from '../contexts/SubscriptionContext';
+import { STRIPE_PRICE_IDS } from '../constants/subscription';
 import SkillsSelect from './SkillsSelect';
 import PersonalInfoSection from './sections/PersonalInfoSection';
 import SummarySection from './sections/SummarySection';
@@ -174,6 +176,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const [isManuallyOrdered, setIsManuallyOrdered] = useState(false);
   const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
   const { getAccessTokenSilently, user } = useAuth0();
+  const { isPremium, upgradeToProduction } = useSubscription();
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -182,6 +185,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [step, setStep] = useState(1);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [premiumFeature, setPremiumFeature] = useState('');
 
   // Existing useEffect hooks (unchanged)
   useEffect(() => {
@@ -259,6 +264,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   };
 
   const handleEnhanceSummary = async () => {
+    if (!isPremium) {
+      setPremiumFeature('AI Summary Enhancement');
+      setShowPremiumModal(true);
+      return;
+    }
+    
     const summary = getValues('summary');
     const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
     if (!summary) {
@@ -291,6 +302,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   };
 
   const handleEnhanceDescription = async (index: number) => {
+    if (!isPremium) {
+      setPremiumFeature('AI Description Enhancement');
+      setShowPremiumModal(true);
+      return;
+    }
+    
     try {
       setIsEnhancing(index);
       const currentDescription = getValues(`workExperience.${index}.description`);
@@ -812,8 +829,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center pt-4 px-0 sm:px-4 lg:px-8 transition-colors duration-300">
-      <div aria-live="polite" aria-busy={Boolean(isEnhancing !== null || isEnhancingSummary)}>
-        {(isEnhancing || isEnhancingSummary) && <LoadingOverlay />}
+      <div aria-live="polite" aria-busy={Boolean(isEnhancing !== null || isEnhancingSummary || isUploading)}>
+        {(isEnhancing || isEnhancingSummary || isUploading) && <LoadingOverlay />}
       </div>
       <FormProvider {...methods}>
         <form className="w-full sm:max-w-6xl bg-white dark:bg-gray-800 shadow-2xl rounded-none sm:rounded-2xl p-3 sm:p-6 lg:p-10 space-y-6 sm:space-y-8 transition-colors">
@@ -981,6 +998,64 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             <div className="resume-preview bg-white dark:bg-gray-900 shadow-lg overflow-x-auto transition-colors mt-4 sm:mt-0">
               <ResumeTemplate data={preview} template={selectedTemplate} />
             </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Premium Modal */}
+      {showPremiumModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-80 flex items-center justify-center z-50 p-4 transition-colors">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 sm:p-8 max-w-md mx-4 text-center shadow-2xl border border-gray-200 dark:border-gray-700">
+            {/* Premium icon */}
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <div className="text-5xl">✨</div>
+              </div>
+            </div>
+            
+            {/* Content */}
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+              Premium Feature
+            </h3>
+            
+            <p className="text-gray-600 dark:text-gray-300 mb-2 font-medium">
+              <strong>{premiumFeature}</strong> requires a premium subscription.
+            </p>
+            
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+              Unlock AI-powered resume enhancement tools to make your resume stand out from the competition.
+            </p>
+            
+            {/* Upgrade button */}
+            <div className="space-y-4">
+              <button
+                onClick={async () => {
+                  try {
+                    await upgradeToProduction(STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
+                  } catch (error) {
+                    console.error('Error upgrading to premium:', error);
+                    toast.error('Failed to upgrade subscription. Please try again.');
+                  }
+                }}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Upgrade to Premium
+              </button>
+              
+              {/* Pricing info */}
+              <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                <p>Starting at $24.99/month</p>
+                <p>Cancel anytime • Instant access to all features</p>
+              </div>
+            </div>
+            
+            {/* Close button */}
+            <button
+              onClick={() => setShowPremiumModal(false)}
+              className="mt-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+            >
+              Maybe later
+            </button>
           </div>
         </div>
       )}
