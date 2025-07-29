@@ -17,17 +17,10 @@ import Blog from './pages/Blog';
 import Article from './pages/Article';
 import Subscription from './pages/Subscription';
 import Pricing from './pages/Pricing';
+import Contact from './pages/Contact';
 import LoadingOverlay from './components/LoadingOverlay';
 
 // Placeholder components for missing pages
-const Contact = () => (
-  <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4">
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Contact Us</h1>
-      <p className="text-gray-600 dark:text-gray-300">Contact page coming soon...</p>
-    </div>
-  </div>
-);
 
 const About = () => (
   <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4">
