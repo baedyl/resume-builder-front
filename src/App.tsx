@@ -18,6 +18,7 @@ import Article from './pages/Article';
 import Subscription from './pages/Subscription';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
+import AIResumeBuilder from './pages/AIResumeBuilder';
 import LoadingOverlay from './components/LoadingOverlay';
 import Footer from './components/Footer';
 import SEO from './components/SEO';
@@ -371,6 +372,7 @@ function App() {
               />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/ai-resume-builder" element={<AIResumeBuilder />} />
               <Route
                 path="/resume"
                 element={isAuthenticated ? <ResumeForm /> : <Navigate to="/login" />}

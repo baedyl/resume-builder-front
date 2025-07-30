@@ -2,10 +2,17 @@
 
 import { Link } from 'react-router-dom';
 import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaClipboardList, FaClock, FaFileAlt } from 'react-icons/fa';
+import SEO from '../components/SEO';
 
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <SEO 
+        title="AI Resume Builder - Free Professional Resume Creator with AI"
+        description="Create professional, ATS-optimized resumes with AI assistance. Free AI resume builder with templates, cover letters, and job tracking. Build your resume in minutes!"
+        keywords="ai resume builder, ai resume builder free, free resume builder, AI resume creator, professional resume builder, ATS optimized resume, resume templates, cover letter generator, job application tracker, career tools, job search, resume maker, cv builder"
+      />
+      
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-20 lg:py-32">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -13,15 +20,14 @@ const Home: React.FC = () => {
           <div className="text-center">
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm font-medium mb-8">
               <FaRocket className="mr-2" />
-              AI-Powered Resume Builder
+              Free AI Resume Builder
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-              Build a Resume That
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> Gets You Hired</span>
+              The Best <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">AI Resume Builder</span> That Gets You Hired
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Create professional resumes in minutes with AI assistance, beautiful templates, and expert guidance. 
-              Stand out from the crowd and land your dream job.
+              Create professional resumes in minutes with our free AI resume builder. Get AI-powered suggestions, 
+              beautiful templates, and expert guidance to stand out from the crowd and land your dream job.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <a
@@ -46,20 +52,20 @@ const Home: React.FC = () => {
                 View Templates
               </a>
             </div>
-                          <div className="flex items-center justify-center space-x-8 text-sm text-gray-500 dark:text-gray-400">
-                <div className="flex items-center">
-                  <FaCheck className="text-green-500 mr-2" />
-                  No credit card required
-                </div>
-                <div className="flex items-center">
-                  <FaCheck className="text-green-500 mr-2" />
-                  AI-powered insights
-                </div>
-                <div className="flex items-center">
-                  <FaCheck className="text-green-500 mr-2" />
-                  Export to PDF
-                </div>
+            <div className="flex items-center justify-center space-x-8 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center">
+                <FaCheck className="text-green-500 mr-2" />
+                Free AI resume builder
               </div>
+              <div className="flex items-center">
+                <FaCheck className="text-green-500 mr-2" />
+                AI-powered insights
+              </div>
+              <div className="flex items-center">
+                <FaCheck className="text-green-500 mr-2" />
+                Export to PDF
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -93,7 +99,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Why Choose Our Resume Builder?
+              Why Choose Our AI Resume Builder?
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Everything you need to create a professional resume that stands out and gets you noticed by employers.
@@ -166,7 +172,7 @@ const Home: React.FC = () => {
               Create Your Resume in 3 Simple Steps
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">
-              It's never been easier to build a professional resume
+              It's never been easier to build a professional resume with our AI resume builder
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -315,7 +321,7 @@ const Home: React.FC = () => {
                 </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
-                "This resume builder helped me land my dream job at a top tech company. The AI suggestions were incredibly helpful!"
+                "This AI resume builder helped me land my dream job at a top tech company. The AI suggestions were incredibly helpful!"
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold mr-3">
@@ -384,7 +390,7 @@ const Home: React.FC = () => {
             Ready to Build Your Professional Resume?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join thousands of professionals who have already landed their dream jobs with our resume builder.
+            Join thousands of professionals who have already landed their dream jobs with our AI resume builder.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
             <a
@@ -403,7 +409,7 @@ const Home: React.FC = () => {
             </Link>
           </div>
           <p className="text-blue-100 text-sm">
-            No credit card required • AI-powered insights • Export to PDF
+            Free AI resume builder • AI-powered insights • Export to PDF
           </p>
         </div>
       </section>

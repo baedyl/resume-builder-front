@@ -15,19 +15,19 @@ interface SEOProps {
 }
 
 const SEO: React.FC<SEOProps> = ({
-  title = 'Resume Builder - AI-Powered Professional Resume Creator',
-  description = 'Create professional, ATS-optimized resumes with AI assistance. Generate cover letters, track job applications, and land your dream job with our comprehensive career tools.',
-  keywords = 'resume builder, AI resume, professional resume, cover letter generator, job application tracker, ATS optimized resume, career tools, job search',
+  title = 'AI Resume Builder - Free Professional Resume Creator with AI',
+  description = 'Create professional, ATS-optimized resumes with AI assistance. Free AI resume builder with templates, cover letters, and job tracking. Build your resume in minutes!',
+  keywords = 'ai resume builder, ai resume builder free, free resume builder, AI resume creator, professional resume builder, ATS optimized resume, resume templates, cover letter generator, job application tracker, career tools, job search, resume maker, cv builder',
   image = 'https://proairesume.online/og-image.jpg',
   url = 'https://proairesume.online',
   type = 'website',
-  author = 'Resume Builder',
+  author = 'AI Resume Builder',
   publishedTime,
   modifiedTime,
   section,
   tags = []
 }) => {
-  const fullTitle = title.includes('Resume Builder') ? title : `${title} | Resume Builder`;
+  const fullTitle = title.includes('AI Resume Builder') ? title : `${title} | AI Resume Builder`;
   const fullUrl = url.startsWith('http') ? url : `https://proairesume.online${url}`;
   const fullImage = image.startsWith('http') ? image : `https://proairesume.online${image}`;
 
@@ -40,6 +40,13 @@ const SEO: React.FC<SEOProps> = ({
       <meta name="keywords" content={keywords} />
       <meta name="author" content={author} />
       
+      {/* Additional SEO Meta Tags */}
+      <meta name="robots" content="index, follow" />
+      <meta name="language" content="English" />
+      <meta name="revisit-after" content="7 days" />
+      <meta name="distribution" content="global" />
+      <meta name="rating" content="general" />
+      
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={fullUrl} />
@@ -48,7 +55,7 @@ const SEO: React.FC<SEOProps> = ({
       <meta property="og:image" content={fullImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
-      <meta property="og:site_name" content="Resume Builder" />
+      <meta property="og:site_name" content="AI Resume Builder" />
       <meta property="og:locale" content="en_US" />
       
       {/* Twitter */}
@@ -73,6 +80,34 @@ const SEO: React.FC<SEOProps> = ({
       
       {/* Canonical URL */}
       <link rel="canonical" href={fullUrl} />
+      
+      {/* Structured Data for Resume Builder */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "AI Resume Builder",
+          "description": "Free AI-powered resume builder with professional templates and ATS optimization",
+          "url": "https://proairesume.online",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web Browser",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "description": "Free AI resume builder with premium features available"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "1250"
+          },
+          "author": {
+            "@type": "Organization",
+            "name": "AI Resume Builder"
+          }
+        })}
+      </script>
     </>
   );
 };

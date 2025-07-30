@@ -34,20 +34,46 @@ const Blog: React.FC = () => {
     if (searchTerm) {
       filtered = filtered.filter(article =>
         article.metadata.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        article.metadata.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (article.metadata.description && article.metadata.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (article.metadata.excerpt && article.metadata.excerpt.toLowerCase().includes(searchTerm.toLowerCase())) ||
         article.metadata.author.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Filter by category
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(article => article.metadata.category === selectedCategory);
+      filtered = filtered.filter(article => 
+        article.metadata.section === selectedCategory || article.metadata.category === selectedCategory
+      );
     }
 
     setFilteredArticles(filtered);
   }, [articles, searchTerm, selectedCategory]);
 
-  const categories = ['all', ...Array.from(new Set(articles.map(article => article.metadata.category))).sort()];
+  // Get unique categories from both old and new formats
+  const getCategories = () => {
+    const categories = new Set<string>();
+    articles.forEach(article => {
+      if (article.metadata.section) categories.add(article.metadata.section);
+      if (article.metadata.category) categories.add(article.metadata.category);
+    });
+    return ['all', ...Array.from(categories).sort()];
+  };
+
+  const categories = getCategories();
+
+  const handleShare = (article: any, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const url = `${window.location.origin}/blog/${article.slug}`;
+    const text = `${article.metadata.title} - Check out this article on AI Resume Builder!`;
+    const hashtags = 'AIResumeBuilder,ResumeTips,CareerAdvice,JobSearch';
+    
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`;
+    
+    window.open(twitterUrl, '_blank', 'width=600,height=400');
+  };
 
   if (isLoading) {
     return (
@@ -135,14 +161,18 @@ const Blog: React.FC = () => {
           {filteredArticles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredArticles.map((article, index) => (
-                <article key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <Link
+                  key={index}
+                  to={`/blog/${article.slug}`}
+                  className="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+                >
                   {/* Article Image */}
                   {article.metadata.image && (
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={article.metadata.image}
                         alt={article.metadata.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
                       />
                     </div>
@@ -153,22 +183,22 @@ const Blog: React.FC = () => {
                     {/* Category and Read Time */}
                     <div className="flex items-center gap-4 mb-3">
                       <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm font-medium rounded-full">
-                        {article.metadata.category}
+                        {article.metadata.section || article.metadata.category}
                       </span>
                       <span className="text-gray-500 dark:text-gray-400 text-sm flex items-center">
                         <FaClock className="mr-1" />
-                        {article.metadata.readTime}
+                        {article.metadata.readTime || '5 min read'}
                       </span>
                     </div>
 
                     {/* Title */}
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       {article.metadata.title}
                     </h2>
 
                     {/* Excerpt */}
                     <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                      {article.metadata.excerpt}
+                      {article.metadata.description || article.metadata.excerpt}
                     </p>
 
                     {/* Author and Date */}
@@ -176,7 +206,7 @@ const Blog: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
                           <span className="text-gray-600 dark:text-gray-300 text-sm font-semibold">
-                            {article.metadata.author.split(' ').map(n => n[0]).join('')}
+                            {article.metadata.author.split(' ').map((n: string) => n[0]).join('')}
                           </span>
                         </div>
                         <div>
@@ -185,7 +215,7 @@ const Blog: React.FC = () => {
                           </div>
                           <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                             <FaCalendar className="mr-1" />
-                            {article.metadata.date}
+                            {new Date(article.metadata.publishedTime || article.metadata.date || '').toLocaleDateString()}
                           </div>
                         </div>
                       </div>
@@ -194,36 +224,37 @@ const Blog: React.FC = () => {
                       <div className="flex items-center gap-1">
                         <div className="flex text-yellow-400">
                           {[...Array(5)].map((_, i) => (
-                            <FaArrowRight key={i} className={`w-4 h-4 ${i < Math.floor(article.metadata.rating) ? 'text-yellow-400' : 'text-gray-300'}`} />
+                            <FaArrowRight key={i} className={`w-4 h-4 ${i < (article.metadata.rating || 4) ? 'text-yellow-400' : 'text-gray-300'}`} />
                           ))}
                         </div>
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                          {article.metadata.rating}
+                          {article.metadata.rating || 4.8}
                         </span>
                       </div>
                     </div>
 
                     {/* Actions */}
                     <div className="flex items-center justify-between">
-                      <Link
-                        to={`/blog/${article.slug}`}
-                        className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium"
-                      >
+                      <span className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
                         Read More
-                        <FaArrowRight className="ml-1 w-4 h-4" />
-                      </Link>
+                        <FaArrowRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </span>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                         <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                           <FaBookmark />
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                        <button 
+                          className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                          onClick={(e) => handleShare(article, e)}
+                          title="Share on Twitter"
+                        >
                           <FaShare />
                         </button>
                       </div>
                     </div>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           ) : (
