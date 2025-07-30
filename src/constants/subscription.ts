@@ -58,8 +58,8 @@ export const getDebugInfo = () => {
 
 // Promotional pricing configuration
 export const PROMOTIONAL_PRICING = {
-  START_DATE: new Date('2024-01-01'), // Set to a past date to enable promotion
-  END_DATE: new Date('2024-09-30'),
+  START_DATE: new Date('2025-07-07'), // Set to a past date to enable promotion
+  END_DATE: new Date('2025-10-30'),
   PROMOTIONAL_PRICE: 12.50, // 50% off $24.99
   REGULAR_PRICE: 24.99
 } as const;

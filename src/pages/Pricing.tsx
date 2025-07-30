@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../components/Footer';
 import { getCurrentPrice, isPromotionalPricingActive } from '../constants/subscription';
 
 const Pricing: React.FC = () => {
@@ -13,7 +12,7 @@ const Pricing: React.FC = () => {
       description: 'Perfect for getting started with resume building',
       features: [
         'Resume generation',
-        'Limited AI enhancement (5 uses/month)',
+        'Limited AI enhancement',
         'Basic templates',
         'PDF export',
         'Email support'
@@ -88,6 +87,24 @@ const Pricing: React.FC = () => {
         </div>
       </div>
 
+      {/* Promotional Banner */}
+      {isPromotionalPricingActive() && (
+        <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="flex items-center justify-center space-x-2">
+              <span className="text-2xl">🎉</span>
+              <span className="text-lg font-semibold">
+                LIMITED TIME OFFER: 50% OFF Professional Plan
+              </span>
+              <span className="text-2xl">🎉</span>
+            </div>
+            <p className="text-sm mt-1 opacity-90">
+              Get the Professional plan for just $12.50/month instead of $24.99/month. Offer ends soon!
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Billing Toggle */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-center mb-12">
@@ -156,19 +173,35 @@ const Pricing: React.FC = () => {
                     </div>
                     ) : (
                       <div>
-                        <div className="text-4xl font-bold text-gray-900 dark:text-white">
-                          ${plan.price}
-                        </div>
-                        <div className="text-gray-600 dark:text-gray-300">
-                          per {billingCycle === 'monthly' ? 'month' : 'year'}
-                        </div>
-                        {plan.name === 'Professional' && billingCycle === 'monthly' && isPromotionalPricingActive() && (
-                          <div className="mt-2">
-                            <div className="text-sm text-green-600 dark:text-green-400 font-medium">
-                              🎉 Limited Time Offer!
+                        {plan.name === 'Professional' && billingCycle === 'monthly' && isPromotionalPricingActive() ? (
+                          <div>
+                            <div className="flex items-center justify-center space-x-2 mb-2">
+                              <span className="text-4xl font-bold text-green-600 dark:text-green-400">
+                                $12.50
+                              </span>
+                              <span className="text-lg text-gray-500 line-through">
+                                $24.99
+                              </span>
                             </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">
-                              Regular price: $24.99/month
+                            <div className="text-gray-600 dark:text-gray-300">
+                              per month
+                            </div>
+                            <div className="mt-2">
+                              <span className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                                50% OFF
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                              Limited time offer
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="text-4xl font-bold text-gray-900 dark:text-white">
+                              ${plan.price}
+                            </div>
+                            <div className="text-gray-600 dark:text-gray-300">
+                              per {billingCycle === 'monthly' ? 'month' : 'year'}
                             </div>
                           </div>
                         )}
@@ -456,7 +489,6 @@ const Pricing: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaCalendar, FaUser, FaArrowRight, FaBookmark, FaShare } from 'react-icons/fa';
 import { getAllArticles } from '../utils/articleLoader';
-import Footer from '../components/Footer';
 
 const Blog: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -218,7 +217,6 @@ const Blog: React.FC = () => {
           </div>
         )}
       </div>
-      <Footer />
     </div>
   );
 };

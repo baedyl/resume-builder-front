@@ -31,7 +31,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">1. Generic Resume Content</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Generic Resume Content</h2>
   <p class="text-lg leading-relaxed mb-6">One of the biggest mistakes job seekers make is using a one-size-fits-all approach to their resume. Sending the same generic resume to every job application is a surefire way to get rejected.</p>
   
   <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-6">
@@ -55,7 +55,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">2. Weak Action Verbs</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Weak Action Verbs</h2>
   <p class="text-lg leading-relaxed mb-6">Using passive or weak verbs in your experience descriptions can make your accomplishments seem less impressive and fail to capture the recruiter's attention.</p>
 
   <div class="grid md:grid-cols-2 gap-6">
@@ -82,7 +82,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">3. Lack of Quantifiable Achievements</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Lack of Quantifiable Achievements</h2>
   <p class="text-lg leading-relaxed mb-6">Simply listing job responsibilities without showing measurable impact is a common mistake that makes your resume forgettable.</p>
 
   <div class="grid md:grid-cols-2 gap-6">
@@ -99,7 +99,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">4. Poor Formatting and Design</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Poor Formatting and Design</h2>
   <p class="text-lg leading-relaxed mb-6">Even the best content can be overlooked if it's presented in a confusing or unprofessional format.</p>
 
   <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
@@ -114,7 +114,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">5. Including Irrelevant Information</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Including Irrelevant Information</h2>
   <p class="text-lg leading-relaxed mb-6">Adding outdated or irrelevant information can clutter your resume and distract from your key qualifications.</p>
 
   <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
@@ -129,7 +129,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">6. Spelling and Grammar Errors</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Spelling and Grammar Errors</h2>
   <p class="text-lg leading-relaxed mb-6">Spelling and grammar mistakes are immediate red flags for recruiters and can get your resume rejected instantly.</p>
 
   <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-6">
@@ -144,7 +144,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">7. Missing Keywords</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Missing Keywords</h2>
   <p class="text-lg leading-relaxed mb-6">In today's digital hiring landscape, failing to include relevant keywords can prevent your resume from being found by Applicant Tracking Systems (ATS).</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
@@ -159,7 +159,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">8. Too Long or Too Short</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Too Long or Too Short</h2>
   <p class="text-lg leading-relaxed mb-6">Finding the right length for your resume is crucial - too long and it won't get read, too short and it may seem lacking in experience.</p>
 
   <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
@@ -173,7 +173,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">9. Weak Summary Section</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Weak Summary Section</h2>
   <p class="text-lg leading-relaxed mb-6">A poorly written or generic summary can fail to capture the recruiter's attention and set the wrong tone for the rest of your resume.</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
@@ -188,7 +188,7 @@ export const content = `
 </div>
 
 <div class="mb-12">
-  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">10. Not Proofreading</h2>
+  <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Not Proofreading</h2>
   <p class="text-lg leading-relaxed mb-6">Failing to thoroughly proofread your resume is perhaps the most preventable mistake that can cost you job opportunities.</p>
 
   <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-6">

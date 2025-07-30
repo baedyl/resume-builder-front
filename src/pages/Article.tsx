@@ -1,13 +1,54 @@
 
 import { useParams, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { FaArrowLeft, FaCalendar, FaUser, FaClock, FaBookmark, FaShare, FaStar } from 'react-icons/fa';
 import { getArticleBySlug } from '../utils/articleLoader';
-import Footer from '../components/Footer';
 
 const Article: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   
   const article = slug ? getArticleBySlug(slug) : null;
+
+  useEffect(() => {
+    if (article) {
+      // Add IDs to h2 elements for table of contents navigation
+      const h2Elements = document.querySelectorAll('h2');
+      h2Elements.forEach((h2, index) => {
+        const text = h2.textContent || '';
+        const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+        h2.id = id;
+      });
+
+      // Handle smooth scrolling for table of contents links
+      const handleTableOfContentsClick = (e: Event) => {
+        const target = e.target as HTMLAnchorElement;
+        if (target.href && target.href.includes('#')) {
+          e.preventDefault();
+          const id = target.href.split('#')[1];
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      };
+
+      // Add event listeners to table of contents links
+      const tocLinks = document.querySelectorAll('nav a[href^="#"]');
+      tocLinks.forEach(link => {
+        link.addEventListener('click', handleTableOfContentsClick);
+      });
+
+      // Cleanup event listeners
+      return () => {
+        tocLinks.forEach(link => {
+          link.removeEventListener('click', handleTableOfContentsClick);
+        });
+      };
+    }
+  }, [article]);
 
   if (!article) {
     return (
@@ -83,6 +124,22 @@ const Article: React.FC = () => {
         </div>
       </div>
 
+      {/* Article Image */}
+      {article.metadata.image && (
+        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden shadow-lg">
+              <img
+                src={article.metadata.image}
+                alt={article.metadata.title}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Article Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid lg:grid-cols-4 gap-8">
@@ -94,7 +151,7 @@ const Article: React.FC = () => {
                 {article.metadata.tableOfContents.map((item, index) => (
                   <a
                     key={index}
-                    href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+                    href={`#${item.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')}`}
                     className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     {item}
@@ -135,7 +192,6 @@ const Article: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
