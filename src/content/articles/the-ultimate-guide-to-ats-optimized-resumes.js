@@ -23,14 +23,14 @@ export const metadata = {
 
 export const content = `
 <div class="mb-8">
-  <p class="text-lg leading-relaxed mb-6">In today's digital hiring landscape, your resume must first impress a machine before it reaches human eyes. Applicant Tracking Systems (ATS) are the gatekeepers that determine whether your application makes it to a recruiter's desk or gets filtered out automatically.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's digital hiring landscape, your resume must first impress a machine before it reaches human eyes. Applicant Tracking Systems (ATS) are the gatekeepers that determine whether your application makes it to a recruiter's desk or gets filtered out automatically.</p>
   
-  <p class="text-lg leading-relaxed mb-8">This comprehensive guide will teach you everything you need to know about creating ATS-optimized resumes that not only pass through automated screening but also stand out to human recruiters.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will teach you everything you need to know about creating ATS-optimized resumes that not only pass through automated screening but also stand out to human recruiters.</p>
 </div>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Understanding ATS Systems</h2>
-  <p class="text-lg leading-relaxed mb-6">Applicant Tracking Systems are software applications that help employers manage and filter job applications. They scan resumes for specific keywords, skills, and qualifications to determine if candidates match the job requirements.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Applicant Tracking Systems are software applications that help employers manage and filter job applications. They scan resumes for specific keywords, skills, and qualifications to determine if candidates match the job requirements.</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">How ATS Systems Work:</h3>
@@ -54,7 +54,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">ATS-Friendly Resume Formatting</h2>
-  <p class="text-lg leading-relaxed mb-6">The format of your resume can significantly impact how well ATS systems can parse and understand your information.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">The format of your resume can significantly impact how well ATS systems can parse and understand your information.</p>
 
   <div class="grid md:grid-cols-2 gap-6">
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
@@ -83,7 +83,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Keyword Optimization Strategies</h2>
-  <p class="text-lg leading-relaxed mb-6">Keywords are the foundation of ATS optimization. Understanding how to identify and incorporate the right keywords can dramatically improve your resume's performance.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Keywords are the foundation of ATS optimization. Understanding how to identify and incorporate the right keywords can dramatically improve your resume's performance.</p>
 
   <div class="space-y-6">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
@@ -122,7 +122,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Content Structure Best Practices</h2>
-  <p class="text-lg leading-relaxed mb-6">The way you organize your resume content can significantly impact ATS parsing accuracy and human readability.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">The way you organize your resume content can significantly impact ATS parsing accuracy and human readability.</p>
 
   <div class="space-y-6">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
@@ -152,12 +152,12 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Common ATS Mistakes to Avoid</h2>
-  <p class="text-lg leading-relaxed mb-6">Many job seekers unknowingly make mistakes that can cause their resumes to be rejected by ATS systems.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Many job seekers unknowingly make mistakes that can cause their resumes to be rejected by ATS systems.</p>
 
   <div class="space-y-6">
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-4">1. Using Creative Job Titles</h3>
-      <p class="text-lg leading-relaxed mb-4">While creative titles might sound impressive, ATS systems often look for standard job titles. Use industry-standard titles that match the job description.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">While creative titles might sound impressive, ATS systems often look for standard job titles. Use industry-standard titles that match the job description.</p>
       <div class="grid md:grid-cols-2 gap-4">
         <div>
           <h4 class="font-semibold text-red-800 dark:text-red-200 mb-2">Avoid:</h4>
@@ -172,24 +172,24 @@ export const content = `
 
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-4">2. Missing Contact Information</h3>
-      <p class="text-lg leading-relaxed mb-4">Ensure your contact information is clearly visible and includes all necessary details for recruiters to reach you.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Ensure your contact information is clearly visible and includes all necessary details for recruiters to reach you.</p>
     </div>
 
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-4">3. Using Generic Skills</h3>
-      <p class="text-lg leading-relaxed mb-4">Avoid listing generic skills that everyone has. Focus on specific, relevant skills that match the job requirements.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Avoid listing generic skills that everyone has. Focus on specific, relevant skills that match the job requirements.</p>
     </div>
 
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-4">4. Ignoring File Format</h3>
-      <p class="text-lg leading-relaxed mb-4">Always submit your resume in the format requested by the employer. When in doubt, use PDF format for better compatibility.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Always submit your resume in the format requested by the employer. When in doubt, use PDF format for better compatibility.</p>
     </div>
   </div>
 </div>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Testing Your Resume</h2>
-  <p class="text-lg leading-relaxed mb-6">Before submitting your resume, it's crucial to test how well it performs with ATS systems.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Before submitting your resume, it's crucial to test how well it performs with ATS systems.</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">Testing Methods:</h3>
@@ -214,7 +214,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Industry-Specific ATS Tips</h2>
-  <p class="text-lg leading-relaxed mb-6">Different industries have unique ATS requirements and keyword preferences.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Different industries have unique ATS requirements and keyword preferences.</p>
 
   <div class="space-y-6">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
@@ -251,45 +251,45 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Advanced ATS Optimization Techniques</h2>
-  <p class="text-lg leading-relaxed mb-6">Once you've mastered the basics, these advanced techniques can give you an edge over other candidates.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Once you've mastered the basics, these advanced techniques can give you an edge over other candidates.</p>
 
   <div class="space-y-6">
     <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-purple-800 dark:text-purple-200 mb-4">1. Semantic Keyword Optimization</h3>
-      <p class="text-lg leading-relaxed mb-4">Go beyond exact keyword matching by including related terms and synonyms that ATS systems might recognize.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Go beyond exact keyword matching by including related terms and synonyms that ATS systems might recognize.</p>
     </div>
 
     <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-purple-800 dark:text-purple-200 mb-4">2. Contextual Keyword Placement</h3>
-      <p class="text-lg leading-relaxed mb-4">Place keywords in contextually relevant sections rather than just listing them in a skills section.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Place keywords in contextually relevant sections rather than just listing them in a skills section.</p>
     </div>
 
     <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-purple-800 dark:text-purple-200 mb-4">3. Industry-Specific Formatting</h3>
-      <p class="text-lg leading-relaxed mb-4">Research how resumes are typically formatted in your specific industry and follow those conventions.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Research how resumes are typically formatted in your specific industry and follow those conventions.</p>
     </div>
 
     <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-purple-800 dark:text-purple-200 mb-4">4. Continuous Optimization</h3>
-      <p class="text-lg leading-relaxed mb-4">Regularly update your resume based on feedback and changing industry trends.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Regularly update your resume based on feedback and changing industry trends.</p>
     </div>
   </div>
 </div>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Conclusion</h2>
-  <p class="text-lg leading-relaxed mb-6">Creating an ATS-optimized resume is both an art and a science. While you need to satisfy the technical requirements of automated systems, you also need to create content that resonates with human recruiters.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Creating an ATS-optimized resume is both an art and a science. While you need to satisfy the technical requirements of automated systems, you also need to create content that resonates with human recruiters.</p>
 
-  <p class="text-lg leading-relaxed mb-8">By following the strategies outlined in this guide, you can create resumes that not only pass through ATS systems but also stand out to hiring managers. Remember, the goal is to make it easy for both machines and humans to understand your value and qualifications.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">By following the strategies outlined in this guide, you can create resumes that not only pass through ATS systems but also stand out to hiring managers. Remember, the goal is to make it easy for both machines and humans to understand your value and qualifications.</p>
 
-  <p class="text-lg leading-relaxed mb-8">The key to success is finding the right balance between optimization and authenticity. Your resume should be optimized for ATS systems while still reflecting your unique experience, skills, and personality. With practice and attention to detail, you can master the art of ATS optimization and significantly improve your chances of landing interviews.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">The key to success is finding the right balance between optimization and authenticity. Your resume should be optimized for ATS systems while still reflecting your unique experience, skills, and personality. With practice and attention to detail, you can master the art of ATS optimization and significantly improve your chances of landing interviews.</p>
 </div>
 
 <div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-xl p-8 border border-green-200 dark:border-green-800">
   <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Ready to Optimize Your Resume?</h3>
   <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">Our AI-powered resume builder is designed with ATS optimization in mind. Create professional resumes that pass through automated screening systems and reach human recruiters.</p>
   <div class="flex flex-col sm:flex-row gap-4">
-    <a href="/resume-builder" class="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+    <a href="/resume" class="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
       Build ATS-Optimized Resume
     </a>
     <a href="/blog" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">

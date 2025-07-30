@@ -23,14 +23,14 @@ export const metadata = {
 
 export const content = `
 <div class="mb-8">
-  <p class="text-lg leading-relaxed mb-6">Artificial Intelligence has revolutionized the way we approach resume writing, offering unprecedented opportunities to create compelling, optimized content that stands out in today's competitive job market. As AI tools become more sophisticated, job seekers are discovering powerful new ways to craft resumes that not only pass through Applicant Tracking Systems (ATS) but also resonate with human recruiters.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Artificial Intelligence has revolutionized the way we approach resume writing, offering unprecedented opportunities to create compelling, optimized content that stands out in today's competitive job market. As AI tools become more sophisticated, job seekers are discovering powerful new ways to craft resumes that not only pass through Applicant Tracking Systems (ATS) but also resonate with human recruiters.</p>
 
-  <p class="text-lg leading-relaxed mb-8">This comprehensive guide will show you how to leverage AI technology to create a resume that truly stands out, while maintaining the personal touch that makes you unique.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will show you how to leverage AI technology to create a resume that truly stands out, while maintaining the personal touch that makes you unique.</p>
 </div>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">The AI Resume Revolution</h2>
-  <p class="text-lg leading-relaxed mb-6">AI-powered resume writing tools have transformed from simple templates to sophisticated platforms that can analyze job descriptions, suggest relevant keywords, and even predict which content will perform best with specific employers.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">AI-powered resume writing tools have transformed from simple templates to sophisticated platforms that can analyze job descriptions, suggest relevant keywords, and even predict which content will perform best with specific employers.</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">Key Benefits of AI Resume Writing:</h3>
@@ -143,7 +143,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Choosing the Right AI Tool</h2>
-  <p class="text-lg leading-relaxed mb-6">Not all AI resume builders are created equal. Here's how to select the right tool for your needs:</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Not all AI resume builders are created equal. Here's how to select the right tool for your needs:</p>
 
   <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-green-800 dark:text-green-200 mb-4">Essential Features to Look For:</h3>
@@ -163,12 +163,12 @@ export const content = `
   <div class="space-y-8">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Step 1: Input Your Information</h3>
-      <p class="text-lg leading-relaxed mb-4">Start by providing your basic information, work experience, education, and skills. Most AI tools will guide you through this process with prompts and suggestions.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Start by providing your basic information, work experience, education, and skills. Most AI tools will guide you through this process with prompts and suggestions.</p>
     </div>
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Step 2: Analyze Job Descriptions</h3>
-      <p class="text-lg leading-relaxed mb-4">Upload or paste the job description you're targeting. The AI will analyze it to identify:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Upload or paste the job description you're targeting. The AI will analyze it to identify:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li>Key requirements and qualifications</li>
         <li>Important keywords and phrases</li>
@@ -179,12 +179,12 @@ export const content = `
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Step 3: Generate Content</h3>
-      <p class="text-lg leading-relaxed mb-4">Let the AI suggest improvements to your existing content or generate new sections based on the job requirements.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Let the AI suggest improvements to your existing content or generate new sections based on the job requirements.</p>
     </div>
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Step 4: Customize and Refine</h3>
-      <p class="text-lg leading-relaxed mb-4">Review all AI suggestions and customize them to reflect your unique experience and voice. Remember, AI is a tool, not a replacement for your personal story.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Review all AI suggestions and customize them to reflect your unique experience and voice. Remember, AI is a tool, not a replacement for your personal story.</p>
     </div>
   </div>
 </div>
@@ -194,7 +194,7 @@ export const content = `
 
   <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-6">
     <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Writing Strong Bullet Points</h3>
-    <p class="text-lg leading-relaxed mb-4">AI can help transform weak job descriptions into compelling achievements:</p>
+    <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">AI can help transform weak job descriptions into compelling achievements:</p>
 
     <div class="grid md:grid-cols-2 gap-6 mt-6">
       <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
@@ -231,12 +231,12 @@ export const content = `
   <div class="grid md:grid-cols-2 gap-6">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Keyword Optimization</h3>
-      <p class="text-lg leading-relaxed mb-4">Use AI to identify and strategically place relevant keywords throughout your resume to improve ATS compatibility.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Use AI to identify and strategically place relevant keywords throughout your resume to improve ATS compatibility.</p>
     </div>
     
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Content Personalization</h3>
-      <p class="text-lg leading-relaxed mb-4">Leverage AI to tailor your resume content for specific companies and job descriptions.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Leverage AI to tailor your resume content for specific companies and job descriptions.</p>
     </div>
   </div>
 </div>
@@ -267,7 +267,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Future of AI Resume Writing</h2>
-  <p class="text-lg leading-relaxed mb-6">As AI technology continues to evolve, we can expect even more sophisticated resume writing tools that offer personalized insights, real-time collaboration, and predictive analytics for career success.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">As AI technology continues to evolve, we can expect even more sophisticated resume writing tools that offer personalized insights, real-time collaboration, and predictive analytics for career success.</p>
   
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">Emerging Trends:</h3>
@@ -282,13 +282,13 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Conclusion</h2>
-  <p class="text-lg leading-relaxed mb-6">AI-powered resume writing represents a significant advancement in job application technology. By combining the efficiency of AI with the personal touch of human insight, you can create resumes that not only pass through ATS systems but also resonate with hiring managers.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">AI-powered resume writing represents a significant advancement in job application technology. By combining the efficiency of AI with the personal touch of human insight, you can create resumes that not only pass through ATS systems but also resonate with hiring managers.</p>
   
-  <p class="text-lg leading-relaxed mb-8">The key to success is using AI as a tool to enhance your natural abilities, not replace them. With the right approach, AI can help you create resumes that truly stand out in today's competitive job market.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">The key to success is using AI as a tool to enhance your natural abilities, not replace them. With the right approach, AI can help you create resumes that truly stand out in today's competitive job market.</p>
 
   <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-green-800 dark:text-green-200 mb-4">Ready to Create Your AI-Optimized Resume?</h3>
-    <p class="text-lg leading-relaxed mb-4">Start leveraging the power of AI to create a resume that gets you noticed and hired.</p>
+    <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Start leveraging the power of AI to create a resume that gets you noticed and hired.</p>
     <a href="/resume" class="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
       Start Building Your AI Resume
     </a>

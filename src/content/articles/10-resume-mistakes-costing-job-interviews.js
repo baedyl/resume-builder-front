@@ -25,14 +25,14 @@ export const metadata = {
 
 export const content = `
 <div class="mb-8">
-  <p class="text-lg leading-relaxed mb-6">In today's competitive job market, your resume is often the first and only chance you get to make a lasting impression on potential employers. With recruiters spending an average of just 6-7 seconds scanning each resume, even minor mistakes can cost you valuable opportunities.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's competitive job market, your resume is often the first and only chance you get to make a lasting impression on potential employers. With recruiters spending an average of just 6-7 seconds scanning each resume, even minor mistakes can cost you valuable opportunities.</p>
   
-  <p class="text-lg leading-relaxed mb-8">This comprehensive guide will walk you through the 10 most common resume mistakes that are silently sabotaging your job search, along with proven strategies to fix them and dramatically improve your interview success rate.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will walk you through the 10 most common resume mistakes that are silently sabotaging your job search, along with proven strategies to fix them and dramatically improve your interview success rate.</p>
 </div>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Generic Resume Content</h2>
-  <p class="text-lg leading-relaxed mb-6">One of the biggest mistakes job seekers make is using a one-size-fits-all approach to their resume. Sending the same generic resume to every job application is a surefire way to get rejected.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">One of the biggest mistakes job seekers make is using a one-size-fits-all approach to their resume. Sending the same generic resume to every job application is a surefire way to get rejected.</p>
   
   <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-6">
     <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Why This Happens:</h3>
@@ -44,7 +44,7 @@ export const content = `
   </div>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
-    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">How to Fix It:</h3>
+    <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">How to Fix It:</h3>
     <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
       <li>Analyze each job description carefully</li>
       <li>Highlight relevant keywords and skills</li>
@@ -56,7 +56,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Weak Action Verbs</h2>
-  <p class="text-lg leading-relaxed mb-6">Using passive or weak verbs in your experience descriptions can make your accomplishments seem less impressive and fail to capture the recruiter's attention.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Using passive or weak verbs in your experience descriptions can make your accomplishments seem less impressive and fail to capture the recruiter's attention.</p>
 
   <div class="grid md:grid-cols-2 gap-6">
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
@@ -83,7 +83,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Lack of Quantifiable Achievements</h2>
-  <p class="text-lg leading-relaxed mb-6">Simply listing job responsibilities without showing measurable impact is a common mistake that makes your resume forgettable.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Simply listing job responsibilities without showing measurable impact is a common mistake that makes your resume forgettable.</p>
 
   <div class="grid md:grid-cols-2 gap-6">
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
@@ -100,7 +100,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Poor Formatting and Design</h2>
-  <p class="text-lg leading-relaxed mb-6">Even the best content can be overlooked if it's presented in a confusing or unprofessional format.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Even the best content can be overlooked if it's presented in a confusing or unprofessional format.</p>
 
   <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Common Formatting Mistakes:</h3>
@@ -115,7 +115,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Including Irrelevant Information</h2>
-  <p class="text-lg leading-relaxed mb-6">Adding outdated or irrelevant information can clutter your resume and distract from your key qualifications.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Adding outdated or irrelevant information can clutter your resume and distract from your key qualifications.</p>
 
   <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-4">What to Remove:</h3>
@@ -130,7 +130,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Spelling and Grammar Errors</h2>
-  <p class="text-lg leading-relaxed mb-6">Spelling and grammar mistakes are immediate red flags for recruiters and can get your resume rejected instantly.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Spelling and grammar mistakes are immediate red flags for recruiters and can get your resume rejected instantly.</p>
 
   <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-4">Common Errors to Watch For:</h3>
@@ -145,7 +145,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Missing Keywords</h2>
-  <p class="text-lg leading-relaxed mb-6">In today's digital hiring landscape, failing to include relevant keywords can prevent your resume from being found by Applicant Tracking Systems (ATS).</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's digital hiring landscape, failing to include relevant keywords can prevent your resume from being found by Applicant Tracking Systems (ATS).</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">How to Identify Keywords:</h3>
@@ -160,7 +160,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Too Long or Too Short</h2>
-  <p class="text-lg leading-relaxed mb-6">Finding the right length for your resume is crucial - too long and it won't get read, too short and it may seem lacking in experience.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Finding the right length for your resume is crucial - too long and it won't get read, too short and it may seem lacking in experience.</p>
 
   <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-green-800 dark:text-green-200 mb-4">Length Guidelines:</h3>
@@ -174,7 +174,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Weak Summary Section</h2>
-  <p class="text-lg leading-relaxed mb-6">A poorly written or generic summary can fail to capture the recruiter's attention and set the wrong tone for the rest of your resume.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">A poorly written or generic summary can fail to capture the recruiter's attention and set the wrong tone for the rest of your resume.</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">Elements of a Strong Summary:</h3>
@@ -189,7 +189,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Not Proofreading</h2>
-  <p class="text-lg leading-relaxed mb-6">Failing to thoroughly proofread your resume is perhaps the most preventable mistake that can cost you job opportunities.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Failing to thoroughly proofread your resume is perhaps the most preventable mistake that can cost you job opportunities.</p>
 
   <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-4">Proofreading Checklist:</h3>
@@ -205,16 +205,16 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Conclusion</h2>
-  <p class="text-lg leading-relaxed mb-6">Avoiding these common resume mistakes can significantly improve your chances of landing interviews and ultimately securing your dream job. Remember, your resume is often your first impression on potential employers, so it's worth investing the time to get it right.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Avoiding these common resume mistakes can significantly improve your chances of landing interviews and ultimately securing your dream job. Remember, your resume is often your first impression on potential employers, so it's worth investing the time to get it right.</p>
 
-  <p class="text-lg leading-relaxed mb-8">Take the time to review and revise your resume regularly, and don't hesitate to seek feedback from trusted colleagues or professional resume writers. With attention to detail and a commitment to continuous improvement, you can create a resume that truly stands out in today's competitive job market.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">Take the time to review and revise your resume regularly, and don't hesitate to seek feedback from trusted colleagues or professional resume writers. With attention to detail and a commitment to continuous improvement, you can create a resume that truly stands out in today's competitive job market.</p>
 </div>
 
 <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-8 border border-blue-200 dark:border-blue-800">
   <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Ready to Create Your Perfect Resume?</h3>
   <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">Now that you know what to avoid, it's time to create a resume that stands out. Our AI-powered resume builder can help you craft a professional resume that avoids all these common mistakes.</p>
   <div class="flex flex-col sm:flex-row gap-4">
-    <a href="/resume-builder" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+    <a href="/resume" class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
       Start Building Your Resume
     </a>
     <a href="/blog" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">

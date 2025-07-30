@@ -23,14 +23,14 @@ export const metadata = {
 
 export const content = `
 <div class="mb-8">
-  <p class="text-lg leading-relaxed mb-6">In today's competitive job market, having a professional resume is crucial for landing your dream job. With the rise of AI technology, free AI resume builders have become the go-to solution for job seekers looking to create compelling, ATS-optimized resumes without breaking the bank.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's competitive job market, having a professional resume is crucial for landing your dream job. With the rise of AI technology, free AI resume builders have become the go-to solution for job seekers looking to create compelling, ATS-optimized resumes without breaking the bank.</p>
 
-  <p class="text-lg leading-relaxed mb-8">This comprehensive guide will show you everything you need to know about free AI resume builders, from choosing the right tool to creating a resume that gets you hired.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will show you everything you need to know about free AI resume builders, from choosing the right tool to creating a resume that gets you hired.</p>
 </div>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">What is an AI Resume Builder?</h2>
-  <p class="text-lg leading-relaxed mb-6">An AI resume builder is a sophisticated tool that uses artificial intelligence to help you create professional resumes. These tools analyze your experience, skills, and career goals to generate personalized content suggestions, optimize for Applicant Tracking Systems (ATS), and ensure your resume stands out to hiring managers.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">An AI resume builder is a sophisticated tool that uses artificial intelligence to help you create professional resumes. These tools analyze your experience, skills, and career goals to generate personalized content suggestions, optimize for Applicant Tracking Systems (ATS), and ensure your resume stands out to hiring managers.</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">How AI Resume Builders Work:</h3>
@@ -45,7 +45,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Why Choose a Free AI Resume Builder?</h2>
-  <p class="text-lg leading-relaxed mb-6">Free AI resume builders offer several advantages that make them an excellent choice for job seekers:</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Free AI resume builders offer several advantages that make them an excellent choice for job seekers:</p>
 
   <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-green-800 dark:text-green-200 mb-4">Key Benefits:</h3>
@@ -178,7 +178,7 @@ export const content = `
   <div class="space-y-8">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">1. AI-Powered Content Suggestions</h3>
-      <p class="text-lg leading-relaxed mb-4">The best AI resume builders analyze your experience and provide intelligent suggestions for:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">The best AI resume builders analyze your experience and provide intelligent suggestions for:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li>Action verbs and power words</li>
         <li>Quantifiable achievements</li>
@@ -189,7 +189,7 @@ export const content = `
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">2. ATS Optimization</h3>
-      <p class="text-lg leading-relaxed mb-4">Applicant Tracking Systems are used by 75% of companies to screen resumes. A good AI resume builder ensures your resume includes:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Applicant Tracking Systems are used by 75% of companies to screen resumes. A good AI resume builder ensures your resume includes:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li>Relevant keywords for your industry</li>
         <li>Proper formatting that ATS can read</li>
@@ -200,7 +200,7 @@ export const content = `
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">3. Professional Templates</h3>
-      <p class="text-lg leading-relaxed mb-4">Choose from a variety of professionally designed templates that are:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Choose from a variety of professionally designed templates that are:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li>Industry-appropriate</li>
         <li>Mobile-friendly</li>
@@ -241,7 +241,7 @@ export const content = `
   <div class="space-y-8">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Step 1: Gather Your Information</h3>
-      <p class="text-lg leading-relaxed mb-4">Before starting, collect all relevant information including:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Before starting, collect all relevant information including:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li>Work experience with dates and achievements</li>
         <li>Education and certifications</li>
@@ -252,7 +252,7 @@ export const content = `
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Step 2: Choose the Right Template</h3>
-      <p class="text-lg leading-relaxed mb-4">Select a template that matches your industry and experience level:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Select a template that matches your industry and experience level:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li><strong>Modern:</strong> Perfect for tech and creative industries</li>
         <li><strong>Classic:</strong> Ideal for corporate and traditional roles</li>
@@ -262,7 +262,7 @@ export const content = `
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Step 3: Leverage AI Suggestions</h3>
-      <p class="text-lg leading-relaxed mb-4">Use the AI-powered suggestions to:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Use the AI-powered suggestions to:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li>Enhance your job descriptions with action verbs</li>
         <li>Quantify your achievements with specific numbers</li>
@@ -273,7 +273,7 @@ export const content = `
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Step 4: Review and Refine</h3>
-      <p class="text-lg leading-relaxed mb-4">Always review your resume for:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Always review your resume for:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li>Grammar and spelling errors</li>
         <li>Consistency in formatting</li>
@@ -290,7 +290,7 @@ export const content = `
   <div class="space-y-8">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">1. Focus on Achievements, Not Just Duties</h3>
-      <p class="text-lg leading-relaxed mb-4">Instead of listing job responsibilities, highlight your accomplishments:</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Instead of listing job responsibilities, highlight your accomplishments:</p>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
         <li>Use specific numbers and percentages</li>
         <li>Include measurable results</li>
@@ -300,17 +300,17 @@ export const content = `
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">2. Optimize for Keywords</h3>
-      <p class="text-lg leading-relaxed mb-4">Research job postings in your field to identify common keywords and include them naturally in your resume.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Research job postings in your field to identify common keywords and include them naturally in your resume.</p>
     </div>
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">3. Keep It Concise</h3>
-      <p class="text-lg leading-relaxed mb-4">Aim for 1-2 pages maximum. Use bullet points and clear formatting to make information easy to scan.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Aim for 1-2 pages maximum. Use bullet points and clear formatting to make information easy to scan.</p>
     </div>
 
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">4. Customize for Each Application</h3>
-      <p class="text-lg leading-relaxed mb-4">Tailor your resume for each specific job by emphasizing relevant experience and skills.</p>
+      <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Tailor your resume for each specific job by emphasizing relevant experience and skills.</p>
     </div>
   </div>
 </div>
@@ -332,7 +332,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Free vs. Paid AI Resume Builders</h2>
-  <p class="text-lg leading-relaxed mb-6">While free AI resume builders offer excellent value, consider upgrading to paid versions for:</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">While free AI resume builders offer excellent value, consider upgrading to paid versions for:</p>
 
   <div class="grid md:grid-cols-2 gap-6">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
@@ -360,13 +360,13 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Conclusion</h2>
-  <p class="text-lg leading-relaxed mb-6">Free AI resume builders have revolutionized the job application process, making it easier than ever to create professional, ATS-optimized resumes. By leveraging AI technology, you can save time, improve your chances of getting interviews, and ultimately land your dream job.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Free AI resume builders have revolutionized the job application process, making it easier than ever to create professional, ATS-optimized resumes. By leveraging AI technology, you can save time, improve your chances of getting interviews, and ultimately land your dream job.</p>
   
-  <p class="text-lg leading-relaxed mb-8">Start building your professional resume today with our free AI resume builder and take the first step toward your career goals.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">Start building your professional resume today with our free AI resume builder and take the first step toward your career goals.</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">Ready to Create Your Professional Resume?</h3>
-    <p class="text-lg leading-relaxed mb-4">Join thousands of professionals who have already landed their dream jobs with our AI resume builder.</p>
+    <p class="text-lg leading-relaxed mb-4 text-gray-700 dark:text-gray-300">Join thousands of professionals who have already landed their dream jobs with our AI resume builder.</p>
     <a href="/resume" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
       Start Building Your Resume Now
     </a>
