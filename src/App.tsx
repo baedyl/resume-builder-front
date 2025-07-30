@@ -20,6 +20,7 @@ import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
 import LoadingOverlay from './components/LoadingOverlay';
 import Footer from './components/Footer';
+import SEO from './components/SEO';
 import { FaUsers, FaRocket, FaLightbulb, FaHeart, FaCode, FaSearch, FaPalette, FaChartLine } from 'react-icons/fa';
 
 // Placeholder components for missing pages
@@ -358,6 +359,7 @@ function App() {
   return (
     <Router>
       <SubscriptionProvider>
+        <SEO />
         <div className="min-h-screen flex flex-col">
           <NavBar />
           <Breadcrumbs />
