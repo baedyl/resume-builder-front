@@ -150,6 +150,7 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
           {resumes.map((resume) => (
             <div
               key={resume.id}
+              onClick={() => handleEdit(resume.id)}
               className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700 transition-colors gap-3 sm:gap-0"
             >
               <div>
