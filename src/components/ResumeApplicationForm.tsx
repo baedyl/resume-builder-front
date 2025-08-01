@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -7,15 +7,24 @@ import 'react-toastify/dist/ReactToastify.css';
 import LoadingOverlay from './LoadingOverlay';
 import PremiumGate from './PremiumGate';
 import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
+import LanguageSelectionSection from './sections/LanguageSelectionSection';
 
 const ResumeApplicationForm: React.FC = () => {
   const { id: resumeId } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { getAccessTokenSilently, user } = useAuth0();
   
   const [jobDescription, setJobDescription] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Get language from navigation state or default to 'en'
+  useEffect(() => {
+    const resumeLanguage = location.state?.resumeLanguage || 'en';
+    setSelectedLanguage(resumeLanguage);
+  }, [location.state]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +54,8 @@ const ResumeApplicationForm: React.FC = () => {
         {
           userId: user?.sub,
           resumeId,
-          jobDescription: jobDescription.trim()
+          jobDescription: jobDescription.trim(),
+          language: selectedLanguage
         },
         {
           headers: {
@@ -133,7 +143,10 @@ const ResumeApplicationForm: React.FC = () => {
           id: lang.id || Date.now() + index + 4000,
           name: lang.name || '',
           proficiency: lang.proficiency || 'Fluent'
-        })) || []
+        })) || [],
+        
+        // Language
+        language: selectedLanguage
       };
       
       setTimeout(() => {
@@ -220,6 +233,18 @@ const ResumeApplicationForm: React.FC = () => {
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   The more detailed the job description, the better the AI can tailor your resume.
                 </p>
+              </div>
+
+              {/* Language Selection */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Resume Language
+                </label>
+                <LanguageSelectionSection 
+                  selectedLanguage={selectedLanguage} 
+                  onLanguageChange={setSelectedLanguage}
+                  compact={true}
+                />
               </div>
 
               {/* Action Buttons */}

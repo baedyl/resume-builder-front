@@ -21,6 +21,7 @@ import { Resolver } from 'react-hook-form';
 import LanguagesSection from './sections/LanguagesSection';
 import CertificationsSection from './sections/CertificationsSection';
 import TemplateSelectionSection from './sections/TemplateSelectionSection';
+import LanguageSelectionSection from './sections/LanguageSelectionSection';
 
 // Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
@@ -72,6 +73,7 @@ const ResumeFormSchema = z.object({
   education: z.array(EducationSchema).min(1, 'At least one education entry is required'),
   languages: z.array(LanguageSchema).default([]),
   certifications: z.array(CertificationSchema).default([]),
+  language: z.string().optional(),
 });
 
 type Skill = z.infer<typeof SkillSchema>;
@@ -143,6 +145,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       education: [{ institution: '', degree: '', major: '', graduationYear: undefined }],
       languages: [],
       certifications: [],
+      language: 'en',
     },
   });
 
@@ -178,6 +181,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const { getAccessTokenSilently, user } = useAuth0();
   const { isPremium, upgradeToProduction } = useSubscription();
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const modalRef = useRef<HTMLDivElement>(null);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -382,10 +386,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       ...resumeData,
       workExperience: formattedWorkExperience,
       certifications: formattedCertifications,
+      language: resumeData.language || 'en',
     };
 
     reset(formattedResumeData);
     setCurrentResumeId(resumeData.id || null);
+    setSelectedLanguage(resumeData.language || 'en');
     setPreview(null);
   };
 
@@ -402,7 +408,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       const response = await axios({
         method: currentResumeId ? 'put' : 'post',
         url,
-        data: { ...data, template: selectedTemplate },
+        data: { ...data, template: selectedTemplate, language: selectedLanguage },
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -533,7 +539,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formattedData),
+        body: JSON.stringify({
+          ...formattedData,
+          language: selectedLanguage,
+        }),
       });
 
       if (!response.ok) {
@@ -935,6 +944,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               />
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 transition-colors">Choose a Template</h3>
               <TemplateSelectionSection selectedTemplate={selectedTemplate} setSelectedTemplate={setSelectedTemplate} />
+              
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 transition-colors">Resume Language</h3>
+              <LanguageSelectionSection 
+                selectedLanguage={selectedLanguage} 
+                onLanguageChange={setSelectedLanguage}
+                compact={true}
+              />
               {/* Generate Button */}
               <button
                 type="button"
