@@ -5,10 +5,14 @@ import axios from 'axios';
 import { ResumeFormData } from '../types/resume';
 import { format } from 'date-fns';
 import LoadingOverlay from './LoadingOverlay';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Resume {
   id: string;
   fullName: string;
+  summary?: string;
+  language?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -66,6 +70,7 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
           Authorization: `Bearer ${token}`,
         },
       });
+      toast.success('Resume deleted successfully!');
       setResumes(resumes.filter(resume => resume.id !== id));
     } catch (err) {
       setError('Failed to delete resume');
@@ -126,8 +131,10 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
     }
   };
 
-  const handleApply = (id: string) => {
-    navigate(`/resume/${id}/apply`);
+  const handleApply = (id: string, language?: string) => {
+    navigate(`/resume/${id}/apply`, { 
+      state: { resumeLanguage: language || 'en' } 
+    });
   };
 
   if (isLoading) {
@@ -151,17 +158,29 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
             <div
               key={resume.id}
               onClick={() => handleEdit(resume.id)}
-              className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700 transition-colors gap-3 sm:gap-0"
+              className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-700 transition-colors gap-3 sm:gap-0 cursor-pointer"
             >
-              <div>
+              <div className="flex-1">
                 <h3 className="font-semibold text-base sm:text-lg text-gray-900 dark:text-gray-100 transition-colors">{resume.fullName}</h3>
-                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 transition-colors">
+                {resume.summary && (
+                  <p className="text-sm text-gray-600 dark:text-gray-400 transition-colors mt-1 line-clamp-2">
+                    {resume.summary.length > 100 
+                      ? `${resume.summary.substring(0, 100)}...` 
+                      : resume.summary}
+                  </p>
+                )}
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 transition-colors mt-1">
                   Last updated: {format(new Date(resume.updatedAt), 'MMM d, yyyy')}
+                  {resume.language && resume.language !== 'en' && (
+                    <span className="ml-2 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded">
+                      {resume.language.toUpperCase()}
+                    </span>
+                  )}
                 </p>
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => handleApply(resume.id)}
+                  onClick={() => handleApply(resume.id, resume.language)}
                   className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm sm:text-base"
                 >
                   Apply
@@ -173,7 +192,10 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDelete(resume.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(resume.id);
+                  }}
                   className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm sm:text-base"
                 >
                   Delete

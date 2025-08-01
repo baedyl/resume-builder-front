@@ -48,4 +48,5 @@ export interface ResumeFormData {
   languages: Language[];
   certifications: Certification[];
   template?: string;
+  language?: string; // Language code for resume generation (e.g., 'en', 'fr', 'es')
 } 
