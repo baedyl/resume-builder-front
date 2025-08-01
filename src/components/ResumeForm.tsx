@@ -175,6 +175,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [preview, setPreview] = useState<ResumeFormData | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState<number | null>(null);
   const [isManuallyOrdered, setIsManuallyOrdered] = useState(false);
   const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
@@ -611,11 +613,95 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     
   }, [preview]);
 
+  // Cleanup PDF URL when component unmounts
+  useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        window.URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [pdfUrl]);
+
+  const generatePdfForPreview = async (data: ResumeFormData) => {
+    try {
+      setIsGeneratingPdf(true);
+      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+
+      // Format the data for PDF generation
+      const formattedData = {
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone || '',
+        address: data.address || '',
+        linkedIn: data.linkedIn || '',
+        website: data.website || '',
+        summary: data.summary || '',
+        template: selectedTemplate,
+        language: selectedLanguage,
+        skills: data.skills.map(skill => ({
+          id: skill.id,
+          name: skill.name
+        })),
+        workExperience: data.workExperience.map(exp => ({
+          jobTitle: exp.jobTitle,
+          company: exp.company,
+          location: exp.location || '',
+          startDate: exp.startDate,
+          endDate: exp.endDate || '',
+          description: exp.description || '',
+          isCurrent: exp.isCurrent || false
+        })),
+        education: data.education.map(edu => ({
+          degree: edu.degree,
+          major: edu.major || '',
+          institution: edu.institution,
+          graduationYear: edu.graduationYear || 0,
+          gpa: edu.gpa || 0,
+          description: edu.description || ''
+        })),
+        languages: data.languages.map(lang => ({
+          name: lang.name,
+          proficiency: lang.proficiency
+        })),
+        certifications: data.certifications
+          .filter((cert) => cert.name.trim())
+          .map(cert => ({
+            ...cert,
+            issuer: cert.issuer || '',
+            issueDate: cert.issueDate || ''
+          })),
+      };
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId || 'new'}/pdf`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formattedData,
+          language: selectedLanguage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      setPdfUrl(url);
+    } catch (error: any) {
+      console.error('Error generating PDF:', error);
+      toast.error('Failed to generate PDF preview. Please try again.');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
   const handlePreviewClick = async () => {
-    
     try {
       const formData = getValues();
-
 
       if (!preview) {
         const filteredData: ResumeFormData = {
@@ -663,6 +749,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         };
 
         setPreview(filteredData);
+        // Generate PDF for preview
+        await generatePdfForPreview(filteredData);
       } else {
         await onSubmit(formData);
       }
@@ -958,7 +1046,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 disabled={isLoading}
                 className={`w-full py-3 sm:py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {isLoading ? 'Generating...' : preview ? 'Generate PDF' : 'Preview Resume'}
+                {isLoading ? 'Generating...' : preview ? 'Download PDF' : 'Preview Resume'}
               </button>
               {/* Save Resume Button - only visible on step 3 */}
               <button
@@ -989,14 +1077,20 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         >
           <div
             ref={modalRef}
-            className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto transition-colors"
+            className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] sm:max-h-[95vh] overflow-y-auto transition-colors relative"
           >
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 mt-8">
               <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Resume Preview</h3>
               <div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
                 <button
                   type="button"
-                  onClick={() => setPreview(null)}
+                  onClick={() => {
+                    setPreview(null);
+                    if (pdfUrl) {
+                      window.URL.revokeObjectURL(pdfUrl);
+                      setPdfUrl(null);
+                    }
+                  }}
                   className="flex-1 sm:flex-none py-2 px-4 sm:px-6 bg-gray-500 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-600 dark:hover:bg-gray-600 text-sm sm:text-base transition-colors"
                 >
                   Edit
@@ -1007,13 +1101,55 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                   className={`flex-1 sm:flex-none py-2 px-4 sm:px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm sm:text-base transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Generating...' : 'Generate PDF'}
+                  {isLoading ? 'Generating...' : 'Download PDF'}
                 </button>
               </div>
             </div>
-            <div className="resume-preview bg-white dark:bg-gray-900 shadow-lg overflow-x-auto transition-colors mt-4 sm:mt-0">
-              <ResumeTemplate data={preview} template={selectedTemplate} />
-            </div>
+            
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => {
+                setPreview(null);
+                if (pdfUrl) {
+                  window.URL.revokeObjectURL(pdfUrl);
+                  setPdfUrl(null);
+                }
+              }}
+              className="absolute top-4 right-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors z-10"
+              aria-label="Close modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            {/* PDF Preview */}
+            {isGeneratingPdf ? (
+              <div className="flex items-center justify-center h-96 sm:h-[600px]">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600 dark:text-gray-400">Generating PDF preview...</p>
+                </div>
+              </div>
+            ) : pdfUrl ? (
+              <div className="w-full h-96 sm:h-[600px] border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <iframe
+                  src={pdfUrl}
+                  className="w-full h-full"
+                  title="Resume PDF Preview"
+                />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-96 sm:h-[600px] bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <div className="text-center">
+                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="text-gray-600 dark:text-gray-400">Click "Generate PDF" to preview your resume</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1021,7 +1157,19 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       {/* Premium Modal */}
       {showPremiumModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-80 flex items-center justify-center z-50 p-4 transition-colors">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 sm:p-8 max-w-md mx-4 text-center shadow-2xl border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 sm:p-8 max-w-md mx-4 text-center shadow-2xl border border-gray-200 dark:border-gray-700 relative">
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setShowPremiumModal(false)}
+              className="absolute top-4 right-4 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+              aria-label="Close modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
             {/* Premium icon */}
             <div className="flex justify-center mb-6">
               <div className="relative">
