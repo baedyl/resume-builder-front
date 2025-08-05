@@ -149,7 +149,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     },
   });
 
-  const { register, handleSubmit, formState: { errors }, control, setValue, getValues, watch, reset } = methods;
+  const { register, handleSubmit, formState: { errors }, control, setValue, getValues, watch, reset, trigger } = methods;
 
   const { fields: workExperienceFields, append: appendWorkExperience, remove: removeWorkExperience } = useFieldArray({
     control,
@@ -286,17 +286,54 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/enhance-summary`, {
         summary,
+        language: selectedLanguage,
       }, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
       });
-      const enhancedSummary = response.data.enhancedSummary;
+      
+      // Handle the new response format - data might be a direct object or JSON string
+      let enhancedSummary;
+      
+      if (typeof response.data === 'string') {
+        // Parse the JSON string response
+        const parsedData = JSON.parse(response.data);
+        enhancedSummary = parsedData.summary || parsedData.enhanced_summary;
+      } else if (response.data && typeof response.data === 'object' && response.data.data) {
+        // Handle nested data format: { data: "{\"enhanced_summary\": \"...\"}" }
+        if (typeof response.data.data === 'string') {
+          const nestedParsedData = JSON.parse(response.data.data);
+          enhancedSummary = nestedParsedData.summary || nestedParsedData.enhanced_summary;
+        } else {
+          enhancedSummary = response.data.data.summary || response.data.data.enhanced_summary;
+        }
+      } else {
+        // Direct object access - response.data is already an object
+        enhancedSummary = response.data.summary || response.data.enhanced_summary || response.data.enhancedSummary;
+      }
+      
       if (!enhancedSummary || !enhancedSummary.trim()) {
         throw new Error('Received empty enhanced summary.');
       }
-      setValue('summary', enhancedSummary);
+      
+      // Clean up the enhanced summary by removing extra newlines and whitespace
+      const cleanedSummary = enhancedSummary.replace(/\\n/g, '').replace(/\n+/g, ' ').trim();
+      
+      // Get current form values
+      const currentValues = getValues();
+      
+      // Update the summary value
+      setValue('summary', cleanedSummary, { shouldValidate: true, shouldDirty: true });
+      
+      // Force a complete form re-render by resetting with updated values
+      const updatedValues = { ...currentValues, summary: cleanedSummary };
+      reset(updatedValues);
+      
+      // Force a re-render by triggering validation
+      await trigger('summary');
+      
       toast.success('Summary enhanced successfully!');
     } catch (error: any) {
       const message = error.response?.data?.error || error.message || 'Failed to enhance summary.';
@@ -327,6 +364,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           description: currentDescription,
           jobTitle,
           company,
+          language: selectedLanguage,
         },
         {
           headers: {
@@ -336,7 +374,109 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         }
       );
 
-      setValue(`workExperience.${index}.description`, response.data.enhancedDescription);
+      // Handle the new response format - data might be a direct object, JSON string, or nested format
+      let responseData = response.data;
+      
+      if (typeof response.data === 'string') {
+        try {
+          responseData = JSON.parse(response.data);
+        } catch (error) {
+          console.error('Error parsing response data:', error);
+          responseData = response.data;
+        }
+      } else if (response.data && typeof response.data === 'object' && response.data.data) {
+        // Handle nested data format: { data: "{\"enhanced_description\": \"...\"}" }
+        if (typeof response.data.data === 'string') {
+          try {
+            responseData = JSON.parse(response.data.data);
+          } catch (error) {
+            console.error('Error parsing nested response data:', error);
+            responseData = response.data.data;
+          }
+        } else {
+          responseData = response.data.data;
+        }
+      } else {
+        // Direct object access - response.data is already an object
+        responseData = response.data;
+      }
+      
+      // Handle the enhanced_job_description array format or single description
+      const enhancedDescriptions = responseData.enhanced_job_description;
+      const enhancedDescription = responseData.enhanced_description;
+      
+      // Helper function to clean up description text
+      const cleanDescription = (text: string) => {
+        // Remove escaped newlines but preserve actual newlines for bullet points
+        return text.replace(/\\n/g, '').trim();
+      };
+      
+      if (Array.isArray(enhancedDescriptions) && enhancedDescriptions.length > 0) {
+        // Join the array of descriptions with single newlines for compact bullet point format
+        const combinedDescription = enhancedDescriptions.map(desc => cleanDescription(desc)).join('\n');
+        
+        // Get current form values
+        const currentValues = getValues();
+        
+        // Update the work experience description
+        setValue(`workExperience.${index}.description`, combinedDescription, { shouldValidate: true, shouldDirty: true });
+        
+        // Force a complete form re-render by resetting with updated values
+        const updatedWorkExperience = [...currentValues.workExperience];
+        updatedWorkExperience[index] = { ...updatedWorkExperience[index], description: combinedDescription };
+        const updatedValues = { ...currentValues, workExperience: updatedWorkExperience };
+        reset(updatedValues);
+      } else if (Array.isArray(enhancedDescription) && enhancedDescription.length > 0) {
+        // Enhanced description is an array of bullet points
+        const combinedDescription = enhancedDescription.map(desc => cleanDescription(desc)).join('\n');
+        
+        // Get current form values
+        const currentValues = getValues();
+        
+        // Update the work experience description
+        setValue(`workExperience.${index}.description`, combinedDescription, { shouldValidate: true, shouldDirty: true });
+        
+        // Force a complete form re-render by resetting with updated values
+        const updatedWorkExperience = [...currentValues.workExperience];
+        updatedWorkExperience[index] = { ...updatedWorkExperience[index], description: combinedDescription };
+        const updatedValues = { ...currentValues, workExperience: updatedWorkExperience };
+        reset(updatedValues);
+      } else if (enhancedDescription && typeof enhancedDescription === 'string') {
+        // Single enhanced description
+        const cleanedDescription = cleanDescription(enhancedDescription);
+        
+        // Get current form values
+        const currentValues = getValues();
+        
+        // Update the work experience description
+        setValue(`workExperience.${index}.description`, cleanedDescription, { shouldValidate: true, shouldDirty: true });
+        
+        // Force a complete form re-render by resetting with updated values
+        const updatedWorkExperience = [...currentValues.workExperience];
+        updatedWorkExperience[index] = { ...updatedWorkExperience[index], description: cleanedDescription };
+        const updatedValues = { ...currentValues, workExperience: updatedWorkExperience };
+        reset(updatedValues);
+      } else {
+        // Fallback to the old format if available
+        const fallbackDescription = responseData.enhancedDescription || currentDescription;
+        const cleanedFallbackDescription = cleanDescription(fallbackDescription);
+        
+        // Get current form values
+        const currentValues = getValues();
+        
+        // Update the work experience description
+        setValue(`workExperience.${index}.description`, cleanedFallbackDescription, { shouldValidate: true, shouldDirty: true });
+        
+        // Force a complete form re-render by resetting with updated values
+        const updatedWorkExperience = [...currentValues.workExperience];
+        updatedWorkExperience[index] = { ...updatedWorkExperience[index], description: cleanedFallbackDescription };
+        const updatedValues = { ...currentValues, workExperience: updatedWorkExperience };
+        reset(updatedValues);
+      }
+      
+      // Force a re-render by triggering validation
+      await trigger(`workExperience.${index}.description`);
+      
       toast.success('Description enhanced successfully!');
     } catch (error: any) {
       const message = error.response?.data?.error || error.message || 'Failed to enhance description.';
