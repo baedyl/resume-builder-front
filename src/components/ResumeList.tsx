@@ -5,7 +5,7 @@ import axios from 'axios';
 import { ResumeFormData } from '../types/resume';
 import { format } from 'date-fns';
 import LoadingOverlay from './LoadingOverlay';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Resume {
@@ -149,6 +149,7 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 sm:p-6 transition-colors">
+      <ToastContainer position="top-right" autoClose={3000} />
       <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 transition-colors">My Resumes</h2>
       {resumes.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-300 text-center py-4 transition-colors text-sm sm:text-base">No resumes found. Create your first resume!</p>

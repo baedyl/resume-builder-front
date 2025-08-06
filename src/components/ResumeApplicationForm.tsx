@@ -19,6 +19,9 @@ const ResumeApplicationForm: React.FC = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Character limit for job description (3,200 characters)
+  const JOB_DESCRIPTION_LIMIT = 3200;
 
   // Get language from navigation state or default to 'en'
   useEffect(() => {
@@ -33,6 +36,12 @@ const ResumeApplicationForm: React.FC = () => {
     if (!jobDescription.trim()) {
       setError('Job description is required.');
       toast.error('Job description is required.');
+      return;
+    }
+
+    if (jobDescription.length > JOB_DESCRIPTION_LIMIT) {
+      setError(`Job description is too long. Please keep it under ${JOB_DESCRIPTION_LIMIT.toLocaleString()} characters.`);
+      toast.error(`Job description is too long. Please keep it under ${JOB_DESCRIPTION_LIMIT.toLocaleString()} characters.`);
       return;
     }
 
@@ -227,12 +236,30 @@ const ResumeApplicationForm: React.FC = () => {
                   onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the complete job description here. Include requirements, responsibilities, and any specific skills or qualifications mentioned..."
                   rows={12}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-vertical min-h-[200px]"
+                  className={`w-full px-3 py-2 border rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-vertical min-h-[200px] ${
+                    jobDescription.length > JOB_DESCRIPTION_LIMIT 
+                      ? 'border-red-500 dark:border-red-400' 
+                      : 'border-gray-300 dark:border-gray-600'
+                  }`}
                   required
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  The more detailed the job description, the better the AI can tailor your resume.
-                </p>
+                <div className="flex justify-between items-center mt-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    The more detailed the job description, the better the AI can tailor your resume.
+                  </p>
+                  <p className={`text-xs ${
+                    jobDescription.length > JOB_DESCRIPTION_LIMIT 
+                      ? 'text-red-600 dark:text-red-400' 
+                      : 'text-gray-500 dark:text-gray-400'
+                  }`}>
+                    {jobDescription.length.toLocaleString()} / {JOB_DESCRIPTION_LIMIT.toLocaleString()} characters
+                  </p>
+                </div>
+                {jobDescription.length > JOB_DESCRIPTION_LIMIT && (
+                  <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                    Job description is too long. Please keep it under {JOB_DESCRIPTION_LIMIT.toLocaleString()} characters.
+                  </p>
+                )}
               </div>
 
               {/* Language Selection */}
@@ -251,7 +278,7 @@ const ResumeApplicationForm: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
                 <button
                   type="submit"
-                  disabled={loading || !jobDescription.trim()}
+                  disabled={loading || !jobDescription.trim() || jobDescription.length > JOB_DESCRIPTION_LIMIT}
                   className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base"
                 >
                   {loading ? 'Enhancing Resume...' : 'Enhance Resume'}
