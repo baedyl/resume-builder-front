@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaBars, FaSun, FaMoon } from 'react-icons/fa';
+import { useGTMContext } from '../contexts/GTMContext';
 
 const NavBar: React.FC = () => {
   const { isAuthenticated, logout, user } = useAuth0();
+  const { trackButtonClick } = useGTMContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -41,12 +43,14 @@ const NavBar: React.FC = () => {
   }, [location.pathname]);
 
   const handleLogout = () => {
+    trackButtonClick('logout', 'navigation');
     logout({ returnTo: window.location.origin } as any); // Adjust logout logic as needed
   };
 
   const toggleDarkMode = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
+    trackButtonClick('dark_mode_toggle', 'preferences');
     if (newMode) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');

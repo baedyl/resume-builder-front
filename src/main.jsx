@@ -1,8 +1,16 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Auth0Provider } from '@auth0/auth0-react';
+import TagManager from 'react-gtm-module';
 import './index.css';
 import App from './App.jsx';
+
+// Initialize Google Tag Manager
+const tagManagerArgs = {
+  gtmId: import.meta.env.VITE_GTM_ID || 'G-XF74RC576V'
+};
+
+TagManager.initialize(tagManagerArgs);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import LoadingOverlay from './LoadingOverlay';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useSubscription } from '../contexts/SubscriptionContext';
+import { useGTMContext } from '../contexts/GTMContext';
 import { STRIPE_PRICE_IDS, getPriceDisplayText, isPromotionalPricingActive } from '../constants/subscription';
 import SkillsSelect from './SkillsSelect';
 import PersonalInfoSection from './sections/PersonalInfoSection';
@@ -182,6 +183,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
   const { getAccessTokenSilently, user } = useAuth0();
   const { isPremium, upgradeToProduction } = useSubscription();
+  const { trackResumeAction, trackAIEnhancement, trackButtonClick } = useGTMContext();
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const modalRef = useRef<HTMLDivElement>(null);
@@ -283,6 +285,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       return;
     }
     setIsEnhancingSummary(true);
+    
+    // Track AI enhancement attempt
+    trackAIEnhancement('summary', selectedLanguage, true);
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/enhance-summary`, {
         summary,
@@ -353,6 +358,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     
     try {
       setIsEnhancing(index);
+      
+      // Track AI enhancement attempt
+      trackAIEnhancement('description', selectedLanguage, true);
       const currentDescription = getValues(`workExperience.${index}.description`);
       const jobTitle = getValues(`workExperience.${index}.jobTitle`);
       const company = getValues(`workExperience.${index}.company`);
@@ -573,6 +581,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   const onSubmit: SubmitHandler<ResumeFormData> = async (data) => {
     
+    // Track resume form submission
+    trackResumeAction('form_submit', selectedTemplate, selectedLanguage);
 
     if (!preview) {
       
@@ -722,6 +732,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       link.download = `${safeFullName}-${mostRecentJob}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
+      
+      // Track PDF download
+      trackResumeAction('pdf_download', selectedTemplate, selectedLanguage);
       setPreview(null);
     } catch (error: any) {
       setFormError(error.message || 'Failed to generate resume. Please try again.');
