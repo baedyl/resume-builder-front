@@ -10,6 +10,7 @@ const defaultTemplates = [
   { key: 'modern', label: 'Modern', desc: 'Clean and professional design' },
   { key: 'classic', label: 'Classic', desc: 'Traditional and formal layout' },
   { key: 'minimal', label: 'Minimal', desc: 'Simple and elegant style' },
+  { key: 'colorful', label: 'Colorful', desc: 'Vibrant and eye-catching design' },
 ];
 
 const TemplateSelectionSection: React.FC<TemplateSelectionSectionProps> = ({ selectedTemplate, setSelectedTemplate, availableTemplates }) => {

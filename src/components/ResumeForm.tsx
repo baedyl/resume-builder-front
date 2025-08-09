@@ -23,6 +23,8 @@ import LanguagesSection from './sections/LanguagesSection';
 import CertificationsSection from './sections/CertificationsSection';
 import TemplateSelectionSection from './sections/TemplateSelectionSection';
 import LanguageSelectionSection from './sections/LanguageSelectionSection';
+import ResumeDisplay from './ResumeDisplay';
+import html2pdf from 'html2pdf.js';
 
 // Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
@@ -178,6 +180,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const [preview, setPreview] = useState<ResumeFormData | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [showHtmlPreview, setShowHtmlPreview] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState<number | null>(null);
   const [isManuallyOrdered, setIsManuallyOrdered] = useState(false);
   const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
@@ -187,6 +190,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const modalRef = useRef<HTMLDivElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
 
   const [isSaving, setIsSaving] = useState(false);
   const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
@@ -206,6 +211,14 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         console.error('Error fetching skills:', error);
       });
   }, []);
+
+  // Ensure we use PUT /api/resumes/:id when editing an existing resume
+  // by syncing the currentResumeId from initialData
+  useEffect(() => {
+    if (initialData && (initialData as any).id) {
+      setCurrentResumeId((initialData as any).id as string);
+    }
+  }, [initialData]);
 
   // Helper function to clean null/undefined values
   const cleanValue = (value: any): string => {
@@ -551,6 +564,46 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
       setIsSaving(true);
 
+      // Build payload matching API expectations (strings where required)
+      const payload = {
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone?.toString() || '',
+        address: data.address?.toString() || '',
+        linkedIn: data.linkedIn?.toString() || '',
+        website: data.website?.toString() || '',
+        summary: data.summary?.toString() || '',
+        template: selectedTemplate,
+        language: selectedLanguage,
+        skills: (data.skills || []).map(s => ({
+          id: s.id != null ? (typeof s.id === 'number' ? s.id : Number(s.id)) : 0,
+          name: s.name?.toString() || ''
+        })),
+        workExperience: (data.workExperience || []).map(exp => ({
+          jobTitle: exp.jobTitle?.toString() || '',
+          company: exp.company?.toString() || '',
+          location: exp.location?.toString() || '',
+          startDate: exp.startDate?.toString() || '',
+          endDate: exp.endDate?.toString() || '',
+          description: exp.description?.toString() || '',
+          isCurrent: Boolean(exp.isCurrent),
+        })),
+        education: (data.education || []).map(edu => ({
+          degree: edu.degree?.toString() || '',
+          major: (edu as any).major?.toString() || '',
+          institution: edu.institution?.toString() || '',
+          graduationYear: (edu.graduationYear !== undefined && edu.graduationYear !== null && edu.graduationYear !== ('' as any))
+            ? (typeof edu.graduationYear === 'number' ? edu.graduationYear : Number(edu.graduationYear))
+            : undefined,
+        })),
+        languages: (data.languages || []).map(l => ({ name: l.name?.toString() || '', proficiency: l.proficiency?.toString() || '' })),
+        certifications: (data.certifications || []).map(c => ({
+          name: c.name?.toString() || '',
+          issuer: c.issuer?.toString() || '',
+          issueDate: c.issueDate?.toString() || '',
+        })),
+      };
+
       const url = currentResumeId
         ? `${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}`
         : `${import.meta.env.VITE_API_URL}/api/resumes`;
@@ -558,7 +611,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       const response = await axios({
         method: currentResumeId ? 'put' : 'post',
         url,
-        data: { ...data, template: selectedTemplate, language: selectedLanguage },
+        data: payload,
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -571,12 +624,37 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
       toast.success('Resume saved successfully!');
     } catch (error: any) {
-      const message = error.response?.data?.error || error.message || 'Failed to save resume.';
+      let message = error.response?.data?.error || error.message || 'Failed to save resume.';
+      // If backend provides validation details, surface the first one
+      const details = error.response?.data?.details;
+      if (Array.isArray(details) && details.length > 0) {
+        const first = details[0];
+        const path = Array.isArray(first.path) ? first.path.join('.') : '';
+        const detailMsg = first.message || message;
+        message = path ? `${path}: ${detailMsg}` : detailMsg;
+      }
       toast.error(message);
-      console.error('Save error:', error);
+      console.error('Save error:', error?.response?.data || error);
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // Show why a save did not trigger due to validation errors
+  const onSaveInvalid = (errs: any) => {
+    const getFirstMessage = (obj: any): string | null => {
+      if (!obj) return null;
+      if (obj.message) return String(obj.message);
+      if (typeof obj === 'object') {
+        for (const key of Object.keys(obj)) {
+          const msg = getFirstMessage(obj[key]);
+          if (msg) return msg;
+        }
+      }
+      return null;
+    };
+    const msg = getFirstMessage(errs) || 'Please fix the highlighted fields before saving.';
+    toast.error(msg);
   };
 
   const onSubmit: SubmitHandler<ResumeFormData> = async (data) => {
@@ -685,17 +763,36 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
       
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId || 'new'}/pdf`, {
+      // Use the correct PDF endpoints with proper data structure
+      let response;
+      
+      if (currentResumeId) {
+        // For existing resumes - only send template
+        response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}/html-pdf`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/pdf, application/json;q=0.9, */*;q=0.8'
+          },
+          body: JSON.stringify({ template: selectedTemplate })
+        });
+      } else {
+        // For new resumes - send full resume data with template
+        response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/save-and-html-pdf`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/pdf, application/json;q=0.9, */*;q=0.8'
         },
         body: JSON.stringify({
           ...formattedData,
-          language: selectedLanguage,
-        }),
+            template: selectedTemplate,
+            language: selectedLanguage 
+          })
       });
+      }
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -720,18 +817,93 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         throw new Error('PDF generation failed');
       }
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
       // Generate filename: FullName-JobTitle.pdf
       const safeFullName = (data.fullName || 'Resume').replace(/[^a-zA-Z0-9\- ]/g, '').replace(/\s+/g, ' ').trim().replace(/ /g, '-');
       const mostRecentJob = (data.workExperience && data.workExperience.length > 0 && data.workExperience[0].jobTitle)
         ? data.workExperience[0].jobTitle.replace(/[^a-zA-Z0-9\- ]/g, '').replace(/\s+/g, ' ').trim().replace(/ /g, '-')
         : 'Resume';
+
+      // Determine content type and handle accordingly
+      const contentType = response.headers.get('content-type') || '';
+
+      const disposition = response.headers.get('content-disposition') || '';
+      const filenameMatch = disposition.match(/filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/);
+      const serverFilename = filenameMatch ? decodeURIComponent(filenameMatch[1] || filenameMatch[2]) : undefined;
+
+      const defaultFilename = `${safeFullName}-${mostRecentJob}.pdf`;
+      const finalFilename = (serverFilename && serverFilename.toLowerCase().endsWith('.pdf')) ? serverFilename : defaultFilename;
+
+      let blob: Blob;
+      if (contentType.includes('application/pdf')) {
+        // Read as ArrayBuffer and validate PDF header (%PDF)
+        const arrayBuffer = await response.arrayBuffer();
+        const headerBytes = new Uint8Array(arrayBuffer.slice(0, 4));
+        const isPdfHeader = headerBytes[0] === 0x25 && headerBytes[1] === 0x50 && headerBytes[2] === 0x44 && headerBytes[3] === 0x46; // %PDF
+        if (!isPdfHeader) {
+          // Try to interpret as text for debugging and throw a clear error
+          try {
+            const text = new TextDecoder('utf-8').decode(arrayBuffer);
+            throw new Error(`Invalid PDF content received${text?.slice(0, 120) ? `: ${text.slice(0, 120)}...` : ''}`);
+          } catch {
+            throw new Error('Invalid PDF content received');
+          }
+        }
+        blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+      } else if (contentType.includes('application/json')) {
+        // Some servers return JSON with a base64-encoded PDF
+        const json = await response.json();
+        const base64Pdf = json.pdfBase64 || json.pdf || json.data?.pdfBase64 || json.data?.pdf;
+        const pdfUrl = json.url || json.pdfUrl || json.data?.url;
+        if (base64Pdf && typeof base64Pdf === 'string') {
+          const byteCharacters = atob(base64Pdf);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i += 1) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          blob = new Blob([byteArray], { type: 'application/pdf' });
+        } else if (pdfUrl && typeof pdfUrl === 'string') {
+          // If API returns a direct URL to the PDF, just navigate to it
+          const link = document.createElement('a');
+          link.href = pdfUrl;
+          link.download = finalFilename;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.click();
+          // Track PDF download
+          trackResumeAction('pdf_download', selectedTemplate, selectedLanguage);
+          setPreview(null);
+          return;
+        } else {
+          // Unexpected JSON payload; fall back to throwing for better error signal
+          throw new Error('Unexpected JSON response when PDF was expected');
+        }
+      } else {
+        // Fallback: try as blob anyway (may be octet-stream)
+        blob = await response.blob();
+      }
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
       link.href = url;
-      link.download = `${safeFullName}-${mostRecentJob}.pdf`;
+      link.download = finalFilename;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      // Append to DOM to improve reliability across browsers
+      document.body.appendChild(link);
+      try {
       link.click();
+      } catch {
+        // Fallback: open in a new tab (useful for Safari)
+        window.open(url, '_blank', 'noopener');
+      }
+      // Clean up after a short delay to avoid premature revocation
+      setTimeout(() => {
       window.URL.revokeObjectURL(url);
+        if (link.parentNode) {
+          link.parentNode.removeChild(link);
+        }
+      }, 5000);
       
       // Track PDF download
       trackResumeAction('pdf_download', selectedTemplate, selectedLanguage);
@@ -825,30 +997,84 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           })),
       };
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId || 'new'}/pdf`, {
+      // Use GET endpoint if we have a saved resume ID, otherwise use POST to create new
+      const endpoint = currentResumeId 
+        ? `${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}/html?template=${selectedTemplate}`
+        : `${import.meta.env.VITE_API_URL}/api/resumes/new/html?template=${selectedTemplate}`;
+      
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          ...(currentResumeId ? {} : { 'Content-Type': 'application/json' })
         },
-        body: JSON.stringify({
+        ...(currentResumeId ? {} : { body: JSON.stringify({
           ...formattedData,
           language: selectedLanguage,
-        }),
+        }) })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate PDF');
+        throw new Error('Failed to generate HTML preview');
       }
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      setPdfUrl(url);
+      const htmlContent = await response.text();
+      // Store HTML as a data URL for iframe preview
+      setPdfUrl(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
+      setPreviewHtml(null);
     } catch (error: any) {
-      console.error('Error generating PDF:', error);
-      toast.error('Failed to generate PDF preview. Please try again.');
+      console.error('Error generating HTML preview:', error);
+      toast.error('Failed to generate preview. Please try again.');
     } finally {
       setIsGeneratingPdf(false);
+    }
+  };
+
+  // Generate a client-side PDF from the existing HTML preview as a fallback.
+  // This avoids a second API round-trip when the preview is already rendered.
+  const downloadFromPreview = async (html: string, dataForName: ResumeFormData) => {
+    try {
+      // Build a complete HTML document to preserve styles if the preview includes inline styles.
+      const fullHtml = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">` +
+        `</head><body>` + html + `</body></html>`;
+
+      // Use the browser's print to PDF as the most reliable client-side fallback
+      // Create a hidden iframe and print it. Users can save as PDF without headers/footers depending on browser settings.
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      document.body.appendChild(iframe);
+      iframe.srcdoc = fullHtml;
+
+      await new Promise<void>((resolve) => {
+        iframe.onload = () => resolve();
+        // Fallback timeout just in case onload doesn't fire
+        setTimeout(() => resolve(), 1500);
+      });
+
+      const safeFullName = (dataForName.fullName || 'Resume').replace(/[^a-zA-Z0-9\- ]/g, '').replace(/\s+/g, ' ').trim().replace(/ /g, '-');
+      const mostRecentJob = (dataForName.workExperience && dataForName.workExperience.length > 0 && dataForName.workExperience[0].jobTitle)
+        ? dataForName.workExperience[0].jobTitle.replace(/[^a-zA-Z0-9\- ]/g, '').replace(/\s+/g, ' ').trim().replace(/ /g, '-')
+        : 'Resume';
+
+      // Attempt to use the print dialog
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+
+      // Clean up iframe after a delay
+      setTimeout(() => {
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      }, 2000);
+
+      trackResumeAction('pdf_download_from_preview', selectedTemplate, selectedLanguage);
+    } catch (err) {
+      console.error('downloadFromPreview error:', err);
+      toast.error('Could not generate PDF from preview.');
+      throw err;
     }
   };
 
@@ -901,10 +1127,21 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             })),
         };
 
+        // If editing an existing resume, save latest changes first so preview reflects them
+        if (currentResumeId) {
+          try {
+            await saveResume(filteredData);
+          } catch (e) {
+            // If save fails, stop preview generation
+            return;
+          }
+        }
+
         setPreview(filteredData);
-        // Generate PDF for preview
+        // Generate HTML preview
         await generatePdfForPreview(filteredData);
       } else {
+        // Always use server-side HTML→PDF for clean, headerless PDFs matching the template
         await onSubmit(formData);
       }
     } catch (error) {
@@ -1199,12 +1436,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 disabled={isLoading}
                 className={`w-full py-3 sm:py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {isLoading ? 'Generating...' : preview ? 'Download PDF' : 'Preview Resume'}
+                {isLoading ? 'Generating...' : preview ? (showHtmlPreview ? 'Download PDF' : 'Download PDF') : 'Preview Resume'}
               </button>
               {/* Save Resume Button - only visible on step 3 */}
               <button
-                type="button"
-                onClick={handleSubmit(saveResume)}
+                type="submit"
+                onClick={handleSubmit(saveResume, onSaveInvalid)}
                 disabled={isSaving}
                 className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
@@ -1239,6 +1476,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                   type="button"
                   onClick={() => {
                     setPreview(null);
+                    setShowHtmlPreview(false);
                     if (pdfUrl) {
                       window.URL.revokeObjectURL(pdfUrl);
                       setPdfUrl(null);
@@ -1254,7 +1492,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                   className={`flex-1 sm:flex-none py-2 px-4 sm:px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm sm:text-base transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Generating...' : 'Download PDF'}
+                  {isLoading ? 'Generating...' : 'Download Resume'}
                 </button>
               </div>
             </div>
@@ -1264,6 +1502,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               type="button"
               onClick={() => {
                 setPreview(null);
+                setShowHtmlPreview(false);
                 if (pdfUrl) {
                   window.URL.revokeObjectURL(pdfUrl);
                   setPdfUrl(null);
@@ -1282,7 +1521,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               <div className="flex items-center justify-center h-96 sm:h-[600px]">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                  <p className="text-gray-600 dark:text-gray-400">Generating PDF preview...</p>
+                  <p className="text-gray-600 dark:text-gray-400">Generating preview...</p>
                 </div>
               </div>
             ) : pdfUrl ? (
@@ -1290,7 +1529,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 <iframe
                   src={pdfUrl}
                   className="w-full h-full"
-                  title="Resume PDF Preview"
+                  title="Resume Preview"
                 />
               </div>
             ) : (
@@ -1299,7 +1538,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                   <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <p className="text-gray-600 dark:text-gray-400">Click "Generate PDF" to preview your resume</p>
+                  <p className="text-gray-600 dark:text-gray-400">Click "Generate Preview" to preview your resume</p>
                 </div>
               </div>
             )}

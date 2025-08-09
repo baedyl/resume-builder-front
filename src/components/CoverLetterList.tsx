@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
+import { encodeId } from '../utils/urlId';
 import { CoverLetterFormData } from './CoverLetterForm';
 import { format } from 'date-fns';
 import LoadingOverlay from './LoadingOverlay';
@@ -59,18 +60,8 @@ const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetter
   };
 
   const handleEdit = async (id: string) => {
-    try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/cover-letter/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      onSelectCoverLetter(response.data);
-    } catch (err) {
-      setError('Failed to load cover letter');
-      console.error('Error loading cover letter:', err);
-    }
+    const encoded = await encodeId(id);
+    window.location.href = `/cover-letters/${encoded}`;
   };
 
   if (isLoading) {

@@ -36,18 +36,24 @@ const Breadcrumbs: React.FC = () => {
     return null;
   }
 
-  const breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Home', path: '/' },
-    ...pathnames
-      .filter(pathname => !(/^\d+$/.test(pathname))) // Filter out numeric IDs
-      .map((pathname, index) => {
-        // Calculate the correct path including skipped segments
-        const originalIndex = pathnames.indexOf(pathname);
-        const path = `/${pathnames.slice(0, originalIndex + 1).join('/')}`;
-        const label = routeNames[pathname] || pathname.charAt(0).toUpperCase() + pathname.slice(1);
-        return { label, path };
-      })
-  ];
+  const breadcrumbs: BreadcrumbItem[] = [{ label: 'Home', path: '/' }];
+
+  let cumulativePath = '';
+  pathnames.forEach((segment, index) => {
+    cumulativePath += `/${segment}`;
+
+    // If the path is /my-resumes/:id or /cover-letters/:id, show 'Edit' instead of the encrypted id
+    if (
+      index === 1 &&
+      (pathnames[0] === 'my-resumes' || pathnames[0] === 'cover-letters')
+    ) {
+      breadcrumbs.push({ label: 'Edit', path: cumulativePath });
+      return;
+    }
+
+    const label = routeNames[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
+    breadcrumbs.push({ label, path: cumulativePath });
+  });
 
   return (
     <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 py-3">

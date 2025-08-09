@@ -13,6 +13,8 @@ import Callback from './components/Callback';
 import ResumeBuilder from './pages/ResumeBuilder';
 import Resumes from './pages/Resumes';
 import CoverLetters from './pages/CoverLetters';
+import ResumeDetail from './pages/ResumeDetail';
+import CoverLetterDetail from './pages/CoverLetterDetail';
 import JobTracker from './pages/JobTracker';
 import Blog from './pages/Blog';
 import Article from './pages/Article';
@@ -388,12 +390,20 @@ function App() {
                   element={isAuthenticated ? <ResumeBuilder /> : <Navigate to="/login" />}
                 />
                 <Route
+                  path="/my-resumes/:id"
+                  element={isAuthenticated ? <ResumeDetail /> : <Navigate to="/login" />}
+                />
+                <Route
                   path="/resumes"
                   element={isAuthenticated ? <Resumes /> : <Navigate to="/login" />}
                 />
                 <Route
                   path="/cover-letters"
                   element={isAuthenticated ? <CoverLetters /> : <Navigate to="/login" />}
+                />
+                <Route
+                  path="/cover-letters/:id"
+                  element={isAuthenticated ? <CoverLetterDetail /> : <Navigate to="/login" />}
                 />
                 <Route
                   path="/job-tracker"
