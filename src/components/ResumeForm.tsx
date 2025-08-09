@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { useForm, SubmitHandler, useFieldArray, FormProvider } from 'react-hook-form';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
@@ -16,15 +16,15 @@ import PersonalInfoSection from './sections/PersonalInfoSection';
 import SummarySection from './sections/SummarySection';
 import WorkExperienceSection from './sections/WorkExperienceSection';
 import EducationSection from './sections/EducationSection';
-import ResumeTemplate from './ResumeTemplate';
+// import ResumeTemplate from './ResumeTemplate';
 import { ResumeFormData } from '../types/resume';
 import { Resolver } from 'react-hook-form';
 import LanguagesSection from './sections/LanguagesSection';
 import CertificationsSection from './sections/CertificationsSection';
 import TemplateSelectionSection from './sections/TemplateSelectionSection';
 import LanguageSelectionSection from './sections/LanguageSelectionSection';
-import ResumeDisplay from './ResumeDisplay';
-import html2pdf from 'html2pdf.js';
+// import ResumeDisplay from './ResumeDisplay';
+// import html2pdf from 'html2pdf.js';
 
 // Zod schemas (unchanged)
 const WorkExperienceSchema = z.object({
