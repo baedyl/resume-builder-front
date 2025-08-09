@@ -83,7 +83,7 @@ const Home: React.FC = () => {
               <div className="text-gray-600 dark:text-gray-300">Success Rate</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">3</div>
+              <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">4</div>
               <div className="text-gray-600 dark:text-gray-300">Professional Templates</div>
             </div>
             <div>
@@ -226,15 +226,7 @@ const Home: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Clean and contemporary design perfect for tech and creative industries.
                 </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center text-yellow-400">
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">4.9</span>
-                  </div>
+                <div className="flex items-center justify-end">
                   <a 
                     href="/resume?template=modern" 
                     className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -251,15 +243,7 @@ const Home: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Traditional and formal layout ideal for corporate and professional roles.
                 </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center text-yellow-400">
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">4.8</span>
-                  </div>
+                <div className="flex items-center justify-end">
                   <a 
                     href="/resume?template=classic" 
                     className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -276,15 +260,7 @@ const Home: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Simple and elegant design that puts focus on your content and achievements.
                 </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center text-yellow-400">
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">4.7</span>
-                  </div>
+                <div className="flex items-center justify-end">
                   <a 
                     href="/resume?template=minimal" 
                     className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -294,22 +270,15 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 relative">
+              <span className="absolute top-3 left-3 bg-pink-600 text-white text-xs font-semibold px-2 py-1 rounded">New</span>
               <img src="/template/colorful.png" alt="Colorful Template" className="w-full h-64 object-cover" />
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Colorful</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Vibrant and eye-catching design perfect for creative and marketing roles.
                 </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center text-yellow-400">
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <span className="text-gray-600 dark:text-gray-300 ml-2">4.9</span>
-                  </div>
+                <div className="flex items-center justify-end">
                   <a 
                     href="/resume?template=colorful" 
                     className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
