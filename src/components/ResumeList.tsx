@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ResumeFormData } from '../types/resume';
 import { format } from 'date-fns';
+import { encodeId } from '../utils/urlId';
 import LoadingOverlay from './LoadingOverlay';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -79,56 +80,8 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
   };
 
   const handleEdit = async (id: string) => {
-    try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // Format dates in the response data with proper null checks
-      const formattedData = {
-        ...response.data,
-        // Map workExperiences (API) to workExperience (form)
-        workExperience: (response.data.workExperiences || []).map((exp: any) => ({
-          company: exp.company || '',
-          jobTitle: exp.jobTitle || '',
-          location: exp.location || '',
-          startDate: formatDateToYYYYMM(exp.startDate),
-          endDate: exp.endDate ? formatDateToYYYYMM(exp.endDate) : '',
-          description: exp.description || '',
-          isCurrent: !exp.endDate || exp.endDate === '',
-        })),
-        // Map educations (API) to education (form)
-        education: (response.data.educations || []).map((edu: any) => ({
-          institution: edu.institution || '',
-          degree: edu.degree || '',
-          major: edu.major || '',
-          graduationYear: edu.graduationYear || undefined,
-          gpa: edu.gpa || undefined,
-          description: edu.description || '',
-        })),
-        // Map certifications (already correct field name)
-        certifications: (response.data.certifications || []).map((cert: any) => ({
-          name: cert.name || '',
-          issuer: cert.issuer || '',
-          issueDate: cert.issueDate ? formatDateToYYYYMM(cert.issueDate) : '',
-        })),
-        // Map languages (already correct field name)
-        languages: (response.data.languages || []).map((lang: any) => ({
-          name: lang.name || '',
-          proficiency: lang.proficiency || '',
-        })),
-        // Map skills (already correct field name)
-        skills: response.data.skills || [],
-      };
-
-      onSelectResume(formattedData);
-    } catch (err) {
-      setError('Failed to load resume');
-      console.error('Error loading resume:', err);
-    }
+    const encoded = await encodeId(id);
+    navigate(`/my-resumes/${encoded}`);
   };
 
   const handleApply = (id: string, language?: string) => {
