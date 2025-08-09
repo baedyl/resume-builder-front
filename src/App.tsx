@@ -382,7 +382,7 @@ function App() {
                   element={isAuthenticated ? <ResumeForm /> : <Navigate to="/login" />}
                 />
                 <Route
-                  path="/resume/:id/apply"
+                  path="/my-resumes/:id/apply"
                   element={isAuthenticated ? <ResumeApplicationForm /> : <Navigate to="/login" />}
                 />
                 <Route

@@ -84,8 +84,9 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
     navigate(`/my-resumes/${encoded}`);
   };
 
-  const handleApply = (id: string, language?: string) => {
-    navigate(`/resume/${id}/apply`, { 
+  const handleApply = async (id: string, language?: string) => {
+    const encoded = await encodeId(id);
+    navigate(`/my-resumes/${encoded}/apply`, { 
       state: { resumeLanguage: language || 'en' } 
     });
   };
@@ -134,13 +135,19 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => handleApply(resume.id, resume.language)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleApply(resume.id, resume.language);
+                  }}
                   className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm sm:text-base"
                 >
                   Apply
                 </button>
                 <button
-                  onClick={() => handleEdit(resume.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(resume.id);
+                  }}
                   className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
                 >
                   Edit

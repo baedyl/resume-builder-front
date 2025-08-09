@@ -8,9 +8,10 @@ import LoadingOverlay from './LoadingOverlay';
 import PremiumGate from './PremiumGate';
 import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 import LanguageSelectionSection from './sections/LanguageSelectionSection';
+import { decodeId, encodeId } from '../utils/urlId';
 
 const ResumeApplicationForm: React.FC = () => {
-  const { id: resumeId } = useParams<{ id: string }>();
+  const { id: encodedResumeId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { getAccessTokenSilently, user } = useAuth0();
@@ -45,7 +46,7 @@ const ResumeApplicationForm: React.FC = () => {
       return;
     }
 
-    if (!resumeId) {
+    if (!encodedResumeId) {
       setError('Resume ID is missing.');
       toast.error('Resume ID is missing.');
       return;
@@ -54,6 +55,7 @@ const ResumeApplicationForm: React.FC = () => {
     setLoading(true);
 
     try {
+      const resumeId = await decodeId(encodedResumeId);
       const token = await getAccessTokenSilently({ 
         audience: import.meta.env.VITE_API_AUDIENCE 
       } as any);
@@ -73,15 +75,50 @@ const ResumeApplicationForm: React.FC = () => {
           }
         }
       );
+      // Try to get ID of the newly created enhanced resume and redirect to its edit form
+      const raw = response?.data;
 
-      // Navigate to resume builder with enhanced data
-      toast.success('Resume enhanced successfully! Redirecting to builder...');
-      
-      // Extract enhanced data from response - data is nested under 'enhanced'
-      const enhancedData = response.data.enhanced;
-      
+      // Normalize possible string-encoded payloads
+      const normalized = typeof raw === 'string'
+        ? (() => { try { return JSON.parse(raw); } catch { return {}; } })()
+        : raw;
 
-      
+      // Sometimes the server nests JSON under a data field which itself may be a JSON string
+      const nestedData = typeof normalized?.data === 'string'
+        ? (() => { try { return JSON.parse(normalized.data); } catch { return {}; } })()
+        : (normalized?.data || {});
+
+      const candidates = [
+        normalized?.id,
+        normalized?.resumeId,
+        normalized?.resume?.id,
+        normalized?.createdResumeId,
+        normalized?.createdResume?.id,
+        normalized?.newResumeId,
+        normalized?.newResume?.id,
+        normalized?.result?.id,
+        normalized?.result?.resumeId,
+        normalized?.result?.resume?.id,
+        normalized?.enhanced?.id,
+        normalized?.enhanced?.resumeId,
+        nestedData?.id,
+        nestedData?.resumeId,
+        nestedData?.resume?.id,
+      ].filter(Boolean);
+
+      const newResumeId = candidates.length > 0 ? String(candidates[0]) : undefined;
+
+      if (newResumeId) {
+        const encodedNewId = await encodeId(newResumeId);
+        toast.success('Resume enhanced! Opening editor...');
+        navigate(`/my-resumes/${encodedNewId}`);
+        return;
+      }
+
+      // Fallback: open builder with enhanced data in state if API didn't return a new ID
+      toast.success('Resume enhanced! Opening in builder...');
+      const enhancedData = normalized.enhanced || nestedData.enhanced || {};
+
       // Format dates for form inputs (YYYY-MM format)
       const formatDateToYYYYMM = (dateString: string | undefined | null) => {
         if (!dateString) return '';
@@ -165,7 +202,7 @@ const ResumeApplicationForm: React.FC = () => {
             isEnhanced: true 
           } 
         });
-      }, 1500);
+      }, 800);
 
     } catch (err: any) {
       const errorMessage = err.response?.data?.error || err.message || 'Failed to enhance resume.';
