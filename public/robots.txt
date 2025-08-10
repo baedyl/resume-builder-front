@@ -8,9 +8,3 @@ Sitemap: https://proairesume.online/sitemap.xml
 Disallow: /admin/
 Disallow: /private/
 Disallow: /api/
-
-# Allow important pages
-Allow: /blog/
-Allow: /pricing/
-Allow: /about/
-Allow: /contact/ 
