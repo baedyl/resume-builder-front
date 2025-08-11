@@ -1141,9 +1141,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           }
         }
 
-        setPreview(filteredData);
-        // Generate HTML preview
+        // Generate HTML preview behind an overlay, then open modal
         await generatePdfForPreview(filteredData);
+        setPreview(filteredData);
       } else {
         // Always use server-side HTML→PDF for clean, headerless PDFs matching the template
         await onSubmit(formData);
@@ -1320,8 +1320,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center pt-4 px-0 sm:px-4 lg:px-8 transition-colors duration-300">
-      <div aria-live="polite" aria-busy={Boolean(isEnhancing !== null || isEnhancingSummary || isUploading)}>
-        {(isEnhancing || isEnhancingSummary || isUploading) && <LoadingOverlay />}
+      <div aria-live="polite" aria-busy={Boolean(
+        isEnhancing !== null || isEnhancingSummary || isUploading || (isGeneratingPdf && !preview)
+      )}>
+        {(isEnhancing || isEnhancingSummary || isUploading || isSaving || (isGeneratingPdf && !preview)) && <LoadingOverlay />}
       </div>
       <FormProvider {...methods}>
         <form className="w-full sm:max-w-6xl bg-white dark:bg-gray-800 shadow-2xl rounded-none sm:rounded-2xl p-3 sm:p-6 lg:p-10 space-y-6 sm:space-y-8 transition-colors">
