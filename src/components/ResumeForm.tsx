@@ -763,19 +763,23 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
       
 
-      // Use the correct PDF endpoints with proper data structure
+      // Use the correct PDF endpoints with full, up-to-date form data
       let response;
       
       if (currentResumeId) {
-        // For existing resumes - only send template
+        // For existing resumes - send full data to ensure latest edits (including skills) are reflected
         response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}/html-pdf`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
             'Accept': 'application/pdf, application/json;q=0.9, */*;q=0.8'
           },
-          body: JSON.stringify({ template: selectedTemplate })
+          body: JSON.stringify({
+            ...formattedData,
+            template: selectedTemplate,
+            language: selectedLanguage
+          })
         });
       } else {
         // For new resumes - send full resume data with template
@@ -785,13 +789,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
             'Accept': 'application/pdf, application/json;q=0.9, */*;q=0.8'
-        },
-        body: JSON.stringify({
-          ...formattedData,
+          },
+          body: JSON.stringify({
+            ...formattedData,
             template: selectedTemplate,
             language: selectedLanguage 
           })
-      });
+        });
       }
 
       if (!response.ok) {
@@ -997,7 +1001,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           })),
       };
 
-      // Use GET endpoint if we have a saved resume ID, otherwise use POST to create new
+      // Always POST full form data so preview reflects unsaved changes (e.g., skills)
       const endpoint = currentResumeId 
         ? `${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}/html?template=${selectedTemplate}`
         : `${import.meta.env.VITE_API_URL}/api/resumes/new/html?template=${selectedTemplate}`;
@@ -1006,12 +1010,12 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          ...(currentResumeId ? {} : { 'Content-Type': 'application/json' })
+          'Content-Type': 'application/json'
         },
-        ...(currentResumeId ? {} : { body: JSON.stringify({
+        body: JSON.stringify({
           ...formattedData,
           language: selectedLanguage,
-        }) })
+        })
       });
 
       if (!response.ok) {
