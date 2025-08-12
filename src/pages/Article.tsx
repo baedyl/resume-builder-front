@@ -100,7 +100,7 @@ const Article: React.FC = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <Link to="/blog" className="inline-flex items-center text-blue-600 hover:text-blue-700 dark:text-blue-400 mb-6">
               <FaArrowLeft className="mr-2" />
               Back to Blog
@@ -163,7 +163,7 @@ const Article: React.FC = () => {
         {/* Article Image */}
         {article.metadata.image && (
           <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
               <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden shadow-lg">
                 <img
                   src={article.metadata.image}
@@ -177,7 +177,7 @@ const Article: React.FC = () => {
         )}
 
         {/* Article Content */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-3">
