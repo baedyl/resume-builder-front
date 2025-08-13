@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { useForm, SubmitHandler, useFieldArray, FormProvider } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -153,6 +154,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   });
 
   const { register, handleSubmit, formState: { errors }, control, setValue, getValues, watch, reset, trigger } = methods;
+  const navigate = useNavigate();
 
   const { fields: workExperienceFields, append: appendWorkExperience, remove: removeWorkExperience } = useFieldArray({
     control,
@@ -1443,6 +1445,68 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 className={`w-full py-3 sm:py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {isLoading ? 'Generating...' : preview ? (showHtmlPreview ? 'Download PDF' : 'Download PDF') : 'Preview Resume'}
+              </button>
+              {/* New: Open in Preview Editor */}
+              <button
+                type="button"
+                onClick={async () => {
+                  const data = getValues();
+                  const filteredData: ResumeFormData = {
+                    ...data,
+                    id: currentResumeId || undefined,
+                    fullName: data.fullName,
+                    email: data.email,
+                    phone: data.phone?.trim() || '',
+                    address: data.address?.trim() || '',
+                    linkedIn: data.linkedIn?.trim() || '',
+                    website: data.website?.trim() || '',
+                    summary: data.summary?.trim() || '',
+                    skills: data.skills || [],
+                    workExperience: data.workExperience
+                      .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
+                      .map(exp => ({
+                        ...exp,
+                        startDate: exp.startDate,
+                        endDate: exp.endDate?.trim() || '',
+                        isCurrent: exp.isCurrent || false
+                      })),
+                    education: data.education
+                      .filter((edu) => edu.institution.trim() && edu.degree.trim())
+                      .map(edu => ({
+                        ...edu,
+                        graduationYear: edu.graduationYear || undefined
+                      })),
+                    languages: data.languages
+                      .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
+                    certifications: data.certifications
+                      .filter((cert) => cert.name.trim())
+                      .map(cert => ({
+                        ...cert,
+                        issuer: cert.issuer?.trim() || '',
+                        issueDate: cert.issueDate?.trim() || ''
+                      })),
+                  };
+                  // Like the modal preview: save latest changes for existing resumes
+                  if (currentResumeId) {
+                    try {
+                      await saveResume(filteredData);
+                    } catch (e) {
+                      return;
+                    }
+                  }
+                  // Navigate to preview editor with current form state
+                  navigate('/preview-editor', {
+                    state: {
+                      formData: filteredData,
+                      selectedTemplate,
+                      selectedLanguage,
+                      currentResumeId,
+                    },
+                  });
+                }}
+                className="w-full mt-3 py-3 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-base font-medium"
+              >
+                Advanced Preview & Edit
               </button>
               {/* Save Resume Button - only visible on step 3 */}
               <button
