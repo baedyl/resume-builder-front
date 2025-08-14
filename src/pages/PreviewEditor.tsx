@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingOverlay from '../components/LoadingOverlay';
@@ -22,32 +22,14 @@ const PreviewEditor: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Simple heuristics for suggestions on the right pane
-  const suggestions = useMemo(() => {
-    const suggestionsList: string[] = [];
-    if (!formData) return suggestionsList;
-
-    if (!formData.summary || formData.summary.split(' ').length < 40) {
-      suggestionsList.push('Expand your summary to 2–4 sentences and include 2–3 target keywords.');
-    }
-    const hasMetrics = (formData.workExperience || []).some(exp => /%|\b\d{2,}\b/.test(exp.description || ''));
-    if (!hasMetrics) {
-      suggestionsList.push('Add metrics to at least one work experience (e.g., +32% conversions, -18% latency).');
-    }
-    if ((formData.skills || []).length < 6) {
-      suggestionsList.push('Add a few more skills (aim for 8–12 relevant, organized by priority).');
-    }
-    suggestionsList.push('Mirror 3–5 role keywords from the job description in your bullets.');
-    return suggestionsList;
-  }, [formData]);
-
-  const exampleRewrites = useMemo(() => [
-    'Before: Responsible for managing APIs → After: Scaled REST APIs handling 2M+ requests/day with 99.95% uptime.',
-    'Before: Worked on dashboards → After: Built analytics dashboard (React, D3) improving decision speed by 25%.',
-    'Before: Helped the team → After: Led a 4-dev squad to deliver features 30% faster using CI/CD and trunk-based dev.'
-  ], []);
+  // Right pane content temporarily disabled; coming soon
 
   useEffect(() => {
+    // Ensure the page starts at the top when opening Advanced Preview
+    try {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch {}
+
     const fetchHtml = async () => {
       if (!formData) {
         setError('Missing resume data.');
@@ -119,6 +101,21 @@ const PreviewEditor: React.FC = () => {
     };
     fetchHtml();
   }, [formData, selectedTemplate, selectedLanguage, currentResumeId, getAccessTokenSilently]);
+
+  // Whenever the iframe content changes, scroll the iframe viewport to the top
+  useEffect(() => {
+    const frame = iframeRef.current;
+    if (!frame) return;
+    try {
+      // Small delay to allow srcDoc to render before scrolling
+      const id = setTimeout(() => {
+        try {
+          frame.contentWindow?.scrollTo(0, 0);
+        } catch {}
+      }, 50);
+      return () => clearTimeout(id);
+    } catch {}
+  }, [htmlContent]);
 
   const extractEditedHtml = (): string | null => {
     const frame = iframeRef.current;
@@ -220,26 +217,24 @@ const PreviewEditor: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-4">
           {/* Editable Preview - 70% */}
           <div className="lg:col-span-7 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <iframe ref={iframeRef} title="Editable Resume Preview" className="w-full h-[80vh]" srcDoc={htmlContent} />
+            <iframe
+              ref={iframeRef}
+              title="Editable Resume Preview"
+              className="w-full h-[80vh]"
+              srcDoc={htmlContent}
+              onLoad={() => {
+                try {
+                  iframeRef.current?.contentWindow?.scrollTo(0, 0);
+                } catch {}
+              }}
+            />
           </div>
 
           {/* Suggestions - 30% */}
           <div className="lg:col-span-3">
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Suggestions</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                {suggestions.map((s, i) => (
-                  <li key={i}>{s}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Better Formulations</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                {exampleRewrites.map((ex, i) => (
-                  <li key={i}>{ex}</li>
-                ))}
-              </ul>
+            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 text-center">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Insights</h3>
+              <p className="text-gray-600 dark:text-gray-300">Coming soon</p>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import { useForm, SubmitHandler, useFieldArray, FormProvider } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { FaChevronDown } from 'react-icons/fa';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -155,6 +156,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   const { register, handleSubmit, formState: { errors }, control, setValue, getValues, watch, reset, trigger } = methods;
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { fields: workExperienceFields, append: appendWorkExperience, remove: removeWorkExperience } = useFieldArray({
     control,
@@ -183,6 +185,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [showHtmlPreview, setShowHtmlPreview] = useState(false);
+  const [isPreviewMenuOpen, setIsPreviewMenuOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState<number | null>(null);
   const [isManuallyOrdered, setIsManuallyOrdered] = useState(false);
   const [isEnhancingSummary, setIsEnhancingSummary] = useState(false);
@@ -194,6 +197,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const previewMenuRef = useRef<HTMLDivElement>(null);
 
   const [isSaving, setIsSaving] = useState(false);
   const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
@@ -213,6 +217,31 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         console.error('Error fetching skills:', error);
       });
   }, []);
+
+  // Sync step with URL (?step=1|2|3) for reliable navigation/back/forward
+  useEffect(() => {
+    const raw = searchParams.get('step');
+    const urlStep = raw ? Number(raw) : NaN;
+    if (Number.isFinite(urlStep) && urlStep >= 1 && urlStep <= 3) {
+      if (urlStep !== step) setStep(urlStep);
+    } else {
+      // Initialize the URL with the current step without pushing history
+      const next = new URLSearchParams(searchParams.toString());
+      next.set('step', String(step));
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams]);
+
+  const updateStepInUrl = (newStep: number, options?: { replace?: boolean }) => {
+    const clamped = Math.max(1, Math.min(3, newStep));
+    const current = Number(searchParams.get('step')) || 1;
+    if (current === clamped && step === clamped) return;
+    const next = new URLSearchParams(searchParams.toString());
+    next.set('step', String(clamped));
+    setSearchParams(next, { replace: options?.replace ?? false });
+    setStep(clamped);
+    try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch {}
+  };
 
   // Ensure we use PUT /api/resumes/:id when editing an existing resume
   // by syncing the currentResumeId from initialData
@@ -944,6 +973,83 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     
   }, [preview]);
 
+  // Closing the preview dropdown when clicking outside
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (previewMenuRef.current && !previewMenuRef.current.contains(e.target as Node)) {
+        setIsPreviewMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, []);
+
+  // Ensure consistent payload across actions
+  const buildFilteredResumeData = (data: ResumeFormData): ResumeFormData => {
+    return {
+      ...data,
+      id: currentResumeId || undefined,
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone?.trim() || '',
+      address: data.address?.trim() || '',
+      linkedIn: data.linkedIn?.trim() || '',
+      website: data.website?.trim() || '',
+      summary: data.summary?.trim() || '',
+      skills: data.skills || [],
+      workExperience: data.workExperience
+        .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
+        .map(exp => ({
+          ...exp,
+          startDate: exp.startDate,
+          endDate: exp.endDate?.trim() || '',
+          isCurrent: exp.isCurrent || false
+        }))
+        .sort((a, b) => {
+          const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
+          const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
+          if (aEnd === bEnd) {
+            return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+          }
+          return new Date(bEnd).getTime() - new Date(aEnd).getTime();
+        }),
+      education: data.education
+        .filter((edu) => edu.institution.trim() && edu.degree.trim())
+        .map(edu => ({
+          ...edu,
+          graduationYear: edu.graduationYear || undefined
+        })),
+      languages: data.languages
+        .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
+      certifications: data.certifications
+        .filter((cert) => cert.name.trim())
+        .map(cert => ({
+          ...cert,
+          issuer: cert.issuer?.trim() || '',
+          issueDate: cert.issueDate?.trim() || ''
+        })),
+    };
+  };
+
+  const handleSaveClick = async () => {
+    const values = getValues();
+    const filteredData = buildFilteredResumeData(values);
+    await saveResume(filteredData);
+  };
+
+  // Close preview menu when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (previewMenuRef.current && !previewMenuRef.current.contains(e.target as Node)) {
+        setIsPreviewMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  
+
   // Cleanup PDF URL when component unmounts
   useEffect(() => {
     return () => {
@@ -1316,9 +1422,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     } else if (step === 3) {
       valid = await methods.trigger(['education', 'certifications']);
     }
-    if (valid) setStep((s) => Math.min(s + 1, 3));
+    if (valid) updateStepInUrl(step + 1);
   };
-  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+  const prevStep = () => updateStepInUrl(step - 1);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center pt-4 px-0 sm:px-4 lg:px-8 transition-colors duration-300">
@@ -1336,9 +1442,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           )}
           {/* Stepper Navigation */}
           <div className="flex justify-center gap-2 sm:gap-4 mb-6 sm:mb-8">
-            <button type="button" className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${step === 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => setStep(1)}>Step 1</button>
-            <button type="button" className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${step === 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => setStep(2)}>Step 2</button>
-            <button type="button" className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${step === 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => setStep(3)}>Step 3</button>
+            <button type="button" className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${step === 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => updateStepInUrl(1)}>Step 1</button>
+            <button type="button" className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${step === 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => updateStepInUrl(2)}>Step 2</button>
+            <button type="button" className={`px-3 sm:px-4 py-2 rounded text-sm sm:text-base ${step === 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'} transition-colors`} onClick={() => updateStepInUrl(3)}>Step 3</button>
           </div>
           {/* Step 1: Personal Info, Languages, Upload */}
           {step === 1 && (
@@ -1437,86 +1543,70 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 onLanguageChange={setSelectedLanguage}
                 compact={true}
               />
-              {/* Generate Button */}
-              <button
-                type="button"
-                onClick={handlePreviewClick}
-                disabled={isLoading}
-                className={`w-full py-3 sm:py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {isLoading ? 'Generating...' : preview ? (showHtmlPreview ? 'Download PDF' : 'Download PDF') : 'Preview Resume'}
-              </button>
-              {/* New: Open in Preview Editor */}
-              <button
-                type="button"
-                onClick={async () => {
-                  const data = getValues();
-                  const filteredData: ResumeFormData = {
-                    ...data,
-                    id: currentResumeId || undefined,
-                    fullName: data.fullName,
-                    email: data.email,
-                    phone: data.phone?.trim() || '',
-                    address: data.address?.trim() || '',
-                    linkedIn: data.linkedIn?.trim() || '',
-                    website: data.website?.trim() || '',
-                    summary: data.summary?.trim() || '',
-                    skills: data.skills || [],
-                    workExperience: data.workExperience
-                      .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
-                      .map(exp => ({
-                        ...exp,
-                        startDate: exp.startDate,
-                        endDate: exp.endDate?.trim() || '',
-                        isCurrent: exp.isCurrent || false
-                      })),
-                    education: data.education
-                      .filter((edu) => edu.institution.trim() && edu.degree.trim())
-                      .map(edu => ({
-                        ...edu,
-                        graduationYear: edu.graduationYear || undefined
-                      })),
-                    languages: data.languages
-                      .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
-                    certifications: data.certifications
-                      .filter((cert) => cert.name.trim())
-                      .map(cert => ({
-                        ...cert,
-                        issuer: cert.issuer?.trim() || '',
-                        issueDate: cert.issueDate?.trim() || ''
-                      })),
-                  };
-                  // Like the modal preview: save latest changes for existing resumes
-                  if (currentResumeId) {
-                    try {
-                      await saveResume(filteredData);
-                    } catch (e) {
-                      return;
-                    }
-                  }
-                  // Navigate to preview editor with current form state
-                  navigate('/preview-editor', {
-                    state: {
-                      formData: filteredData,
-                      selectedTemplate,
-                      selectedLanguage,
-                      currentResumeId,
-                    },
-                  });
-                }}
-                className="w-full mt-3 py-3 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-base font-medium"
-              >
-                Advanced Preview & Edit
-              </button>
-              {/* Save Resume Button - only visible on step 3 */}
-              <button
-                type="submit"
-                onClick={handleSubmit(saveResume, onSaveInvalid)}
-                disabled={isSaving}
-                className={`w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                {isSaving ? 'Saving...' : 'Save Resume'}
-              </button>
+              <div className="sticky bottom-0 z-40 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 rounded-b-lg shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                {/* Left spacer keeps Previous aligned separately below */}
+                <div className="hidden sm:block"></div>
+                <div className="flex flex-col sm:flex-row gap-3 sm:ml-auto sm:items-center" ref={previewMenuRef}>
+                  {/* Split Preview button (click to toggle options) */}
+                  <div className="relative flex items-stretch gap-2">
+                    <button
+                      type="button"
+                      onClick={handlePreviewClick}
+                      disabled={isLoading}
+                      className={`w-full sm:w-auto py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {isLoading ? 'Generating…' : 'Preview'}
+                    </button>
+                    <button
+                      type="button"
+                      className="py-3 px-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium"
+                      aria-haspopup="menu"
+                      aria-expanded={isPreviewMenuOpen}
+                      onClick={() => setIsPreviewMenuOpen((v) => !v)}
+                      aria-label="Toggle preview options"
+                    >
+                      <FaChevronDown />
+                    </button>
+                    {/* Menu - open upwards since the bar is sticky at the bottom */}
+                    <div className={`absolute left-0 bottom-full mb-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 ${isPreviewMenuOpen ? '' : 'hidden'}`} role="menu">
+                      <button
+                        type="button"
+                        onClick={handlePreviewClick}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-t-lg"
+                        role="menuitem"
+                      >
+                        Quick Preview
+                      </button>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const data = getValues();
+                          const filteredData: ResumeFormData = buildFilteredResumeData(data);
+                          if (currentResumeId) {
+                            try { await saveResume(filteredData); } catch { return; }
+                          }
+                          navigate('/preview-editor', {
+                            state: { formData: filteredData, selectedTemplate, selectedLanguage, currentResumeId },
+                          });
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-b-lg"
+                        role="menuitem"
+                      >
+                        Advanced Preview & Edit
+                      </button>
+                    </div>
+                  </div>
+                  {/* Save Resume Button - primary */}
+                  <button
+                    type="button"
+                    onClick={handleSaveClick}
+                    disabled={isSaving}
+                    className={`w-full sm:w-auto py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-base font-medium ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {isSaving ? 'Saving…' : 'Save Resume'}
+                  </button>
+                </div>
+              </div>
             </div>
           )}
           {/* Navigation Buttons */}
