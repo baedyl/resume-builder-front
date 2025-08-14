@@ -1491,6 +1491,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 appendLanguage={appendLanguage}
                 removeLanguage={removeLanguage}
               />
+              {/* Sticky Action Bar for Step 1 */}
+              <div className="sticky bottom-0 z-40 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 rounded-b-lg shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="hidden sm:block"></div>
+                <div className="flex flex-col sm:flex-row gap-3 sm:ml-auto sm:items-center">
+                  <button type="button" onClick={nextStep} className="w-full sm:w-auto py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium">Next</button>
+                </div>
+              </div>
             </div>
           )}
           {/* Step 2: Professional Experience */}
@@ -1513,6 +1520,15 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 handleEnhanceDescription={handleEnhanceDescription}
                 isEnhancing={isEnhancing}
               />
+              {/* Sticky Action Bar for Step 2 */}
+              <div className="sticky bottom-0 z-40 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 rounded-b-lg shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                  <button type="button" onClick={prevStep} className="w-full sm:w-auto py-3 px-4 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-colors text-base font-medium">Previous</button>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 sm:ml-auto sm:items-center">
+                  <button type="button" onClick={nextStep} className="w-full sm:w-auto py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-base font-medium">Next</button>
+                </div>
+              </div>
             </div>
           )}
           {/* Step 3: Education, Certifications, Template, Generate */}
@@ -1609,15 +1625,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
               </div>
             </div>
           )}
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-6 sm:mt-8">
-            {step > 1 && (
-              <button type="button" onClick={prevStep} className="px-4 sm:px-6 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 text-sm sm:text-base">Previous</button>
-            )}
-            {step < 3 && (
-              <button type="button" onClick={nextStep} className="ml-auto px-4 sm:px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm sm:text-base">Next</button>
-            )}
-          </div>
+
         </form>
       </FormProvider>
       {/* Preview Modal */}
