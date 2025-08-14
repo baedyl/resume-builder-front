@@ -22,6 +22,7 @@ import Subscription from './pages/Subscription';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
 import AIResumeBuilder from './pages/AIResumeBuilder';
+import PreviewEditor from './pages/PreviewEditor';
 import LoadingOverlay from './components/LoadingOverlay';
 import Footer from './components/Footer';
 import SEO from './components/SEO';
@@ -412,6 +413,7 @@ function App() {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<Article />} />
                 <Route path="/callback" element={<Callback />} />
+                <Route path="/preview-editor" element={<PreviewEditor />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/about" element={<About />} />
                 <Route
