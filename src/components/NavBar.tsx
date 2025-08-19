@@ -78,6 +78,7 @@ const NavBar: React.FC = () => {
   };
 
   const mainLinks = [
+    { label: 'Home', to: '/' },
     { label: 'Resumes', to: '/my-resumes' },
     { label: 'Cover Letters', to: '/cover-letters' },
     { label: 'Job Tracker', to: '/job-tracker' },
@@ -89,9 +90,13 @@ const NavBar: React.FC = () => {
     <nav className="bg-white dark:bg-gray-900 dark:text-gray-100 shadow-md sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* App Name or Logo */}
-          <Link to="/" className="text-gray-700 hover:text-blue-500 transition duration-300">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Resume Builder</h1>
+          {/* App Logo */}
+          <Link to="/" className="flex items-center transition duration-300 hover:opacity-80">
+            <img 
+              src={isDarkMode ? "/logo_white.png" : "/logo_dark.png"} 
+              alt="Resume Builder" 
+              className="h-48 w-auto"
+            />
           </Link>
 
           {/* Desktop Menu */}

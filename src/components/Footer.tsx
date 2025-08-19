@@ -8,9 +8,17 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
-            <h3 className="text-2xl font-bold text-white mb-4">Resume Builder</h3>
+            <div className="flex items-center mb-4">
+              <Link to="/" className="flex items-center transition duration-300 hover:opacity-80">
+                <img
+                  src="/logo_white.png"
+                  alt="Resume Builder"
+                  className="h-16 sm:h-20 w-auto mr-3"
+                />
+              </Link>
+            </div>
             <p className="text-gray-300 mb-6 max-w-md">
-              Create professional resumes that stand out and get you hired. 
+              Create professional resumes that stand out and get you hired.
               Powered by AI to help you craft the perfect resume for your dream job.
             </p>
             <div className="flex space-x-4">
@@ -40,7 +48,7 @@ const Footer: React.FC = () => {
             <h4 className="text-lg font-semibold text-white mb-4">Product</h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/resume" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/resume" className="text-gray-300 hover:text-white transition-colors flex items-center">
                   Resume Builder
                 </Link>
               </li>
@@ -108,9 +116,12 @@ const Footer: React.FC = () => {
         {/* Bottom Section */}
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2025 Pro AI Resume Builder. All rights reserved.
-            </p>
+            <div className="flex items-center space-x-3">
+              <h3 className="text-xl sm:text-2xl font-bold text-white">Resume Builder</h3>
+              <p className="text-gray-400 text-sm">
+                © 2025 Pro AI Resume Builder. All rights reserved.
+              </p>
+            </div>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
                 Privacy Policy
