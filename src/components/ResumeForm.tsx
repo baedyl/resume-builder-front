@@ -33,11 +33,19 @@ const WorkExperienceSchema = z.object({
   company: z.string().min(1, 'Company is required'),
   jobTitle: z.string().min(1, 'Job title is required'),
   startDate: z.string().min(1, 'Start date is required').regex(/^\d{4}-\d{2}$/, 'Start date must be YYYY-MM'),
-  endDate: z.union([z.string().regex(/^\d{4}-\d{2}$/, 'End date must be YYYY-MM'), z.literal('')]).optional(),
+  endDate: z.union([
+    z.string().regex(/^\d{4}-\d{2}$/, 'End date must be YYYY-MM'), 
+    z.literal('Present'), 
+    z.literal('')
+  ]).optional(),
   isCurrent: z.boolean().default(false),
   description: z.string().optional(),
 }).refine(
-  (data) => !data.endDate || (new Date(data.startDate).toString() !== 'Invalid Date' && new Date(data.endDate).toString() !== 'Invalid Date' && new Date(data.startDate) <= new Date(data.endDate)),
+  (data) => {
+    if (!data.endDate || data.endDate === 'Present') return true;
+    if (data.endDate === '') return true;
+    return new Date(data.startDate) <= new Date(data.endDate);
+  },
   { message: 'End date must be after start date', path: ['endDate'] }
 );
 
@@ -103,6 +111,7 @@ const mockResumeData: ResumeFormData = {
       jobTitle: "Software Engineer",
       startDate: "2020-01",
       endDate: "2023-12",
+      isCurrent: false,
       description: "Developed web applications using React and Node.js.",
     },
     {
@@ -110,6 +119,7 @@ const mockResumeData: ResumeFormData = {
       jobTitle: "Intern",
       startDate: "2019-06",
       endDate: "2019-12",
+      isCurrent: false,
       description: "Assisted in building REST APIs with Express.",
     },
   ],
@@ -146,7 +156,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       website: '',
       summary: '',
       skills: [],
-      workExperience: [{ company: '', jobTitle: '', startDate: '', endDate: '', description: '' }],
+      workExperience: [{ company: '', jobTitle: '', startDate: '', endDate: '', isCurrent: false, description: '' }],
       education: [{ institution: '', degree: '', major: '', graduationYear: undefined }],
       languages: [],
       certifications: [],
@@ -564,7 +574,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     const formattedWorkExperience = resumeData.workExperience.map(exp => ({
       ...exp,
       startDate: formatDateToYYYYMM(exp.startDate),
-      endDate: exp.endDate ? formatDateToYYYYMM(exp.endDate) : '',
+      endDate: exp.endDate === 'Present' ? 'Present' : (exp.endDate ? formatDateToYYYYMM(exp.endDate) : ''),
       isCurrent: exp.isCurrent || (!exp.endDate || exp.endDate === ''),
       location: exp.location || '',
     }));
@@ -1347,7 +1357,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             company: cleanValue(exp.company),
             jobTitle: cleanValue(exp.position || exp.jobTitle),
             startDate: formatDateToYYYYMM(cleanValue(exp.start_date || exp.startDate)),
-            endDate: formatDateToYYYYMM(cleanValue(exp.end_date || exp.endDate)),
+            endDate: cleanValue(exp.end_date || exp.endDate) === 'Present' ? 'Present' : formatDateToYYYYMM(cleanValue(exp.end_date || exp.endDate)),
             isCurrent: !exp.end_date && !exp.endDate,
             location: cleanValue(exp.location || ''),
             description: exp.responsibilities ? exp.responsibilities.join('\n') : cleanValue(exp.description)

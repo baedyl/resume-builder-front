@@ -43,9 +43,9 @@ const ResumeDetail: React.FC = () => {
             jobTitle: exp.jobTitle || '',
             location: exp.location || '',
             startDate: formatDateToYYYYMM(exp.startDate),
-            endDate: exp.endDate ? formatDateToYYYYMM(exp.endDate) : '',
+            endDate: exp.endDate ? (exp.endDate === 'Present' ? 'Present' : formatDateToYYYYMM(exp.endDate)) : '',
             description: exp.description || '',
-            isCurrent: !exp.endDate || exp.endDate === '',
+            isCurrent: exp.endDate === 'Present' || !exp.endDate || exp.endDate === '',
           })),
           education: (response.data.educations || []).map((edu: any) => ({
             institution: edu.institution || '',

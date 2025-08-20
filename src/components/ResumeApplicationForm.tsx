@@ -151,7 +151,7 @@ const ResumeApplicationForm: React.FC = () => {
           company: exp.company || '',
           location: exp.location || '',
           startDate: formatDateToYYYYMM(exp.startDate),
-          endDate: formatDateToYYYYMM(exp.endDate),
+          endDate: exp.endDate === 'Present' ? 'Present' : formatDateToYYYYMM(exp.endDate),
           description: exp.description || '',
           responsibilities: exp.responsibilities || []
         })) || [],
