@@ -1560,8 +1560,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 compact={true}
               />
               <div className="sticky bottom-0 z-40 -mx-3 sm:-mx-6 lg:-mx-10 px-3 sm:px-6 lg:px-10 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 rounded-b-lg shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                {/* Left spacer keeps Previous aligned separately below */}
-                <div className="hidden sm:block"></div>
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                  <button type="button" onClick={prevStep} className="w-full sm:w-auto py-3 px-4 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-colors text-base font-medium">Previous</button>
+                </div>
                 <div className="flex flex-col sm:flex-row gap-3 sm:ml-auto sm:items-center" ref={previewMenuRef}>
                   {/* Split Preview button (click to toggle options) */}
                   <div className="relative flex items-stretch gap-2">

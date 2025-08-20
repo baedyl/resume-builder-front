@@ -3,6 +3,7 @@
 import { Link } from 'react-router-dom';
 import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaClipboardList, FaClock, FaFileAlt } from 'react-icons/fa';
 import SEO from '../components/SEO';
+import { lazy, Suspense } from 'react';
 
 const Home: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const Home: React.FC = () => {
       
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" aria-hidden="true"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm font-medium mb-8">
@@ -32,23 +33,26 @@ const Home: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <a
                 href="/resume"
-                className="inline-flex items-center px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                aria-label="Start building your free AI resume"
+                className="inline-flex items-center px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
               >
-                <FaMagic className="mr-2" />
+                <FaMagic className="mr-2" aria-hidden="true" />
                 Start Building Free
               </a>
               <a
                 href="/pricing"
-                className="inline-flex items-center px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                aria-label="View pricing and premium features"
+                className="inline-flex items-center px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
               >
-                <FaStar className="mr-2" />
+                <FaStar className="mr-2" aria-hidden="true" />
                 View Pricing
               </a>
               <a
                 href="#templates"
-                className="inline-flex items-center px-8 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-lg font-semibold rounded-lg hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200"
+                aria-label="View available resume templates"
+                className="inline-flex items-center px-8 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-lg font-semibold rounded-lg hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
               >
-                <FaFileAlt className="mr-2" />
+                <FaFileAlt className="mr-2" aria-hidden="true" />
                 View Templates
               </a>
             </div>
@@ -90,21 +94,21 @@ const Home: React.FC = () => {
               </h3>
               
               <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border-l-4 border-red-500">
-                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">Generic Templates Get Rejected</h4>
+                <h4 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Generic Templates Get Rejected</h4>
                 <p className="text-red-700 dark:text-red-300 text-sm">
                   Most templates aren't ATS-optimized, leading to automatic rejection
                 </p>
               </div>
               
               <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border-l-4 border-red-500">
-                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">No Career Transition Support</h4>
+                <h4 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">No Career Transition Support</h4>
                 <p className="text-red-700 dark:text-red-300 text-sm">
                   Can't help you translate experience from one industry to another
                 </p>
               </div>
               
               <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border-l-4 border-red-500">
-                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">One-Size-Fits-All Approach</h4>
+                <h4 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">One-Size-Fits-All Approach</h4>
                 <p className="text-red-700 dark:text-red-300 text-sm">
                   Same advice for everyone, regardless of your situation
                 </p>
@@ -118,21 +122,21 @@ const Home: React.FC = () => {
               </h3>
               
               <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border-l-4 border-green-500">
-                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">ATS-Optimized for Real Results</h4>
+                <h4 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">ATS-Optimized for Real Results</h4>
                 <p className="text-green-700 dark:text-green-300 text-sm">
                   Our AI analyzes job descriptions and optimizes your resume to pass automated screening
                 </p>
               </div>
               
               <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border-l-4 border-green-500">
-                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Career Transition Expertise</h4>
+                <h4 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">Career Transition Expertise</h4>
                 <p className="text-green-700 dark:text-green-300 text-sm">
                   Specialized AI that helps translate your experience into relevant skills for new industries
                 </p>
               </div>
               
               <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border-l-4 border-green-500">
-                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Personalized for Your Situation</h4>
+                <h4 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">Personalized for Your Situation</h4>
                 <p className="text-green-700 dark:text-green-300 text-sm">
                   Different strategies for unemployed professionals vs. career changers vs. industry switchers
                 </p>
@@ -488,7 +492,7 @@ const Home: React.FC = () => {
                 <div>
                   <div className="font-semibold text-gray-900 dark:text-white">Sarah Chen</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Marketing Director</div>
-                  <div className="text-xs text-green-600 font-medium">8 months → 2 weeks to hire</div>
+                  <div className="text-xs text-green-700 dark:text-green-400 font-medium">8 months → 2 weeks to hire</div>
                 </div>
               </div>
             </div>
@@ -509,7 +513,7 @@ const Home: React.FC = () => {
                 <div>
                   <div className="font-semibold text-gray-900 dark:text-white">Mike Rodriguez</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Product Manager</div>
-                  <div className="text-xs text-green-600 font-medium">Finance → Tech in 1 month</div>
+                  <div className="text-xs text-green-700 dark:text-green-400 font-medium">Finance → Tech in 1 month</div>
                 </div>
               </div>
             </div>
@@ -530,7 +534,7 @@ const Home: React.FC = () => {
                 <div>
                   <div className="font-semibold text-gray-900 dark:text-white">Jennifer Park</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">UX Designer</div>
-                  <div className="text-xs text-green-600 font-medium">0 → 5 interviews</div>
+                  <div className="text-xs text-green-700 dark:text-green-400 font-medium">0 → 5 interviews</div>
                 </div>
               </div>
             </div>
@@ -550,9 +554,10 @@ const Home: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
             <a
               href="/resume"
-              className="inline-flex items-center px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 shadow-lg"
+              aria-label="Build your ATS-optimized resume"
+              className="inline-flex items-center px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-200 shadow-lg"
             >
-              <FaRocket className="mr-2" />
+              <FaRocket className="mr-2" aria-hidden="true" />
               Build Your ATS-Optimized Resume
             </a>
             <Link
