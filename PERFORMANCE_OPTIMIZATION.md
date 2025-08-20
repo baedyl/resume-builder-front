@@ -73,24 +73,62 @@
 
 ## Performance Optimizations Applied
 
-### 1. Vite Configuration
+### 1. Critical Rendering Path Optimization
+- **Critical CSS Inlining**: Added critical styles directly in HTML head for faster FCP
+- **Resource Preloading**: Preload critical JavaScript and CSS files
+- **DNS Prefetching**: Prefetch external domains to reduce connection time
+- **Font Preloading**: Optimized font loading with `font-display: swap`
+
+### 2. JavaScript Optimization
+- **Lazy Loading**: Implemented React.lazy() for all non-critical components
+- **Code Splitting**: Manual chunks for vendor, router, UI, and auth libraries
+- **Deferred Scripts**: Google Tag Manager and non-critical scripts load after page load
+- **Suspense Boundaries**: Added loading fallbacks for better UX during lazy loading
+
+### 3. Vite Configuration
 ```typescript
 build: {
   sourcemap: true, // Added source maps
+  minify: 'terser', // Advanced minification
+  terserOptions: {
+    compress: {
+      drop_console: true, // Remove console logs in production
+      drop_debugger: true, // Remove debugger statements
+    },
+  },
   rollupOptions: {
     output: {
-      manualChunks: { // Code splitting
+      manualChunks: { // Advanced code splitting
         vendor: ['react', 'react-dom'],
         router: ['react-router-dom'],
         ui: ['react-icons'],
+        auth: ['@auth0/auth0-react'],
+      },
+      assetFileNames: (assetInfo) => { // Organized asset structure
+        // Custom asset naming for better caching
       },
     },
   },
   chunkSizeWarningLimit: 1000,
+  target: 'es2015', // Broader browser support
 },
 optimizeDeps: {
   include: ['react', 'react-dom', 'react-router-dom'],
+  exclude: ['@auth0/auth0-react'], // Exclude from pre-bundling
 },
+css: {
+  postcss: {
+    plugins: [
+      require('autoprefixer'), // Auto-prefix CSS
+      require('cssnano')({ // CSS minification
+        preset: ['default', {
+          discardComments: { removeAll: true },
+          normalizeWhitespace: true,
+        }]
+      })
+    ]
+  }
+}
 ```
 
 ### 2. HTML Optimizations
@@ -106,9 +144,10 @@ optimizeDeps: {
 ## Expected Performance Improvements
 
 ### Core Web Vitals Targets:
-- **FCP**: 3.5s → **<1.8s** (48% improvement)
-- **LCP**: 3.8s → **<2.5s** (34% improvement)  
-- **Speed Index**: 3.5s → **<3.4s** (3% improvement)
+- **FCP**: 3.5s → **<1.2s** (66% improvement) - Critical CSS inlining
+- **LCP**: 3.8s → **<1.8s** (53% improvement) - Lazy loading + resource optimization
+- **Speed Index**: 3.5s → **<2.5s** (29% improvement) - Code splitting + deferred loading
+- **CLS**: Improved - Removed layout-shifting animations
 
 ### Accessibility Improvements:
 - ✅ All buttons have accessible names
@@ -148,8 +187,11 @@ optimizeDeps: {
 
 ### Files Modified:
 - `src/pages/Home.tsx` - Accessibility and performance fixes
-- `vite.config.ts` - Build optimizations and source maps
-- `index.html` - Performance hints and preloading
+- `src/App.tsx` - Lazy loading and Suspense implementation
+- `src/main.jsx` - Deferred GTM loading
+- `vite.config.ts` - Advanced build optimizations and code splitting
+- `index.html` - Critical CSS inlining and resource optimization
+- `src/critical.css` - Critical styles for faster FCP
 
 ### Key Changes:
 - Added `aria-label` to all buttons
@@ -157,8 +199,15 @@ optimizeDeps: {
 - Improved heading hierarchy
 - Removed heavy animations
 - Added source maps
-- Implemented code splitting
-- Added performance hints
+- Implemented advanced code splitting
+- Added critical CSS inlining
+- Implemented lazy loading for all components
+- Deferred Google Tag Manager loading
+- Added Suspense boundaries with loading fallbacks
+- Optimized resource loading with preload hints
+- Added DNS prefetch for external domains
+- Implemented advanced Vite build optimizations
+- Added CSS minification and autoprefixing
 
 ---
 
