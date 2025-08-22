@@ -9,9 +9,9 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <SEO 
-        title="AI Resume Builder - Free Professional Resume Creator with AI"
-        description="Create professional, ATS-optimized resumes with AI assistance. Free AI resume builder with templates, cover letters, and job tracking. Build your resume in minutes!"
-        keywords="ai resume builder, ai resume builder free, free resume builder, AI resume creator, professional resume builder, ATS optimized resume, resume templates, cover letter generator, job application tracker, career tools, job search, resume maker, cv builder"
+        title="Best AI Resume Builder (Free) – Create ATS-Optimized Resumes in Minutes"
+        description="The best free AI resume builder to create ATS-optimized resumes in minutes. Modern templates, keyword optimization, and career-change support. Export to PDF."
+        keywords="ai resume builder, best ai resume builder, ai resume builder free, free resume builder, ats resume builder, resume maker ai, resume generator ai"
       />
       
       {/* Hero Section */}
@@ -24,11 +24,10 @@ const Home: React.FC = () => {
               Free AI Resume Builder
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-              Stop Sending Resumes That Get <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">Rejected by ATS</span>
+              AI Resume Builder: Create <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">ATS‑Optimized</span> Resumes in Minutes
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Our AI resume builder helps unemployed professionals and career changers create ATS-optimized resumes that actually get past automated screening. 
-              <strong> 73% of our users get interviews within 7 days.</strong>
+              Build a professional, keyword‑rich resume that passes automated screening and impresses recruiters. Modern templates, AI suggestions, and export to PDF—free to start.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <a
@@ -59,16 +58,47 @@ const Home: React.FC = () => {
             <div className="flex items-center justify-center space-x-8 text-sm text-gray-500 dark:text-gray-400">
               <div className="flex items-center">
                 <FaCheck className="text-green-500 mr-2" />
-                Free AI resume builder
+                Best AI resume builder (free)
               </div>
               <div className="flex items-center">
                 <FaCheck className="text-green-500 mr-2" />
-                AI-powered insights
+                ATS‑ready templates
               </div>
               <div className="flex items-center">
                 <FaCheck className="text-green-500 mr-2" />
                 Export to PDF
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What is an AI Resume Builder */}
+      <section className="py-16 bg-white dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-10 items-start">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">What is an AI Resume Builder?</h2>
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                An AI resume builder uses natural language processing to turn your experience into impact‑driven bullet points, align keywords with a job description, and format your resume for <strong>ATS (Applicant Tracking Systems)</strong> so you pass automated screening.
+              </p>
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                Unlike generic resume tools, our builder evaluates the role you want and suggests the right verbs, scope, and metrics—so your resume reads like results, not responsibilities.
+              </p>
+              <div className="mt-6">
+                <Link to="/blog/ai-resume-builder-free-guide" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
+                  Read: Free guide to AI resume builders →
+                </Link>
+              </div>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Why this AI resume builder ranks higher with recruiters</h3>
+              <ul className="space-y-3 text-gray-700 dark:text-gray-300">
+                <li className="flex"><FaCheck className="text-green-500 mt-1 mr-2" /> <span><strong>ATS‑optimized layout</strong> and section headings that parse reliably</span></li>
+                <li className="flex"><FaCheck className="text-green-500 mt-1 mr-2" /> <span><strong>Keyword alignment</strong> to the job description using AI extraction</span></li>
+                <li className="flex"><FaCheck className="text-green-500 mt-1 mr-2" /> <span><strong>Achievement language</strong> that emphasizes scope, action, and measurable results</span></li>
+                <li className="flex"><FaCheck className="text-green-500 mt-1 mr-2" /> <span><strong>Gap & transition support</strong> to frame breaks and pivots credibly</span></li>
+              </ul>
             </div>
           </div>
         </div>
@@ -144,6 +174,79 @@ const Home: React.FC = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Lightweight Comparison (Value, not brand) */}
+      <section className="py-16 bg-white dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Choose the AI Resume Builder That Fits Your Goals</h2>
+          <div className="grid md:grid-cols-3 gap-6 text-sm">
+            <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Keyword Optimization</h3>
+              <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                <li><FaCheck className="inline text-green-500 mr-2" /> Extracts keywords from job posts</li>
+                <li><FaCheck className="inline text-green-500 mr-2" /> Highlights missing skills & titles</li>
+                <li><FaCheck className="inline text-green-500 mr-2" /> Rewrites bullets to match intent</li>
+              </ul>
+            </div>
+            <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">ATS Reliability</h3>
+              <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                <li><FaCheck className="inline text-green-500 mr-2" /> Clean headings that parse correctly</li>
+                <li><FaCheck className="inline text-green-500 mr-2" /> PDF export tested with major ATS</li>
+                <li><FaCheck className="inline text-green-500 mr-2" /> No tables or images that break parsing</li>
+              </ul>
+            </div>
+            <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Career Transitions</h3>
+              <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                <li><FaCheck className="inline text-green-500 mr-2" /> Maps adjacent industry skills</li>
+                <li><FaCheck className="inline text-green-500 mr-2" /> Helps explain gaps with credibility</li>
+                <li><FaCheck className="inline text-green-500 mr-2" /> Tailors content by target role</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section for "ai resume builder" intent */}
+      <section className="py-16 bg-white dark:bg-gray-800">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8">AI Resume Builder: Frequently Asked Questions</h2>
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">What is the best AI resume builder?</h3>
+              <p className="text-gray-700 dark:text-gray-300">The best AI resume builder helps you pass ATS, match job keywords, and write measurable bullet points. Ours does all three and lets you export to PDF for free.</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Is your AI resume builder free?</h3>
+              <p className="text-gray-700 dark:text-gray-300">Yes—start free with core features. Optional premium features include advanced rewriting, templates, and PDF styles.</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Will my resume pass ATS?</h3>
+              <p className="text-gray-700 dark:text-gray-300">We use ATS‑friendly headings, structure, and fonts. The AI also aligns keywords from the job description to improve screening success.</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Can it help with career changes or gaps?</h3>
+              <p className="text-gray-700 dark:text-gray-300">Yes. The builder reframes unrelated experience into transferable skills and recommends credible ways to present gaps.</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Do recruiters accept AI‑written resumes?</h3>
+              <p className="text-gray-700 dark:text-gray-300">Recruiters care about clarity and impact. Our AI emphasizes outcomes (scope, action, results) so your resume reads like achievements, not tasks.</p>
+            </div>
+          </div>
+        </div>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {"@type":"Question","name":"What is the best AI resume builder?","acceptedAnswer":{"@type":"Answer","text":"The best AI resume builder helps you pass ATS, match job keywords, and write measurable bullet points. Ours does all three and lets you export to PDF for free."}},
+            {"@type":"Question","name":"Is your AI resume builder free?","acceptedAnswer":{"@type":"Answer","text":"Yes—start free with core features. Optional premium features include advanced rewriting, templates, and PDF styles."}},
+            {"@type":"Question","name":"Will my resume pass ATS?","acceptedAnswer":{"@type":"Answer","text":"We use ATS‑friendly headings, structure, and fonts. The AI also aligns keywords from the job description to improve screening success."}},
+            {"@type":"Question","name":"Can it help with career changes or gaps?","acceptedAnswer":{"@type":"Answer","text":"Yes. The builder reframes unrelated experience into transferable skills and recommends credible ways to present gaps."}},
+            {"@type":"Question","name":"Do recruiters accept AI‑written resumes?","acceptedAnswer":{"@type":"Answer","text":"Recruiters care about clarity and impact. Our AI emphasizes outcomes (scope, action, results) so your resume reads like achievements, not tasks."}}
+          ]
+        })}</script>
       </section>
 
       {/* Stats Section - More Compelling */}
@@ -490,7 +593,7 @@ const Home: React.FC = () => {
                   S
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Sarah Chen</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Amélie Lobe</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Marketing Director</div>
                   <div className="text-xs text-green-700 dark:text-green-400 font-medium">8 months → 2 weeks to hire</div>
                 </div>
@@ -532,7 +635,7 @@ const Home: React.FC = () => {
                   J
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Jennifer Park</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Bello Ishaga</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">UX Designer</div>
                   <div className="text-xs text-green-700 dark:text-green-400 font-medium">0 → 5 interviews</div>
                 </div>

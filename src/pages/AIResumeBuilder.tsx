@@ -237,7 +237,7 @@ const AIResumeBuilder: React.FC = () => {
                   S
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Sarah Chen</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Amélie Lobe</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Senior Software Engineer</div>
                 </div>
               </div>
@@ -283,7 +283,7 @@ const AIResumeBuilder: React.FC = () => {
                   J
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 dark:text-white">Jennifer Park</div>
+                  <div className="font-semibold text-gray-900 dark:text-white">Bello Ishaga</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Data Analyst</div>
                 </div>
               </div>
