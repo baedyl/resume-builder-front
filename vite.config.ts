@@ -24,7 +24,7 @@ export default defineConfig({
           auth: ['@auth0/auth0-react'],
         },
         assetFileNames: (assetInfo) => {
-          const info = assetInfo.name.split('.');
+          const info = (assetInfo.name ?? '').split('.');
           const ext = info[info.length - 1];
           if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
             return `assets/images/[name]-[hash][extname]`;
