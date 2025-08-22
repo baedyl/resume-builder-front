@@ -3,7 +3,6 @@
 import { Link } from 'react-router-dom';
 import { FaRocket, FaMagic, FaDownload, FaStar, FaCheck, FaUsers, FaClipboardList, FaClock, FaFileAlt } from 'react-icons/fa';
 import SEO from '../components/SEO';
-import { lazy, Suspense } from 'react';
 
 const Home: React.FC = () => {
   return (
