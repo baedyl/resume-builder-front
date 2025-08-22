@@ -87,15 +87,15 @@ const NavBar: React.FC = () => {
   ];
 
   return (
-    <nav className="bg-white dark:bg-gray-900 dark:text-gray-100 shadow-md sticky top-0 z-50 transition-colors">
+    <nav className="bg-white dark:bg-gray-900 dark:text-gray-100 shadow-md sticky top-0 z-50 transition-colors overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20 overflow-hidden">
           {/* App Logo */}
-          <Link to="/" className="flex items-center transition duration-300 hover:opacity-80">
+          <Link to="/" className="flex items-center transition duration-300 hover:opacity-80 overflow-hidden">
             <img 
               src={isDarkMode ? "/logo_white.png" : "/logo_dark.png"} 
               alt="Resume Builder" 
-              className="h-48 w-auto"
+              className="h-48 w-auto max-h-full"
             />
           </Link>
 
@@ -167,82 +167,40 @@ const NavBar: React.FC = () => {
               </div>
             ) : (
               <div className="flex space-x-4 items-center">
-                <Link to="/login" className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium">
-                  Login
-                </Link>
-                <Link to="/register" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                  Sign Up
-                </Link>
+                <Link to="/login" className="text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">Login</Link>
+                <Link to="/register" className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">Sign Up</Link>
               </div>
             )}
-            {/* Dark/Light Mode Switcher - moved to end */}
-            <button
-              onClick={toggleDarkMode}
-              className="focus:outline-none text-xl ml-4"
-              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-              title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
-            </button>
           </div>
 
-          {/* Mobile Hamburger Menu Button */}
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-gray-700 focus:outline-none"
+            className="md:hidden text-gray-700 dark:text-gray-200"
+            aria-label="Open Menu"
           >
             <FaBars />
           </button>
         </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 w-full bg-white dark:bg-gray-900 shadow-md transition-colors">
-            <div className="flex flex-col p-4 space-y-2">
-              {mainLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className={`text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors ${location.pathname === link.to ? 'text-blue-500 dark:text-blue-400 font-semibold' : ''}`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {/* Add dark/light mode switcher to mobile menu */}
-              <button
-                onClick={toggleDarkMode}
-                className="focus:outline-none text-xl self-start"
-                aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-              >
-                {isDarkMode ? <FaSun className="text-yellow-400" /> : <FaMoon className="text-gray-700" />}
-              </button>
-              {isAuthenticated ? (
-                <>
-                  {/* <Link to="/settings" className="text-gray-700 hover:text-blue-500">
-                    Settings
-                  </Link> */}
-                  <button
-                    onClick={handleLogout}
-                    className="text-gray-700 hover:text-blue-500"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login" className="text-gray-700 hover:text-blue-500">
-                    Login
-                  </Link>
-                  <Link to="/register" className="text-gray-700 hover:text-blue-500">
-                    Sign Up
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
+          <div className="px-4 py-3 space-y-2">
+            {mainLinks.map((link) => (
+              <Link
+                key={link.label}
+                to={link.to}
+                onClick={() => setIsMenuOpen(false)}
+                className={`block text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors ${location.pathname === link.to ? 'text-blue-500 dark:text-blue-400 font-semibold' : ''}`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

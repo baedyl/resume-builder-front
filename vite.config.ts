@@ -45,17 +45,4 @@ export default defineConfig({
     include: ['react', 'react-dom', 'react-router-dom'],
     exclude: ['@auth0/auth0-react'],
   },
-  css: {
-    postcss: {
-      plugins: [
-        require('autoprefixer'),
-        require('cssnano')({
-          preset: ['default', {
-            discardComments: { removeAll: true },
-            normalizeWhitespace: true,
-          }]
-        })
-      ]
-    }
-  }
 });

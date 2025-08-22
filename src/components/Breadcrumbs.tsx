@@ -1,6 +1,7 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { FaChevronRight, FaHome } from 'react-icons/fa';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface BreadcrumbItem {
   label: string;
@@ -9,7 +10,13 @@ interface BreadcrumbItem {
 
 const Breadcrumbs: React.FC = () => {
   const location = useLocation();
+  const auth0 = useAuth0();
   const pathnames = location.pathname.split('/').filter((x) => x);
+
+  // Don't show breadcrumbs if Auth0 is still loading
+  if (auth0?.isLoading) {
+    return null;
+  }
 
   // Define readable names for routes
   const routeNames: Record<string, string> = {
@@ -31,12 +38,23 @@ const Breadcrumbs: React.FC = () => {
     'apply': 'Apply for Job'
   };
 
-  // Don't show breadcrumbs on homepage, login, or register
-  if (pathnames.length === 0 || pathnames.includes('login') || pathnames.includes('register')) {
+  // Don't show breadcrumbs on login, register, or callback pages
+  if (pathnames.includes('login') || pathnames.includes('register') || pathnames.includes('callback')) {
     return null;
   }
 
-  const breadcrumbs: BreadcrumbItem[] = [{ label: 'Home', path: '/' }];
+  // For authenticated users, Home should go to /my-resumes (resume list)
+  // For unauthenticated users, Home should go to / (static home page)
+  const isAuthenticated = auth0?.isAuthenticated || false;
+  const homePath = isAuthenticated ? '/my-resumes' : '/';
+
+  // For authenticated users, show breadcrumbs even on homepage
+  // For unauthenticated users, only show breadcrumbs on non-homepage routes
+  if (pathnames.length === 0 && !isAuthenticated) {
+    return null;
+  }
+
+  const breadcrumbs: BreadcrumbItem[] = [{ label: 'Home', path: homePath }];
 
   let cumulativePath = '';
   pathnames.forEach((segment, index) => {
