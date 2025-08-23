@@ -87,15 +87,15 @@ const NavBar: React.FC = () => {
   ];
 
   return (
-    <nav className="bg-white dark:bg-gray-900 dark:text-gray-100 shadow-md sticky top-0 z-50 transition-colors overflow-hidden">
+    <nav className="bg-white dark:bg-gray-900 dark:text-gray-100 shadow-md sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20 overflow-hidden">
+        <div className="flex justify-between items-center h-20">
           {/* App Logo */}
           <Link to="/" className="flex items-center transition duration-300 hover:opacity-80 overflow-hidden">
             <img 
-              src={isDarkMode ? "/logo_white.png" : "/logo_dark.png"} 
+              src={isDarkMode ? "/logo_dark_small.png" : "/logo_white_small.png"} 
               alt="Resume Builder" 
-              className="h-48 w-auto max-h-full"
+              className="w-full max-h-full"
             />
           </Link>
 
