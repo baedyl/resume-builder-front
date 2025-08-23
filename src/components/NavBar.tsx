@@ -111,6 +111,20 @@ const NavBar: React.FC = () => {
                 {link.label}
               </Link>
             ))}
+            {/* Theme Toggle (Desktop) */}
+            <button
+              onClick={toggleDarkMode}
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="ml-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              title={isDarkMode ? 'Light mode' : 'Dark mode'}
+            >
+              {isDarkMode ? (
+                <FaSun className="text-yellow-400" />
+              ) : (
+                <FaMoon className="text-blue-500" />
+              )}
+            </button>
+
             {/* User/Profile Dropdown */}
             {isAuthenticated ? (
               <div className="relative" ref={dropdownRef}>
@@ -188,6 +202,20 @@ const NavBar: React.FC = () => {
       {isMenuOpen && (
         <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
           <div className="px-4 py-3 space-y-2">
+            {/* Theme Toggle (Mobile) */}
+            <button
+              onClick={toggleDarkMode}
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="w-full flex items-center justify-between p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+            >
+              <span>{isDarkMode ? 'Light mode' : 'Dark mode'}</span>
+              {isDarkMode ? (
+                <FaSun className="text-yellow-400" />
+              ) : (
+                <FaMoon className="text-blue-500" />
+              )}
+            </button>
+
             {mainLinks.map((link) => (
               <Link
                 key={link.label}
