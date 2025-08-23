@@ -95,7 +95,7 @@ const NavBar: React.FC = () => {
             <img 
               src={isDarkMode ? "/logo_dark_small.png" : "/logo_white_small.png"} 
               alt="Resume Builder" 
-              className="w-full max-h-full"
+              className="w-auto max-h-full"
             />
           </Link>
 

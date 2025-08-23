@@ -170,6 +170,12 @@ const Article: React.FC = () => {
                   alt={article.metadata.title}
                   className="w-full h-full object-cover"
                   loading="lazy"
+                  onError={(e) => {
+                    const img = e.currentTarget as HTMLImageElement;
+                    if (img.src !== '/og-image.jpg') {
+                      img.src = '/og-image.jpg';
+                    }
+                  }}
                 />
               </div>
             </div>
