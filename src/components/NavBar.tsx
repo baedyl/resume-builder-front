@@ -93,7 +93,7 @@ const NavBar: React.FC = () => {
           {/* App Logo */}
           <Link to="/" className="flex items-center transition duration-300 hover:opacity-80 overflow-hidden">
             <img 
-              src={isDarkMode ? "/logo_dark_small.png" : "/logo_white_small.png"} 
+              src={isDarkMode ? "/logo_dark_small.svg" : "/logo_white_small.svg"} 
               alt="Resume Builder" 
               className="w-auto max-h-full"
             />

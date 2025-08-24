@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
             <div className="flex items-center mb-4">
               <Link to="/" className="flex items-center transition duration-300 hover:opacity-80">
                 <img
-                  src="/logo_white.png"
+                  src="/logo_dark_small.svg"
                   alt="Resume Builder"
                   className="h-16 sm:h-20 w-auto mr-3"
                 />
