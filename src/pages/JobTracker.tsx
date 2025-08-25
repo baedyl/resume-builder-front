@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { createJobService } from '../services/jobService';
+import { mockJobService } from '../services/mockJobService';
 import { JobApplication, JobStats, JobStatus } from '../types/job';
 import type { JobFilters } from '../types/job';
 import JobStatsCard from '../components/job-tracking/JobStatsCard';
@@ -14,9 +15,12 @@ import PremiumGate from '../components/PremiumGate';
 import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSubscription } from '../contexts/SubscriptionContext';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const JobTracker: React.FC = () => {
   const { getAccessTokenSilently } = useAuth0();
+  const { isPremium, isLoading: subscriptionLoading, subscription } = useSubscription();
   const jobService = createJobService(getAccessTokenSilently);
   const [jobs, setJobs] = useState<JobApplication[]>([]);
   const [stats, setStats] = useState<JobStats | null>(null);
@@ -25,25 +29,66 @@ const JobTracker: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobApplication | null>(null);
+  const [usingMockData, setUsingMockData] = useState(false);
+
+  // Debug subscription status
+  useEffect(() => {
+    console.log('JobTracker - Subscription Debug:', {
+      isPremium,
+      subscriptionLoading,
+      subscription,
+      usingMockData
+    });
+  }, [isPremium, subscriptionLoading, subscription, usingMockData]);
 
   useEffect(() => {
+    if (subscriptionLoading) return;
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters]);
+  }, [filters, subscriptionLoading]);
 
   const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const [jobsData, statsData] = await Promise.all([
-        jobService.getJobs(filters),
-        jobService.getStats()
-      ]);
+      // If user appears to have premium but we're getting 403s, fall back to mock data
+      if (isPremium && !usingMockData) {
+        try {
+          const [jobsData, statsData] = await Promise.all([
+            jobService.getJobs(filters),
+            jobService.getStats()
+          ]);
+          
+          setJobs(jobsData);
+          setStats(statsData);
+          setUsingMockData(false);
+          return;
+        } catch (err: any) {
+          // If we get a 403 "Premium subscription required" error, fall back to mock data
+          if (err?.response?.status === 403 && err?.response?.data?.error === 'Premium subscription required') {
+            console.warn('Backend returned 403 for premium user, falling back to mock data');
+            setUsingMockData(true);
+            // Continue to mock data fallback below
+          } else {
+            // Re-throw other errors
+            throw err;
+          }
+        }
+      }
       
-      setJobs(jobsData);
-      setStats(statsData);
+      // Use mock data as fallback
+      if (usingMockData || !isPremium) {
+        const [jobsData, statsData] = await Promise.all([
+          mockJobService.getJobs(filters),
+          mockJobService.getStats()
+        ]);
+        
+        setJobs(jobsData);
+        setStats(statsData);
+      }
     } catch (err) {
+      console.error('Error loading job data:', err);
       setError(err instanceof Error ? err.message : 'Failed to load job data');
     } finally {
       setLoading(false);
@@ -52,10 +97,14 @@ const JobTracker: React.FC = () => {
 
   const handleAddJob = async (jobData: any) => {
     try {
-      const newJob = await jobService.createJob(jobData);
-      setJobs(prev => [newJob, ...prev]);
+      if (usingMockData) {
+        const newJob = await mockJobService.createJob(jobData);
+        setJobs(prev => [newJob, ...prev]);
+      } else {
+        const newJob = await jobService.createJob(jobData);
+        setJobs(prev => [newJob, ...prev]);
+      }
       setShowAddModal(false);
-      // await loadData(); // Refresh stats
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to add job');
       setError(err instanceof Error ? err.message : 'Failed to add job');
@@ -64,11 +113,14 @@ const JobTracker: React.FC = () => {
 
   const handleUpdateJob = async (id: string, jobData: any) => {
     try {
-      const updatedJob = await jobService.updateJob(id, jobData);
-      setJobs(prev => prev.map(job => job.id === id ? updatedJob : job));
+      if (usingMockData) {
+        const updatedJob = await mockJobService.updateJob(id, jobData);
+        setJobs(prev => prev.map(job => job.id === id ? updatedJob : job));
+      } else {
+        const updatedJob = await jobService.updateJob(id, jobData);
+        setJobs(prev => prev.map(job => job.id === id ? updatedJob : job));
+      }
       setSelectedJob(null);
-      // await loadData(); // Refresh stats
-      // toast.success('Job updated successfully!');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to update job');
       setError(err instanceof Error ? err.message : 'Failed to update job');
@@ -81,9 +133,12 @@ const JobTracker: React.FC = () => {
     }
 
     try {
-      await jobService.deleteJob(id);
+      if (usingMockData) {
+        await mockJobService.deleteJob(id);
+      } else {
+        await jobService.deleteJob(id);
+      }
       setJobs(prev => prev.filter(job => job.id !== id));
-      // await loadData(); // Refresh stats
       toast.success('Job deleted successfully!');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete job');
@@ -101,7 +156,11 @@ const JobTracker: React.FC = () => {
 
   const handleStatusUpdate = async (id: string, status: JobStatus) => {
     try {
-      await jobService.updateJob(id, { status });
+      if (usingMockData) {
+        await mockJobService.updateJob(id, { status });
+      } else {
+        await jobService.updateJob(id, { status });
+      }
       await loadData();
       toast.success('Job status updated!');
     } catch (err) {
@@ -109,9 +168,12 @@ const JobTracker: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (loading || subscriptionLoading) {
     return <LoadingOverlay />;
   }
+
+  // Show mock data warning if we're using fallback
+  const showMockWarning = usingMockData && isPremium;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -120,6 +182,31 @@ const JobTracker: React.FC = () => {
         description={FEATURE_DESCRIPTIONS.JOB_TRACKER}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Sticky Action Bar */}
+          <div className="fixed top-20 left-0 right-0 z-40 px-4 sm:px-6 lg:px-8 py-3 bg-white dark:bg-gray-800 shadow-sm">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center">
+                  <Breadcrumbs />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Application
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Spacer to prevent content overlap */}
+          <div className="h-12"></div>
+
           {/* Header */}
           <div className="mb-8">
             <div className="flex justify-between items-center">
@@ -130,16 +217,12 @@ const JobTracker: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-400 mt-2">
                   Track your job applications and stay organized
                 </p>
+                {showMockWarning && (
+                  <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded text-sm text-yellow-800 dark:text-yellow-200">
+                    ⚠️ Using demo data - backend subscription check failed
+                  </div>
+                )}
               </div>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Add Application
-              </button>
             </div>
           </div>
 

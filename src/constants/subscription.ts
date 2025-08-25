@@ -108,6 +108,7 @@ export const FEATURE_DESCRIPTIONS = {
 export const SUBSCRIPTION_ENDPOINTS = {
   CREATE_CHECKOUT: '/api/stripe/create-checkout-session',
   SUBSCRIPTION_STATUS: '/api/stripe/subscription-status',
+  SUBSCRIPTION_DEBUG: '/api/stripe/debug-subscription',
   CANCEL_SUBSCRIPTION: '/api/stripe/cancel-subscription',
   RESUME_SUBSCRIPTION: '/api/stripe/resume-subscription'
 } as const; 

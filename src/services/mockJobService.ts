@@ -46,7 +46,7 @@ const mockJobs: JobApplication[] = [
     notes: 'Applied through LinkedIn, waiting for response',
     followUpDate: '2024-03-25T00:00:00Z',
     interviewDate: '',
-    contactPerson: 'Bello Is'haga',
+    contactPerson: 'Bello Ishaga',
     contactEmail: 'mike.chen@microsoft.com',
     contactPhone: '+1-555-0456',
     resumeVersion: 'v2.0',

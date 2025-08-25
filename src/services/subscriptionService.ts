@@ -218,19 +218,42 @@ class SubscriptionService {
   async getSubscriptionStatus(forceRefresh: boolean = false): Promise<SubscriptionStatus> {
     // Return cached data if valid and not forcing refresh
     if (!forceRefresh && this.isCacheValid() && this.subscriptionCache?.data) {
+      console.log('SubscriptionService.getSubscriptionStatus - Returning cached data:', this.subscriptionCache.data);
       return this.subscriptionCache.data;
     }
 
     try {
+      console.log('SubscriptionService.getSubscriptionStatus - Fetching from backend...');
+      
+      // First, call the debug endpoint to get detailed subscription information
+      try {
+        console.log('SubscriptionService.getSubscriptionStatus - Calling debug endpoint...');
+        const debugInfo = await this.makeAuthenticatedRequest<any>(
+          'POST',
+          SUBSCRIPTION_ENDPOINTS.SUBSCRIPTION_DEBUG
+        );
+        console.log('SubscriptionService.getSubscriptionStatus - Debug endpoint response:', debugInfo);
+      } catch (debugError) {
+        console.warn('SubscriptionService.getSubscriptionStatus - Debug endpoint failed:', debugError);
+        // Continue with normal flow even if debug fails
+      }
+      
       const status = await this.makeAuthenticatedRequest<SubscriptionStatus>(
         'GET',
         SUBSCRIPTION_ENDPOINTS.SUBSCRIPTION_STATUS
       );
       
+      console.log('SubscriptionService.getSubscriptionStatus - Raw backend response:', status);
+      console.log('SubscriptionService.getSubscriptionStatus - Response type:', typeof status);
+      console.log('SubscriptionService.getSubscriptionStatus - Response keys:', Object.keys(status));
+      
       // Validate response structure
       if (!status.planType) {
+        console.error('SubscriptionService.getSubscriptionStatus - Missing planType in response');
         throw new SubscriptionError('Invalid subscription status response', 'INVALID_RESPONSE');
       }
+      
+      console.log('SubscriptionService.getSubscriptionStatus - Validated status:', status);
       
       // Cache the result
       this.subscriptionCache = {
@@ -250,6 +273,8 @@ class SubscriptionService {
         planType: SUBSCRIPTION_PLANS.FREE,
         subscriptionStatus: undefined
       };
+      
+      console.log('SubscriptionService.getSubscriptionStatus - Using fallback status:', fallbackStatus);
       
       // Cache the fallback (with shorter duration)
       this.subscriptionCache = {
@@ -288,8 +313,17 @@ class SubscriptionService {
   }
 
   isPremiumUser(status: SubscriptionStatus): boolean {
-    return status.planType === SUBSCRIPTION_PLANS.PREMIUM && 
+    console.log('SubscriptionService.isPremiumUser - Input status:', status);
+    console.log('SubscriptionService.isPremiumUser - Checking planType:', status.planType);
+    console.log('SubscriptionService.isPremiumUser - Checking subscriptionStatus:', status.subscriptionStatus);
+    console.log('SubscriptionService.isPremiumUser - Expected planType:', SUBSCRIPTION_PLANS.PREMIUM);
+    console.log('SubscriptionService.isPremiumUser - Expected subscriptionStatus:', SUBSCRIPTION_STATUS.ACTIVE);
+    
+    const isPremium = status.planType === SUBSCRIPTION_PLANS.PREMIUM && 
            status.subscriptionStatus === SUBSCRIPTION_STATUS.ACTIVE;
+    
+    console.log('SubscriptionService.isPremiumUser - Result:', isPremium);
+    return isPremium;
   }
 }
 

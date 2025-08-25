@@ -68,9 +68,9 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ initialData, onSave, 
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
+    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 p-4 sm:p-6 pb-24 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
       <ToastContainer position="top-right" autoClose={3000} />
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
+      <form id="cover-letter-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
         <div>
           <label htmlFor="name" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors text-sm sm:text-base">Name</label>
           <input
@@ -106,19 +106,24 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ initialData, onSave, 
           />
           {errors.content && <div className="text-red-600 dark:text-red-400 text-xs sm:text-sm transition-colors">{errors.content.message}</div>}
         </div>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end">
+      </form>
+
+      {/* Sticky Action Bar */}
+      <div className="sticky bottom-0 z-40 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 rounded-t-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end w-full">
           {onCancel && (
-            <button type="button" onClick={onCancel} className="px-3 sm:px-4 py-2 bg-gray-500 dark:bg-gray-700 text-white rounded hover:bg-gray-600 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base">Cancel</button>
+            <button type="button" onClick={onCancel} className="w-full sm:w-auto px-4 py-3 bg-gray-500 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-600 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base font-medium shadow-sm">Cancel</button>
           )}
           <button
             type="submit"
-            className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
+            form="cover-letter-form"
+            className="w-full sm:w-auto px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium shadow-sm"
             disabled={isSubmitting}
           >
             {isSubmitting ? (initialData?.id ? 'Updating...' : 'Creating...') : (initialData?.id ? 'Update' : 'Create')}
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

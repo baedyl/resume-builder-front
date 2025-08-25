@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import ResumeList from '../components/ResumeList';
 import ResumeForm from '../components/ResumeForm';
 import { ResumeFormData } from '../types/resume';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const ResumeBuilder: React.FC = () => {
   const [selectedResume, setSelectedResume] = useState<ResumeFormData | null>(null);
@@ -73,22 +74,44 @@ const ResumeBuilder: React.FC = () => {
         </div>
       ) : (
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Resume Builder</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Create and manage your professional resumes
-              </p>
-            </div>
-            <div className="flex gap-4">
-              <button
-                onClick={() => setSelectedResume({} as ResumeFormData)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Create New Resume
-              </button>
+          {/* Sticky Action Bar */}
+          <div className="fixed top-20 left-0 right-0 z-40 px-4 sm:px-6 lg:px-8 py-3 bg-white dark:bg-gray-800 shadow-sm">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center">
+                  <Breadcrumbs />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                  <button
+                    onClick={() => setSelectedResume({} as ResumeFormData)}
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create New Resume
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Spacer to prevent content overlap */}
+          <div className="h-16"></div>
+          <div className="mb-8">
+
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  Resume Builder
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-2">
+                  Create and manage your professional resumes
+                </p>
+              </div>
+            </div>
+          </div>
+
           <ResumeList onSelectResume={setSelectedResume} />
         </div>
       )}

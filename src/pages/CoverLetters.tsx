@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const CoverLetters: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
@@ -153,21 +154,51 @@ const CoverLetters: React.FC = () => {
         feature="Cover Letter Generation" 
         description={FEATURE_DESCRIPTIONS.COVER_LETTERS}
       >
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 transition-colors">Cover Letters</h1>
-            {!showForm && (
-              <button
-                onClick={() => setShowForm(true)}
-                className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base"
-              >
-                Create New Cover Letter
-              </button>
-            )}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Sticky Action Bar */}
+          <div className="fixed top-20 left-0 right-0 z-40 px-4 sm:px-6 lg:px-8 py-3 bg-white dark:bg-gray-800 shadow-sm">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center">
+                  <Breadcrumbs />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                  {!showForm && (
+                    <button
+                      onClick={() => setShowForm(true)}
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                    >
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Create New Cover Letter
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
+          
+          {/* Spacer to prevent content overlap */}
+          <div className="h-4"></div>
+
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  Cover Letters
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-2">
+                  Generate and manage AI-powered cover letters
+                </p>
+              </div>
+            </div>
+          </div>
+
           {showForm ? (
             <>
-              <form onSubmit={handleGenerate} className="space-y-4 text-left w-full max-w-6xl mx-auto bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
+              <form id="cover-letter-form" onSubmit={handleGenerate} className="space-y-4 text-left w-full max-w-6xl mx-auto bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
                 <div>
                   <label htmlFor="fullName" className="block font-medium text-gray-700 dark:text-gray-200 transition-colors text-sm sm:text-base">Full Name</label>
                   <input
@@ -192,36 +223,24 @@ const CoverLetters: React.FC = () => {
                   />
                 </div>
                 {formError && <div className="text-red-600 dark:text-red-400 text-xs sm:text-sm transition-colors">{formError}</div>}
+                
+                {/* Form Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end">
-                  <button type="button" onClick={handleCancel} className="px-3 sm:px-4 py-2 bg-gray-500 dark:bg-gray-700 text-white rounded hover:bg-gray-600 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base">Cancel</button>
+                  <button type="button" onClick={handleCancel} className="w-full sm:w-auto px-4 py-2 bg-gray-500 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-600 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base font-medium">Cancel</button>
                   <button
                     type="submit"
-                    className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
+                    className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium"
                     disabled={loading}
                   >
                     {loading ? (isEdit ? 'Saving...' : 'Generating...') : (isEdit ? 'Save' : 'Generate')}
                   </button>
                 </div>
               </form>
+
               {generated && (
                 <div className="mt-6 sm:mt-8 w-full max-w-6xl mx-auto bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 transition-colors">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2 sm:gap-4">
                     <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors">Generated Cover Letter</h3>
-                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                      <button
-                        onClick={handleCopy}
-                        className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm sm:text-base"
-                      >
-                        Copy to Clipboard
-                      </button>
-                      <button
-                        onClick={handleGeneratePDF}
-                        className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
-                        disabled={pdfLoading || !savedId}
-                      >
-                        {pdfLoading ? 'Downloading PDF...' : 'Download PDF'}
-                      </button>
-                    </div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
                     <textarea
@@ -231,17 +250,32 @@ const CoverLetters: React.FC = () => {
                       placeholder="Your cover letter will appear here..."
                     />
                   </div>
+                  
+                  {/* Action Buttons */}
                   <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4">
                     <button
+                      onClick={handleCopy}
+                      className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium"
+                    >
+                      Copy to Clipboard
+                    </button>
+                    <button
+                      onClick={handleGeneratePDF}
+                      className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium"
+                      disabled={pdfLoading || !savedId}
+                    >
+                      {pdfLoading ? 'Downloading PDF...' : 'Download PDF'}
+                    </button>
+                    <button
                       onClick={handleSaveChanges}
-                      className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm sm:text-base"
+                      className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium"
                       disabled={loading || !savedId}
                     >
                       {loading ? 'Saving...' : 'Save Cover Letter'}
                     </button>
                     <button
                       onClick={handleCancel}
-                      className="px-3 sm:px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors text-sm sm:text-base"
+                      className="w-full sm:w-auto px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm sm:text-base font-medium"
                     >
                       Edit
                     </button>

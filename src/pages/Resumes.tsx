@@ -4,6 +4,7 @@ import { ResumeFormData } from '../types/resume';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaDownload, FaShare, FaCopy, FaEye, FaChartLine, FaLightbulb, FaRocket } from 'react-icons/fa';
 import SEO from '../components/SEO';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const Resumes: React.FC = () => {
   const [selectedResume, setSelectedResume] = useState<ResumeFormData | null>(null);
@@ -19,13 +20,36 @@ const Resumes: React.FC = () => {
 
   return (
     <>
-      <SEO 
+      <SEO
         title="My Resumes - Manage Your Professional Resumes"
         description="View, edit, and manage all your professional resumes. Track your resume performance and get personalized tips to improve your job applications."
         keywords="resume management, professional resumes, resume builder, job applications, career tools"
       />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
+          {/* Sticky Action Bar */}
+          <div className="fixed top-20 left-0 right-0 z-40 px-4 sm:px-6 lg:px-8 py-3 bg-white dark:bg-gray-800 shadow-sm">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center">
+                  <Breadcrumbs />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                  <button
+                    onClick={handleCreate}
+                    className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm"
+                  >
+                    <FaPlus className="mr-2" />
+                    Create New Resume
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Spacer to prevent content overlap */}
+          <div className="h-16"></div>
+
           {/* Header Section */}
           <div className="mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
@@ -37,13 +61,6 @@ const Resumes: React.FC = () => {
                   Manage your professional resumes and track your career progress
                 </p>
               </div>
-              <button
-                onClick={handleCreate}
-                className="mt-4 lg:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
-              >
-                <FaPlus className="mr-2" />
-                Create New Resume
-              </button>
             </div>
 
             {/* Quick Stats */}
@@ -114,17 +131,17 @@ const Resumes: React.FC = () => {
               <FaDownload className="text-gray-600 dark:text-gray-400 mr-2" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Export All</span>
             </button>
-            
+
             <button className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <FaShare className="text-gray-600 dark:text-gray-400 mr-2" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Share</span>
             </button>
-            
+
             <button className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <FaCopy className="text-gray-600 dark:text-gray-400 mr-2" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Duplicate</span>
             </button>
-            
+
             <button className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <FaEye className="text-gray-600 dark:text-gray-400 mr-2" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Preview</span>

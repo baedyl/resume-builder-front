@@ -375,9 +375,6 @@ function App() {
             <Suspense fallback={<div className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"></div>}>
               <NavBar />
             </Suspense>
-            <Suspense fallback={<div className="h-8 bg-gray-100 dark:bg-gray-900"></div>}>
-              <Breadcrumbs />
-            </Suspense>
             <main className="flex-1">
               <Suspense fallback={<LoadingOverlay />}>
                 <Routes>
