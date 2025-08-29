@@ -38,11 +38,11 @@ const Callback = () => {
         
         // Once processing is complete, check authentication and navigate
         if (!isProcessing && isAuthenticated) {
-            console.log('Redirecting to /my-resumes...');
+            console.log('Redirecting to /dashboard...');
             // Force a small delay to ensure Auth0 state is fully updated
             setTimeout(() => {
-                console.log('Executing navigation to /my-resumes');
-                navigate('/my-resumes', { replace: true });
+                console.log('Executing navigation to /dashboard');
+                navigate('/dashboard', { replace: true });
             }, 100);
         } else if (!isProcessing) {
             console.log('Redirecting to / (not authenticated)');

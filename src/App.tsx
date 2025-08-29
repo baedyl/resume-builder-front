@@ -29,6 +29,7 @@ const Contact = lazy(() => import('./pages/Contact'));
 const AIResumeBuilder = lazy(() => import('./pages/AIResumeBuilder'));
 const PreviewEditor = lazy(() => import('./pages/PreviewEditor'));
 const Footer = lazy(() => import('./components/Footer'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
 
 // Import icons directly since they're used in the About component
 import { FaUsers, FaRocket, FaLightbulb, FaHeart, FaCode, FaSearch, FaPalette, FaChartLine } from 'react-icons/fa';
@@ -378,9 +379,10 @@ function App() {
             <main className="flex-1">
               <Suspense fallback={<LoadingOverlay />}>
                 <Routes>
+                  <Route path="/" element={isAuthenticated ? <Dashboard /> : <Home />} />
                   <Route
-                    path="/"
-                    element={<Home />}
+                    path="/dashboard"
+                    element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
                   />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />

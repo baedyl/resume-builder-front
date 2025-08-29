@@ -20,6 +20,7 @@ const Breadcrumbs: React.FC = () => {
 
   // Define readable names for routes
   const routeNames: Record<string, string> = {
+    'dashboard': 'Dashboard',
     'my-resumes': 'My Resumes',
     'cover-letters': 'Cover Letters',
     'job-tracker': 'Job Tracker',
@@ -43,10 +44,10 @@ const Breadcrumbs: React.FC = () => {
     return null;
   }
 
-  // For authenticated users, Home should go to /my-resumes (resume list)
+  // For authenticated users, "Home" concept maps to Dashboard
   // For unauthenticated users, Home should go to / (static home page)
   const isAuthenticated = auth0?.isAuthenticated || false;
-  const homePath = isAuthenticated ? '/my-resumes' : '/';
+  const homePath = isAuthenticated ? '/dashboard' : '/';
 
   // For authenticated users, show breadcrumbs even on homepage
   // For unauthenticated users, only show breadcrumbs on non-homepage routes
@@ -54,7 +55,13 @@ const Breadcrumbs: React.FC = () => {
     return null;
   }
 
-  const breadcrumbs: BreadcrumbItem[] = [{ label: 'Home', path: homePath }];
+  const homeLabel = isAuthenticated ? 'Dashboard' : 'Home';
+  const breadcrumbs: BreadcrumbItem[] = [];
+  
+  // Only add home/dashboard breadcrumb if not already on that page
+  if (pathnames.length === 0 || (isAuthenticated && pathnames[0] !== 'dashboard')) {
+    breadcrumbs.push({ label: homeLabel, path: homePath });
+  }
 
   let cumulativePath = '';
   pathnames.forEach((segment, index) => {

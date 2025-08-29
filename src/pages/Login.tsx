@@ -1,5 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
+import AppLogo from '../components/AppLogo';
 
 const Login: React.FC = () => {
     const { loginWithRedirect } = useAuth0();
@@ -8,8 +9,8 @@ const Login: React.FC = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-300 px-4">
             <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-lg shadow-md w-full max-w-md transition-colors">
                 <div className="text-center mb-6">
-                    <img src={'/resume-logo.svg'} alt="Logo" className="h-32 sm:h-40 mx-auto" />
-                    <h2 className="text-xl sm:text-2xl font-bold mt-4 text-gray-900 dark:text-gray-100 transition-colors">Welcome Back</h2>
+                    <AppLogo className="block ml-28 sm:h-40 mx-auto" />
+                    <h2 className="text-2xl sm:text-3xl font-bold mt-4 text-gray-900 dark:text-gray-100 transition-colors">Welcome Back</h2>
                     <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-2 transition-colors">Log in to continue building your professional resume.</p>
                 </div>
                 <button
