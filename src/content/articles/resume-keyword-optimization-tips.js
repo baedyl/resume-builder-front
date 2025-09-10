@@ -22,13 +22,15 @@ export const content = `
   <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's competitive job market, your resume needs to pass through Applicant Tracking Systems (ATS) before it ever reaches human eyes. 
   Keyword optimization isn't just about stuffing your resume with buzzwords—it's about strategically positioning your experience and skills 
   to match what ATS systems are looking for. Here's your complete guide to resume keyword optimization that actually works.</p>
+  
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">This guide builds on our <a href="/blog/what-is-an-ats-resume-2025" class="text-blue-600 dark:text-blue-400 hover:underline">ATS resume fundamentals</a> and <a href="/blog/the-ultimate-guide-to-ats-optimized-resumes" class="text-blue-600 dark:text-blue-400 hover:underline">comprehensive ATS optimization strategies</a> to give you the edge you need.</p>
 </div>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 p-6 mb-8 rounded-r-lg">
     <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">💡 Pro Tip</h3>
     <p class="text-blue-700 dark:text-blue-300">
       ATS systems scan resumes in just 6-8 seconds. Your keywords need to be strategically placed and naturally integrated 
-      to make it through this digital gatekeeper.
+      to make it through this digital gatekeeper. Learn more about <a href="/blog/5-ats-mistakes-that-get-resumes-rejected" class="text-blue-600 dark:text-blue-400 hover:underline">common ATS mistakes</a> to avoid.
     </p>
   </div>
 
@@ -62,7 +64,7 @@ export const content = `
 
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Why Keywords Matter</h3>
     <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Without the right keywords, your resume might score too low to pass ATS screening, even if you're perfectly qualified. 
-    Studies show that <strong>75% of resumes never reach human eyes</strong> due to ATS rejection.</p>
+    Studies show that <strong>75% of resumes never reach human eyes</strong> due to ATS rejection. For more insights, see our guide on <a href="/blog/10-resume-mistakes-costing-job-interviews" class="text-blue-600 dark:text-blue-400 hover:underline">resume mistakes that cost interviews</a>.</p>
 
   </div>
 
@@ -86,7 +88,7 @@ export const content = `
     <h4 class="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2">⚠️ Warning</h4>
     <p class="text-yellow-700 dark:text-yellow-300">
       Don't just copy-paste keywords from the job description. ATS systems are getting smarter and can detect 
-      keyword stuffing, which will hurt your score.
+      keyword stuffing, which will hurt your score. Learn <a href="/blog/how-to-tailor-your-resume-in-under-10-minutes" class="text-blue-600 dark:text-blue-400 hover:underline">how to tailor your resume quickly</a> without over-optimization.
     </p>
   </div>
 
@@ -98,193 +100,163 @@ export const content = `
         <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📝 Resume Header</h4>
         <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
           <li>Professional title</li>
-          <li>Key certifications</li>
-          <li>Industry keywords</li>
+          <li>Contact information</li>
+          <li>LinkedIn profile</li>
         </ul>
       </div>
-      
       <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-        <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">🎯 Summary Section</h4>
+        <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">🎯 Professional Summary</h4>
         <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-          <li>Core competencies</li>
-          <li>Years of experience</li>
-          <li>Industry expertise</li>
+          <li>Target role keywords</li>
+          <li>Key skills and expertise</li>
+          <li>Industry terminology</li>
         </ul>
       </div>
-      
       <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-        <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">💼 Work Experience</h4>
+        <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">💼 Experience Section</h4>
         <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-          <li>Job titles</li>
-          <li>Action verbs</li>
-          <li>Technical skills</li>
+          <li>Job titles and companies</li>
+          <li>Action verbs and achievements</li>
+          <li>Technical skills and tools</li>
         </ul>
       </div>
-      
       <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
         <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">🔧 Skills Section</h4>
         <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
           <li>Technical skills</li>
-          <li>Software proficiency</li>
-          <li>Industry tools</li>
+          <li>Soft skills</li>
+          <li>Certifications</li>
         </ul>
       </div>
     </div>
 
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">3. Use Action Verbs and Industry Language</h3>
-    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Replace generic verbs with industry-specific action words that ATS systems recognize:</p>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">3. Natural Integration Techniques</h3>
+    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Here are proven methods to integrate keywords naturally:</p>
 
-      <div class="space-y-6">
-      <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-        <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Action Verb Examples:</h4>
-        <div class="grid md:grid-cols-3 gap-4">
-          <div class="text-center">
-            <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
-              <h5 class="font-semibold text-red-800 dark:text-red-200 mb-2">Generic</h5>
-              <p class="text-sm text-gray-700 dark:text-gray-300">Did, Made, Helped, Worked on</p>
-            </div>
-          </div>
-          <div class="text-center">
-            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-              <h5 class="font-semibold text-green-800 dark:text-green-200 mb-2">Better</h5>
-              <p class="text-sm text-gray-700 dark:text-gray-300">Implemented, Developed, Collaborated, Managed</p>
-            </div>
-          </div>
-          <div class="text-center">
-            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-              <h5 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Industry-Specific</h5>
-              <p class="text-sm text-gray-700 dark:text-gray-300">Deployed, Architected, Facilitated, Orchestrated</p>
-            </div>
-          </div>
+      <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 mb-6">
+        <h4 class="text-xl font-semibold text-green-800 dark:text-green-200 mb-4">✅ Best Practices</h4>
+        <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+          <li><strong>Use variations:</strong> Include synonyms and related terms</li>
+          <li><strong>Context matters:</strong> Place keywords within relevant achievements</li>
+          <li><strong>Action verbs:</strong> Start bullet points with strong action words</li>
+          <li><strong>Quantify results:</strong> Include numbers and metrics</li>
+        </ul>
+      </div>
+
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">4. Industry-Specific Keywords</h3>
+    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Different industries have their own terminology. Research your field and include relevant terms:</p>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Technology</h4>
+          <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <li>• Programming languages (Python, JavaScript, Java)</li>
+            <li>• Frameworks (React, Angular, Django)</li>
+            <li>• Tools (Git, Docker, AWS)</li>
+            <li>• Methodologies (Agile, Scrum, DevOps)</li>
+          </ul>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Marketing</h4>
+          <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <li>• Platforms (Google Ads, Facebook, LinkedIn)</li>
+            <li>• Tools (HubSpot, Mailchimp, Google Analytics)</li>
+            <li>• Metrics (ROI, CTR, Conversion Rate)</li>
+            <li>• Strategies (Content Marketing, SEO, PPC)</li>
+          </ul>
         </div>
       </div>
-    </div>
 
+      <p class="text-gray-700 dark:text-gray-300">For more industry-specific guidance, explore our <a href="/blog/ai-resume-builder-free-guide" class="text-blue-600 dark:text-blue-400 hover:underline">AI resume builder guide</a> and <a href="/blog/how-to-use-ai-to-write-a-resume-that-stands-out" class="text-blue-600 dark:text-blue-400 hover:underline">AI-powered resume writing tips</a>.</p>
   </div>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Resume Formatting for ATS Optimization</h2>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Even the best keywords won't help if your resume format confuses the ATS system. Here's how to format your resume 
-  for maximum ATS compatibility.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Even the best keywords won't help if your resume format confuses ATS systems. Here's how to format for success:</p>
 
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">1. Use Standard File Formats</h3>
-    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">ATS systems work best with these formats:</p>
-  
-      <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-      <li><strong>Microsoft Word (.docx):</strong> Most compatible with ATS systems</li>
-      <li><strong>PDF (.pdf):</strong> Good compatibility, but some older ATS systems struggle</li>
-      <li><strong>Plain Text (.txt):</strong> Universal compatibility, but loses formatting</li>
-    </ul>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">1. File Format</h3>
+    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Choose the right file format for maximum ATS compatibility:</p>
 
-  <div class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-400 p-6 mb-8 rounded-r-lg">
-    <h4 class="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">✅ Best Practice</h4>
-    <p class="text-green-700 dark:text-green-300">
-      Use .docx format for maximum ATS compatibility while maintaining professional formatting. 
-      Save a PDF version for human readers.
-    </p>
-  </div>
+      <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <div class="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+          <h4 class="font-semibold text-green-800 dark:text-green-200 mb-2">✅ .docx</h4>
+          <p class="text-sm text-gray-700 dark:text-gray-300">Best for ATS parsing</p>
+        </div>
+        <div class="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+          <h4 class="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">⚠️ .pdf</h4>
+          <p class="text-sm text-gray-700 dark:text-gray-300">Good if properly formatted</p>
+        </div>
+        <div class="text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+          <h4 class="font-semibold text-red-800 dark:text-red-200 mb-2">❌ .txt</h4>
+          <p class="text-sm text-gray-700 dark:text-gray-300">Poor formatting control</p>
+        </div>
+      </div>
 
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">2. Avoid Complex Formatting</h3>
-    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">ATS systems struggle with:</p>
-  
-      <div class="grid md:grid-cols-2 gap-6">
-      <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
-        <h4 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-4">❌ Avoid These</h4>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">2. Layout and Structure</h3>
+    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Follow these layout guidelines for ATS success:</p>
+
+      <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300 mb-6">
+        <li><strong>Use standard section headers:</strong> "Professional Experience," "Education," "Skills"</li>
+        <li><strong>Avoid tables and columns:</strong> They can confuse ATS parsing</li>
+        <li><strong>Use simple fonts:</strong> Arial, Calibri, or Times New Roman</li>
+        <li><strong>Maintain consistent formatting:</strong> Same font size and style throughout</li>
+        <li><strong>Use bullet points:</strong> For easy scanning and parsing</li>
+      </ul>
+
+      <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-6">
+        <h4 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">🔧 Formatting Checklist</h4>
         <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-          <li>Tables and columns</li>
-          <li>Text boxes and shapes</li>
-          <li>Headers and footers</li>
-          <li>Multiple columns</li>
-          <li>Graphics and images</li>
-          <li>Fancy fonts</li>
+          <li>✅ Single column layout</li>
+          <li>✅ Standard section headers</li>
+          <li>✅ Simple, readable fonts</li>
+          <li>✅ Consistent spacing</li>
+          <li>✅ No images or graphics</li>
+          <li>✅ Clean, professional appearance</li>
         </ul>
       </div>
-      
-      <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
-        <h4 class="text-xl font-semibold text-green-800 dark:text-green-200 mb-4">✅ Use These Instead</h4>
-        <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-          <li>Simple bullet points</li>
-          <li>Standard fonts (Arial, Calibri)</li>
-          <li>Clear section headers</li>
-          <li>Single column layout</li>
-          <li>Consistent spacing</li>
-          <li>Plain text formatting</li>
-        </ul>
-      </div>
-    </div>
-
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">3. Optimize Section Headers</h3>
-    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Use standard section headers that ATS systems recognize:</p>
-  
-      <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-      <li><strong>Professional Summary</strong> or <strong>Summary</strong></li>
-      <li><strong>Work Experience</strong> or <strong>Experience</strong></li>
-      <li><strong>Education</strong></li>
-      <li><strong>Skills</strong> or <strong>Technical Skills</strong></li>
-      <li><strong>Certifications</strong></li>
-      <li><strong>Projects</strong> (if applicable)</li>
-    </ul>
-
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">4. Font and Size Guidelines</h3>
-    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Stick to these formatting rules for ATS compatibility:</p>
-  
-      <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-      <li><strong>Font size:</strong> 10-12pt for body text, 14-16pt for headers</li>
-      <li><strong>Font family:</strong> Arial, Calibri, Times New Roman, or Georgia</li>
-      <li><strong>Margins:</strong> 0.5-1 inch on all sides</li>
-      <li><strong>Line spacing:</strong> 1.0-1.15 for optimal readability</li>
-    </ul>
-
   </div>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">How to Test If Your Resume Can Pass ATS?</h2>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Before sending your resume, test it to ensure it will pass ATS screening. Here are several methods to validate your resume's ATS compatibility.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Don't guess—test your resume's ATS compatibility with these proven methods:</p>
 
       <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">1. Use ATS Testing Tools</h3>
     <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Several online tools can analyze your resume for ATS compatibility:</p>
-  
-      <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-      <li><strong>Jobscan.co:</strong> Compares your resume against job descriptions</li>
-      <li><strong>ResumeWorded.com:</strong> ATS scoring and optimization tips</li>
-      <li><strong>Skillroads.com:</strong> AI-powered resume analysis</li>
-      <li><strong>TopResume.com:</strong> Free ATS compatibility check</li>
-    </ul>
 
-  <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 p-6 mb-8 rounded-r-lg">
-    <h4 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">🔧 Pro Tip</h4>
-    <p class="text-blue-700 dark:text-blue-300">
-      Test your resume against multiple job descriptions in your target industry to ensure 
-      broad compatibility across different ATS systems.
-    </p>
-  </div>
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Free Tools</h4>
+          <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <li>• <a href="https://www.jobscan.co/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener">Jobscan</a> - Basic ATS analysis</li>
+            <li>• <a href="https://resumeworded.com/" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener">Resume Worded</a> - Keyword optimization</li>
+            <li>• <a href="https://www.topresume.com/resume-review" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener">TopResume</a> - Free review</li>
+          </ul>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Premium Tools</h4>
+          <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <li>• <a href="https://www.jobscan.co/pro" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener">Jobscan Pro</a> - Advanced analysis</li>
+            <li>• <a href="https://www.resume.io/resume-checker" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener">Resume.io</a> - Comprehensive checking</li>
+            <li>• <a href="https://www.topresume.com/professional-resume-writing" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener">TopResume Pro</a> - Expert review</li>
+          </ul>
+        </div>
+      </div>
 
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">2. Manual ATS Testing</h3>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">2. Manual Testing Methods</h3>
     <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">You can also test your resume manually:</p>
-  
-      <ol class="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
-      <li><strong>Copy-paste test:</strong> Copy your resume text into a plain text editor</li>
-      <li><strong>Format check:</strong> Ensure all text is readable and properly formatted</li>
-      <li><strong>Keyword density:</strong> Check that important terms appear naturally</li>
-      <li><strong>Readability:</strong> Ensure the content flows logically</li>
-    </ol>
 
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">3. Test Against Job Descriptions</h3>
-    <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">The most effective way to test your resume is to compare it against actual job postings:</p>
-  
       <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-6">
-      <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📋 Testing Checklist</h4>
-      <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-        <li>✅ Does your resume contain 80%+ of the required skills?</li>
-        <li>✅ Are job titles and responsibilities clearly stated?</li>
-        <li>✅ Do you use industry-standard terminology?</li>
-        <li>✅ Is your experience quantified with numbers?</li>
-        <li>✅ Are your achievements specific and measurable?</li>
-        <li>✅ Does your resume tell a coherent career story?</li>
-      </ul>
-    </div>
+        <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">📋 Manual ATS Test</h4>
+        <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+          <li>✅ Can you copy and paste text easily?</li>
+          <li>✅ Are all sections clearly labeled?</li>
+          <li>✅ Is your experience quantified with numbers?</li>
+          <li>✅ Are your achievements specific and measurable?</li>
+          <li>✅ Does your resume tell a coherent career story?</li>
+        </ul>
+      </div>
 
-      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">4. Common ATS Failures to Avoid</h3>
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">3. Common ATS Failures to Avoid</h3>
     <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Watch out for these common issues that cause ATS rejection:</p>
   
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
@@ -334,7 +306,7 @@ export const content = `
   <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">
     Remember, keyword optimization is about <strong>strategic placement</strong>, not stuffing. 
     Your goal is to make your resume discoverable by ATS systems while maintaining readability 
-    for human recruiters.
+    for human recruiters. For more advanced strategies, see our <a href="/blog/the-ultimate-guide-to-ats-optimized-resumes" class="text-blue-600 dark:text-blue-400 hover:underline">ultimate ATS guide</a>.
   </p>
 
   <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-6 mt-6">
@@ -342,6 +314,7 @@ export const content = `
     <p class="text-gray-700 dark:text-gray-300">
       The best keyword optimization strategy is to write your resume for humans first, 
       then optimize it for ATS systems. This ensures you pass both the digital and human screening processes.
+      Pair this with our <a href="/blog/how-to-write-a-cover-letter-2025" class="text-blue-600 dark:text-blue-400 hover:underline">cover letter guide</a> for a complete application strategy.
     </p>
   </div>
 
@@ -371,6 +344,14 @@ export const content = `
       <a href="/blog/5-ats-mistakes-that-get-resumes-rejected" class="block p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
         <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">5 ATS Mistakes That Get Resumes Rejected</h4>
         <p class="text-sm text-gray-600 dark:text-gray-400">Avoid these common pitfalls that cause ATS systems to reject your resume.</p>
+      </a>
+      <a href="/blog/what-is-an-ats-resume-2025" class="block p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+        <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">What Is an ATS Resume? Complete Guide for 2025</h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Understand the fundamentals of ATS-friendly resume creation.</p>
+      </a>
+      <a href="/blog/how-to-tailor-your-resume-in-under-10-minutes" class="block p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+        <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">How to Tailor Your Resume in Under 10 Minutes</h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Quick strategies for customizing your resume for each job application.</p>
       </a>
     </div>
   </div>
