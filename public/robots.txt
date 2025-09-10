@@ -8,3 +8,21 @@ Sitemap: https://proairesume.online/sitemap.xml
 Disallow: /admin/
 Disallow: /private/
 Disallow: /api/
+Disallow: /callback
+Disallow: /preview-editor
+Disallow: /my-resumes/
+Disallow: /cover-letters/
+Disallow: /job-tracker
+Disallow: /subscription
+Disallow: /settings
+Disallow: /forgot-password
+Disallow: /cookies
+
+# Allow important pages
+Allow: /blog/
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+Allow: /ai-resume-builder
