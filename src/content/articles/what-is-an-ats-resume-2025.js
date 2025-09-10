@@ -6,7 +6,7 @@ export const metadata = {
   date: "August 27, 2025",
   readTime: "10 min read",
   category: "ats-optimization",
-  image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop",
+  image: "https://images.unsplash.com/photo-1518791024316-d0e1bb1ee03a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c3RhbmQlMjBvdXR8ZW58MHx8MHx8fDA%3D",
   rating: 4.9,
   ratingCount: 132,
   tableOfContents: [
