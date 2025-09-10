@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import Breadcrumbs from '../components/Breadcrumbs';
+import LoadingOverlay from '../components/LoadingOverlay';
 import { Link } from 'react-router-dom';
 import { FaFileAlt, FaMagic, FaEnvelope, FaBriefcase, FaCrown, FaBook, FaChartBar, FaCheckCircle, FaClock, FaTimes, FaHandshake, FaPause } from 'react-icons/fa';
 
@@ -99,6 +100,9 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Loading Overlay */}
+      {loading && <LoadingOverlay />}
+      
       {/* Sticky Action Bar */}
       <div className="fixed top-20 left-0 right-0 z-40 px-4 sm:px-6 lg:px-8 py-3 bg-white dark:bg-gray-800 shadow-sm">
         <div className="max-w-7xl mx-auto">
