@@ -150,56 +150,56 @@ const AIResumeBuilder: React.FC = () => {
               <ul className="space-y-4">
                 <li className="flex items-start">
                   <FaCheck className="text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Intelligent content suggestions based on your experience</span>
+                  <span className="dark:text-white">Intelligent content suggestions based on your experience</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Real-time ATS optimization feedback</span>
+                  <span className="dark:text-white">Real-time ATS optimization feedback</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Industry-specific keyword recommendations</span>
+                  <span className="dark:text-white">Industry-specific keyword recommendations</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Professional templates optimized for success</span>
+                  <span className="dark:text-white">Professional templates optimized for success</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Complete resume in 15-30 minutes</span>
+                  <span className="dark:text-white">Complete resume in 15-30 minutes</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-green-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Continuous learning and improvement</span>
+                  <span className="dark:text-white">Continuous learning and improvement</span>
                 </li>
               </ul>
             </div>
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
-              <h3 className="text-2xl font-bold text-gray-600 mb-6">Traditional Methods</h3>
+              <h3 className="text-2xl font-bold text-gray-600  mb-6">Traditional Methods</h3>
               <ul className="space-y-4">
                 <li className="flex items-start">
                   <FaCheck className="text-red-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Manual content creation with limited guidance</span>
+                  <span className="dark:text-white">Manual content creation with limited guidance</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-red-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>No ATS optimization feedback</span>
+                  <span className="dark:text-white">No ATS optimization feedback</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-red-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Generic templates without customization</span>
+                  <span className="dark:text-white">Generic templates without customization</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-red-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Limited keyword optimization</span>
+                  <span className="dark:text-white">Limited keyword optimization</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-red-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Hours of manual work required</span>
+                  <span className="dark:text-white">Hours of manual work required</span>
                 </li>
                 <li className="flex items-start">
                   <FaCheck className="text-red-500 mr-3 mt-1 flex-shrink-0" />
-                  <span>Static approach without updates</span>
+                  <span className="dark:text-white">Static approach without updates</span>
                 </li>
               </ul>
             </div>
