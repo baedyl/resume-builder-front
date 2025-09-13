@@ -48,34 +48,66 @@
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     
     <!-- Performance optimizations -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
     
     <!-- Resource hints for critical resources -->
     <link rel="preload" href="/src/main.jsx" as="script" />
     <link rel="modulepreload" href="/src/main.jsx" />
+    <link rel="preload" href="/logo_white_small.svg" as="image" />
+    <link rel="preload" href="/logo_dark_small.svg" as="image" />
     
     <!-- Preload critical fonts -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" /></noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&display=swap" />
     
     <!-- Critical CSS preload -->
     <link rel="preload" href="/src/index.css" as="style" />
     
     <!-- Critical CSS inline for faster FCP -->
     <style>
-      /* Critical CSS - Inline this in the HTML head for faster FCP */
+      /* Font fallback to prevent FOIT */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('Inter Regular'), local('Inter-Regular'), local('system-ui');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: local('Inter Medium'), local('Inter-Medium'), local('system-ui');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: local('Inter SemiBold'), local('Inter-SemiBold'), local('system-ui');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: local('Inter Bold'), local('Inter-Bold'), local('system-ui');
+      }
 
       /* Critical layout styles */
       .min-h-screen { min-height: 100vh; }
       .flex { display: flex; }
       .flex-col { flex-direction: column; }
       .items-center { align-items: center; }
-      .justify-center { justify-content: center; }
-      .justify-between { justify-content: space-between; }
+      .justify-center { justify-center: center; }
+      .justify-between { justify-between: space-between; }
       .text-center { text-align: center; }
 
       /* Critical typography */
@@ -116,25 +148,25 @@
 
       /* Critical responsive utilities */
       @media (min-width: 640px) {
-        .sm\\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-        .sm\\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .sm\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
       }
 
       @media (min-width: 768px) {
-        .md\\:text-6xl { font-size: 3.75rem; line-height: 1; }
-        .md\\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .md\:text-6xl { font-size: 3.75rem; line-height: 1; }
+        .md\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
       }
 
       @media (min-width: 1024px) {
-        .lg\\:px-8 { padding-left: 2rem; padding-right: 2rem; }
-        .lg\\:text-7xl { font-size: 4.5rem; line-height: 1; }
+        .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
+        .lg\:text-7xl { font-size: 4.5rem; line-height: 1; }
       }
 
       /* Critical dark mode support */
       @media (prefers-color-scheme: dark) {
-        .dark\\:text-white { color: rgb(255 255 255); }
-        .dark\\:from-gray-900 { --tw-gradient-from: rgb(17 24 39); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(17, 24, 39, 0)); }
-        .dark\\:to-gray-800 { --tw-gradient-to: rgb(31 41 55); }
+        .dark\:text-white { color: rgb(255 255 255); }
+        .dark\:from-gray-900 { --tw-gradient-from: rgb(17 24 39); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(17, 24, 39, 0)); }
+        .dark\:to-gray-800 { --tw-gradient-to: rgb(31 41 55); }
       }
     </style>
     
