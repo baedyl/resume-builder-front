@@ -358,11 +358,27 @@ const Cookies = () => (
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
 
-  // Show a loading state while Auth0 checks authentication
+  // Show a lightweight skeleton while Auth0 checks authentication
   if (isLoading) {
-    return <div aria-live="polite" aria-busy={true}>
-      <LoadingOverlay />
-    </div>
+    return (
+      <div aria-live="polite" aria-busy={true} className="min-h-screen flex flex-col">
+        <div className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"></div>
+        <main className="flex-1">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="animate-pulse space-y-4" role="status" aria-label="Loading">
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   
@@ -377,7 +393,7 @@ function App() {
               <NavBar />
             </Suspense>
             <main className="flex-1">
-              <Suspense fallback={<LoadingOverlay />}>
+              <Suspense fallback={<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><div className="animate-pulse space-y-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div><div className="h-96 bg-gray-100 dark:bg-gray-800 rounded"></div></div></div>}>
                 <Routes>
                   <Route path="/" element={isAuthenticated ? <Dashboard /> : <Home />} />
                   <Route

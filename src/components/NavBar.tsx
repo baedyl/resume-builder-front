@@ -5,6 +5,7 @@ import { FaBars, FaSun, FaMoon } from 'react-icons/fa';
 import { useGTMContext } from '../contexts/GTMContext';
 
 const NavBar: React.FC = () => {
+  // Use Auth0 directly
   const { isAuthenticated, logout, user } = useAuth0();
   const { trackButtonClick } = useGTMContext();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -96,6 +97,9 @@ const NavBar: React.FC = () => {
               src={isDarkMode ? "/logo_dark_small.svg" : "/logo_white_small.svg"} 
               alt="Resume Builder" 
               className="w-auto max-h-full"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
             />
           </Link>
 
@@ -138,11 +142,14 @@ const NavBar: React.FC = () => {
                       src={user.picture} 
                       alt="User Profile" 
                       className="h-8 w-8 rounded-full object-cover border-2 border-transparent hover:border-blue-500 transition-colors" 
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
                     />
                   ) : (
                     <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center hover:from-blue-600 hover:to-purple-700 transition-colors shadow-sm">
                       <span className="text-white text-sm font-semibold">
-                        {getUserInitials(user?.name || user?.email)}
+                        {getUserInitials(user?.name || (user as any)?.email)}
                       </span>
                     </div>
                   )}
