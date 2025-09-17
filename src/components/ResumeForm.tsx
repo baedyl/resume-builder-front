@@ -359,18 +359,31 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       if (typeof response.data === 'string') {
         // Parse the JSON string response
         const parsedData = JSON.parse(response.data);
-        enhancedSummary = parsedData.summary || parsedData.enhanced_summary;
+        enhancedSummary = parsedData.summary || parsedData.enhanced_summary || parsedData.professional_summary;
       } else if (response.data && typeof response.data === 'object' && response.data.data) {
         // Handle nested data format: { data: "{\"enhanced_summary\": \"...\"}" }
         if (typeof response.data.data === 'string') {
           const nestedParsedData = JSON.parse(response.data.data);
-          enhancedSummary = nestedParsedData.summary || nestedParsedData.enhanced_summary;
+          enhancedSummary = nestedParsedData.summary || nestedParsedData.enhanced_summary || nestedParsedData.professional_summary;
         } else {
-          enhancedSummary = response.data.data.summary || response.data.data.enhanced_summary;
+          enhancedSummary = response.data.data.summary || response.data.data.enhanced_summary || response.data.data.professional_summary;
+        }
+      } else if (response.data && typeof response.data === 'object' && response.data.summary) {
+        // Handle new format: { summary: "{\"professional_summary\": \"...\"}" }
+        if (typeof response.data.summary === 'string') {
+          try {
+            const summaryParsedData = JSON.parse(response.data.summary);
+            enhancedSummary = summaryParsedData.professional_summary || summaryParsedData.summary || summaryParsedData.enhanced_summary;
+          } catch (error) {
+            // If parsing fails, treat as direct string
+            enhancedSummary = response.data.summary;
+          }
+        } else {
+          enhancedSummary = response.data.summary.professional_summary || response.data.summary.summary || response.data.summary.enhanced_summary;
         }
       } else {
         // Direct object access - response.data is already an object
-        enhancedSummary = response.data.summary || response.data.enhanced_summary || response.data.enhancedSummary;
+        enhancedSummary = response.data.summary || response.data.enhanced_summary || response.data.enhancedSummary || response.data.professional_summary;
       }
       
       if (!enhancedSummary || !enhancedSummary.trim()) {
@@ -463,9 +476,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         responseData = response.data;
       }
       
-      // Handle the enhanced_job_description array format or single description
-      const enhancedDescriptions = responseData.enhanced_job_description;
-      const enhancedDescription = responseData.enhanced_description;
+        // Handle various response formats for enhanced descriptions
+        const enhancedDescriptions = responseData.enhanced_job_description || responseData.job_description || responseData.Enhanced_Job_Description;
+        const enhancedDescription = responseData.enhanced_description;
       
       // Helper function to clean up description text
       const cleanDescription = (text: string) => {
