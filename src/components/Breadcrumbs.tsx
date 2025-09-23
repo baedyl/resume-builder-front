@@ -24,6 +24,7 @@ const Breadcrumbs: React.FC = () => {
     'my-resumes': 'My Resumes',
     'cover-letters': 'Cover Letters',
     'job-tracker': 'Job Tracker',
+    'linkedin': 'LinkedIn Review',
     'blog': 'Blog',
     'contact': 'Contact',
     'about': 'About',

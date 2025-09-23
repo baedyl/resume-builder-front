@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { Link } from 'react-router-dom';
-import { FaFileAlt, FaMagic, FaEnvelope, FaBriefcase, FaCrown, FaBook, FaChartBar, FaCheckCircle, FaClock, FaTimes, FaHandshake, FaPause } from 'react-icons/fa';
+import { FaFileAlt, FaMagic, FaEnvelope, FaBriefcase, FaCrown, FaBook, FaChartBar, FaCheckCircle, FaClock, FaTimes, FaHandshake, FaPause, FaLinkedin } from 'react-icons/fa';
 
 type DashboardStats = {
   user?: {
@@ -111,6 +111,13 @@ const Dashboard: React.FC = () => {
               <Breadcrumbs />
             </div>
             <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+              <Link
+                to="/linkedin"
+                className="inline-flex items-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-sm"
+              >
+                <FaLinkedin className="mr-2" />
+                LinkedIn Review
+              </Link>
               <Link
                 to="/my-resumes"
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm"

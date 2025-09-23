@@ -30,6 +30,7 @@ const AIResumeBuilder = lazy(() => import('./pages/AIResumeBuilder'));
 const PreviewEditor = lazy(() => import('./pages/PreviewEditor'));
 const Footer = lazy(() => import('./components/Footer'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const LinkedInReview = lazy(() => import('./pages/LinkedInReview'));
 
 // Import icons directly since they're used in the About component
 import { FaUsers, FaRocket, FaLightbulb, FaHeart, FaCode, FaSearch, FaPalette, FaChartLine } from 'react-icons/fa';
@@ -434,6 +435,10 @@ function App() {
                   <Route
                     path="/job-tracker"
                     element={isAuthenticated ? <JobTracker /> : <Navigate to="/login" />}
+                  />
+                  <Route
+                    path="/linkedin"
+                    element={isAuthenticated ? <LinkedInReview /> : <Navigate to="/login" />}
                   />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<Article />} />
