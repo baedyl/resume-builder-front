@@ -231,6 +231,26 @@
     
       gtag('config', 'G-XF74RC576V');
     </script>
+    <!-- Polyfill global/globalThis for libraries expecting a global object (e.g., axios fetch adapter) -->
+    <script>
+      (function() {
+        try {
+          // Ensure globalThis exists
+          if (typeof globalThis === 'undefined') {
+            // @ts-ignore
+            window.globalThis = window;
+          }
+        } catch (e) {
+          // @ts-ignore
+          window.globalThis = window;
+        }
+        // Ensure Node-style global alias exists
+        if (typeof window.global === 'undefined') {
+          // @ts-ignore
+          window.global = window;
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
