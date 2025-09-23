@@ -231,7 +231,7 @@
     
       gtag('config', 'G-XF74RC576V');
     </script>
-    <!-- Polyfill global/globalThis for libraries expecting a global object (e.g., axios fetch adapter) -->
+    <!-- Polyfill global/globalThis for libraries expecting a global object (e.g., axios fetch adapter) and force axios XHR adapter -->
     <script>
       (function() {
         try {
@@ -248,6 +248,16 @@
         if (typeof window.global === 'undefined') {
           // @ts-ignore
           window.global = window;
+        }
+
+        // Force axios to use XHR adapter at runtime in case fetch adapter is bundled in prod
+        try {
+          // Only run if axios is present on window (in case of early load by other scripts)
+          if (window.axios && window.axios.defaults) {
+            window.axios.defaults.adapter = undefined; // undefined makes axios pick default browser XHR adapter
+          }
+        } catch (_) {
+          // ignore
         }
       })();
     </script>

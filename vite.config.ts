@@ -22,6 +22,8 @@ export default defineConfig({
       crypto: 'crypto-browserify',
       // Force axios to skip fetch adapter (prevents destructuring error in some prod envs)
       'axios/lib/adapters/fetch.js': '/src/shims/axios-fetch-adapter.js',
+      'axios/adapters/fetch': '/src/shims/axios-fetch-adapter.js',
+      'axios/dist/browser/axios.cjs': '/src/shims/axios-fetch-adapter.js',
     },
   },
 });
