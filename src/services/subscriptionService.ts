@@ -24,12 +24,12 @@ class SubscriptionService {
     };
     this.getAccessToken = getAccessTokenSilently;
 
-    // Validate required environment variables
+    // Soft-validate environment variables to avoid crashing the app in production
     if (!this.config.apiUrl) {
-      throw new SubscriptionError('VITE_API_URL environment variable is required');
+      console.warn('SubscriptionService: VITE_API_URL is not defined. Subscription API calls will fail.');
     }
     if (!this.config.stripePublicKey) {
-      throw new SubscriptionError('VITE_STRIPE_PUBLIC_KEY environment variable is required');
+      console.warn('SubscriptionService: VITE_STRIPE_PUBLIC_KEY is not defined. Checkout will be disabled.');
     }
   }
 
@@ -147,6 +147,9 @@ class SubscriptionService {
 
   async redirectToCheckout(priceId: string): Promise<void> {
     try {
+      if (!this.config.stripePublicKey) {
+        throw new SubscriptionError('Stripe public key missing. Please set VITE_STRIPE_PUBLIC_KEY in production.', 'STRIPE_CONFIG_ERROR');
+      }
       // Validate price ID format
       if (!priceId || typeof priceId !== 'string') {
         throw new SubscriptionError('Invalid price ID provided', 'INVALID_PRICE_ID');
@@ -166,9 +169,7 @@ class SubscriptionService {
       // Dynamically import Stripe to reduce bundle size
       const { loadStripe } = await import('@stripe/stripe-js');
       
-      if (!this.config.stripePublicKey) {
-        throw new SubscriptionError('Stripe public key is not configured', 'STRIPE_CONFIG_ERROR');
-      }
+      // stripePublicKey presence already ensured above
       
       // Validate Stripe public key format
       if (!this.config.stripePublicKey.startsWith('pk_')) {
