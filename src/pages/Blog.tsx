@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaSearch, FaCalendar, FaUser, FaArrowRight, FaBookmark, FaShare, FaClock } from 'react-icons/fa';
+import { FaSearch, FaCalendar, FaArrowRight, FaBookmark, FaShare, FaClock, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { getAllArticles } from '../utils/articleLoader';
 import SEO from '../components/SEO';
 
@@ -10,6 +10,8 @@ const Blog: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const articlesPerPage = 9;
 
   useEffect(() => {
     const loadArticles = async () => {
@@ -48,6 +50,7 @@ const Blog: React.FC = () => {
     }
 
     setFilteredArticles(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [articles, searchTerm, selectedCategory]);
 
   // Get unique categories from both old and new formats
@@ -61,6 +64,29 @@ const Blog: React.FC = () => {
   };
 
   const categories = getCategories();
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+  const startIndex = (currentPage - 1) * articlesPerPage;
+  const endIndex = startIndex + articlesPerPage;
+  const currentArticles = filteredArticles.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1);
+    }
+  };
 
   const handleShare = (article: any, e: React.MouseEvent) => {
     e.preventDefault();
@@ -153,14 +179,14 @@ const Blog: React.FC = () => {
           {/* Results Count */}
           <div className="mb-8">
             <p className="text-gray-600 dark:text-gray-300">
-              {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''} found
+              Showing {startIndex + 1}-{Math.min(endIndex, filteredArticles.length)} of {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''}
             </p>
           </div>
 
           {/* Articles Grid */}
-          {filteredArticles.length > 0 ? (
+          {currentArticles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredArticles.map((article, index) => (
+              {currentArticles.map((article, index) => (
                 <Link
                   key={index}
                   to={`/blog/${article.slug}`}
@@ -265,6 +291,70 @@ const Blog: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-300">
                 Try adjusting your search terms or category filter.
               </p>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-12 flex items-center justify-center">
+              <nav className="flex items-center space-x-2" aria-label="Pagination">
+                {/* Previous Button */}
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <FaChevronLeft className="w-4 h-4 mr-1" />
+                  Previous
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // Show first page, last page, current page, and pages around current page
+                    const shouldShow = 
+                      page === 1 || 
+                      page === totalPages || 
+                      (page >= currentPage - 1 && page <= currentPage + 1);
+                    
+                    if (!shouldShow) {
+                      // Show ellipsis for gaps
+                      if (page === currentPage - 2 || page === currentPage + 2) {
+                        return (
+                          <span key={page} className="px-3 py-2 text-sm text-gray-500">
+                            ...
+                          </span>
+                        );
+                      }
+                      return null;
+                    }
+
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                          page === currentPage
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                  <FaChevronRight className="w-4 h-4 ml-1" />
+                </button>
+              </nav>
             </div>
           )}
         </div>
