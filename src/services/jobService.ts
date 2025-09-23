@@ -2,9 +2,11 @@ import axios from 'axios';
 import { JobApplication, JobStats, JobFilters, CreateJobRequest, UpdateJobRequest, JobFollowUp, JobDeadline } from '../types/job';
 import { Auth0ContextInterface, User } from '@auth0/auth0-react';
 
+import { getApiUrl, getApiAudience } from '../utils/api';
+
 // Helper to get the API URL
-const API_URL = import.meta.env.VITE_API_URL || '';
-const API_AUDIENCE = import.meta.env.VITE_API_AUDIENCE;
+const API_URL = getApiUrl();
+const API_AUDIENCE = getApiAudience();
 
 // The consumer must provide getAccessTokenSilently (from useAuth0)
 export const createJobService = (getAccessTokenSilently: Auth0ContextInterface<User>['getAccessTokenSilently']) => {

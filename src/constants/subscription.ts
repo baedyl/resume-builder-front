@@ -1,3 +1,5 @@
+import { getApiUrl, getStripePublicKey } from '../utils/api';
+
 // Subscription plan configuration
 export const SUBSCRIPTION_PLANS = {
   FREE: 'free',
@@ -46,8 +48,8 @@ export const getDebugInfo = () => {
   return {
     priceId: STRIPE_PRICE_IDS.PREMIUM_MONTHLY,
     priceIdValid: validatePriceId(STRIPE_PRICE_IDS.PREMIUM_MONTHLY),
-    apiUrl: import.meta.env.VITE_API_URL,
-    stripePublicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY ? 'Configured' : 'Not configured',
+    apiUrl: getApiUrl(),
+    stripePublicKey: getStripePublicKey() ? 'Configured' : 'Not configured',
     promotionalPricing: {
       isActive: isPromotionalPricingActive(),
       promotionalPrice: PROMOTIONAL_PRICING.PROMOTIONAL_PRICE,

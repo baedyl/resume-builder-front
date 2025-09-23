@@ -9,6 +9,7 @@ import {
   SUBSCRIPTION_STATUS, 
   SUBSCRIPTION_ENDPOINTS 
 } from '../constants/subscription';
+import { getApiUrl, getStripePublicKey } from '../utils/api';
 
 class SubscriptionService {
   private config: SubscriptionServiceConfig;
@@ -18,8 +19,8 @@ class SubscriptionService {
 
   constructor(getAccessTokenSilently: () => Promise<string>) {
     this.config = {
-      apiUrl: import.meta.env.VITE_API_URL,
-      stripePublicKey: import.meta.env.VITE_STRIPE_PUBLIC_KEY
+      apiUrl: getApiUrl(),
+      stripePublicKey: getStripePublicKey()
     };
     this.getAccessToken = getAccessTokenSilently;
 

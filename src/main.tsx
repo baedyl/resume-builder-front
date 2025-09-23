@@ -23,11 +23,38 @@ if (document.readyState === 'loading') {
   initializeGTM();
 }
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+// Check if Auth0 credentials are available
+const auth0Domain = import.meta.env.VITE_AUTH0_DOMAIN;
+const auth0ClientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
+
+const AppWithAuth = () => {
+  // If Auth0 credentials are not provided, show a configuration error
+  if (!auth0Domain || !auth0ClientId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-md text-center">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Configuration Required
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            Auth0 credentials are not configured. Please set the following environment variables:
+          </p>
+          <div className="text-left bg-gray-100 dark:bg-gray-700 p-4 rounded text-sm font-mono">
+            <div>VITE_AUTH0_DOMAIN=your-auth0-domain</div>
+            <div>VITE_AUTH0_CLIENT_ID=your-auth0-client-id</div>
+          </div>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-4">
+            Contact your administrator for the correct credentials.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
     <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+      domain={auth0Domain}
+      clientId={auth0ClientId}
       cacheLocation="localstorage"
       authorizationParams={{
         redirect_uri: window.location.origin + '/callback',
@@ -36,5 +63,11 @@ createRoot(document.getElementById('root')).render(
     >
       <App />
     </Auth0Provider>
+  );
+};
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <AppWithAuth />
   </StrictMode>
 );

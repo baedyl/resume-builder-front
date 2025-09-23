@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import { getApiUrl, getApiAudience } from '../utils/api';
 import Breadcrumbs from '../components/Breadcrumbs';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { Link } from 'react-router-dom';
@@ -52,8 +53,8 @@ const Dashboard: React.FC = () => {
     let mounted = true;
     (async () => {
       try {
-        const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/dashboard/stats`, {
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+        const res = await axios.get(`${getApiUrl()}/api/resumes/dashboard/stats`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

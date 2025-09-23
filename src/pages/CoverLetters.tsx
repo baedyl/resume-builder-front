@@ -4,6 +4,7 @@ import PremiumGate from '../components/PremiumGate';
 import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import { getApiUrl, getApiAudience } from '../utils/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -51,16 +52,16 @@ const CoverLetters: React.FC = () => {
     setLoading(true);
     try {
       let response;
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
       if (isEdit && form.id) {
-        response = await axios.put(`${import.meta.env.VITE_API_URL}/api/cover-letter/${form.id}`, { ...form, content: editableCover }, {
+        response = await axios.put(`${getApiUrl()}/api/cover-letter/${form.id}`, { ...form, content: editableCover }, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
         });
       } else {
-        response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/cover-letter`, form, {
+        response = await axios.post(`${getApiUrl() || ''}/api/cover-letter`, form, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -88,9 +89,9 @@ const CoverLetters: React.FC = () => {
     setPdfLoading(true);
     setFormError(null);
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/cover-letter/${savedId}/pdf`,
+        `${getApiUrl()}/api/cover-letter/${savedId}/pdf`,
         {},
         {
           headers: {
@@ -119,8 +120,8 @@ const CoverLetters: React.FC = () => {
     setLoading(true);
     setFormError(null);
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/cover-letter/${savedId}`, {
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+      await axios.put(`${getApiUrl()}/api/cover-letter/${savedId}`, {
         ...form,
         content: editableCover,
       }, {
