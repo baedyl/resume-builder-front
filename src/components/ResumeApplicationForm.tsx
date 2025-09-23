@@ -9,6 +9,7 @@ import PremiumGate from './PremiumGate';
 import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 import LanguageSelectionSection from './sections/LanguageSelectionSection';
 import { decodeId, encodeId } from '../utils/urlId';
+import { getApiUrl, getApiAudience } from '../utils/api';
 
 const ResumeApplicationForm: React.FC = () => {
   const { id: encodedResumeId } = useParams<{ id: string }>();
@@ -57,11 +58,11 @@ const ResumeApplicationForm: React.FC = () => {
     try {
       const resumeId = await decodeId(encodedResumeId);
       const token = await getAccessTokenSilently({ 
-        audience: import.meta.env.VITE_API_AUDIENCE 
+        audience: getApiAudience() 
       } as any);
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/resumes/${resumeId}/enhance-pdf`,
+        `${getApiUrl()}/api/resumes/${resumeId}/enhance-pdf`,
         {
           userId: user?.sub,
           resumeId,

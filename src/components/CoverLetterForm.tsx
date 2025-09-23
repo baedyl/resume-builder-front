@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
+import { getApiUrl, getApiAudience } from '../utils/api';
 
 export interface CoverLetterFormData {
   id?: string;
@@ -36,7 +37,7 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ initialData, onSave, 
 
   const onSubmit = async (data: CoverLetterFormData) => {
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
       let response;
       if (data.id) {
         // Only send fields present in the form
@@ -45,7 +46,7 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ initialData, onSave, 
           jobDescription: data.jobDescription,
           content: data.content,
         };
-        response = await axios.put(`${import.meta.env.VITE_API_URL}/api/cover-letter/${data.id}`, updatePayload, {
+        response = await axios.put(`${getApiUrl()}/api/cover-letter/${data.id}`, updatePayload, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ initialData, onSave, 
         });
         toast.success('Cover letter updated successfully!');
       } else {
-        response = await axios.post(`${import.meta.env.VITE_API_URL}/api/cover-letter`, data, {
+        response = await axios.post(`${getApiUrl()}/api/cover-letter`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',

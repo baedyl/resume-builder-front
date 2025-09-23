@@ -5,6 +5,7 @@ import { encodeId } from '../utils/urlId';
 import { CoverLetterFormData } from './CoverLetterForm';
 import { format } from 'date-fns';
 import LoadingOverlay from './LoadingOverlay';
+import { getApiUrl, getApiAudience } from '../utils/api';
 
 interface CoverLetterSummary {
   id: string;
@@ -22,8 +23,8 @@ const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetter
 
   const fetchCoverLetters = async () => {
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/cover-letter`, {
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+      const response = await axios.get(`${getApiUrl()}/api/cover-letter`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -46,8 +47,8 @@ const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetter
       return;
     }
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/cover-letter/${id}`, {
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+      await axios.delete(`${getApiUrl()}/api/cover-letter/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -5,6 +5,7 @@ import axios from 'axios';
 import LoadingOverlay from '../components/LoadingOverlay';
 import CoverLetterForm, { CoverLetterFormData } from '../components/CoverLetterForm';
 import { decodeId } from '../utils/urlId';
+import { getApiUrl, getApiAudience } from '../utils/api';
 
 const CoverLetterDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,8 +20,8 @@ const CoverLetterDetail: React.FC = () => {
       if (!id) return;
       try {
         const decodedId = await decodeId(id);
-        const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/cover-letter/${decodedId}`, {
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+        const response = await axios.get(`${getApiUrl()}/api/cover-letter/${decodedId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setData(response.data);

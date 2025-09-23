@@ -6,6 +6,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import ResumeForm from '../components/ResumeForm';
 import { ResumeFormData } from '../types/resume';
 import { decodeId } from '../utils/urlId';
+import { getApiUrl, getApiAudience } from '../utils/api';
 
 const ResumeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,8 +32,8 @@ const ResumeDetail: React.FC = () => {
       if (!id) return;
       try {
         const decodedId = await decodeId(id);
-        const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes/${decodedId}`, {
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+        const response = await axios.get(`${getApiUrl()}/api/resumes/${decodedId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { ResumeFormData } from '../types/resume';
 import { format } from 'date-fns';
 import { encodeId } from '../utils/urlId';
+import { getApiUrl, getApiAudience } from '../utils/api';
 import LoadingOverlay from './LoadingOverlay';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -40,8 +41,8 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
 
   const fetchResumes = async () => {
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/resumes`, {
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+      const response = await axios.get(`${getApiUrl()}/api/resumes`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -65,8 +66,8 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
     }
 
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/resumes/${id}`, {
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+      await axios.delete(`${getApiUrl()}/api/resumes/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
