@@ -11,7 +11,7 @@ const Blog: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const articlesPerPage = 9;
+  const articlesPerPage = 10;
 
   useEffect(() => {
     const loadArticles = async () => {
@@ -35,10 +35,10 @@ const Blog: React.FC = () => {
     // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(article =>
-        article.metadata.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (article.metadata.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
         (article.metadata.description && article.metadata.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (article.metadata.excerpt && article.metadata.excerpt.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        article.metadata.author.toLowerCase().includes(searchTerm.toLowerCase())
+        (article.metadata.author || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -93,7 +93,7 @@ const Blog: React.FC = () => {
     e.stopPropagation();
     
     const url = `${window.location.origin}/blog/${article.slug}`;
-    const text = `${article.metadata.title} - Check out this article on AI Resume Builder!`;
+    const text = `${article.metadata.title || 'Article'} - Check out this article on AI Resume Builder!`;
     const hashtags = 'AIResumeBuilder,ResumeTips,CareerAdvice,JobSearch';
     
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`;
@@ -232,7 +232,7 @@ const Blog: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
                           <span className="text-gray-600 dark:text-gray-300 text-sm font-semibold">
-                            {article.metadata.author.split(' ').map((n: string) => n[0]).join('')}
+                            {(article.metadata.author || 'Author').split(' ').map((n: string) => n[0]).join('')}
                           </span>
                         </div>
                         <div>
@@ -241,7 +241,7 @@ const Blog: React.FC = () => {
                           </div>
                           <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                             <FaCalendar className="mr-1" />
-                            {new Date(article.metadata.publishedTime || article.metadata.date || '').toLocaleDateString()}
+                            {new Date(article.metadata.publishedTime || article.metadata.date || new Date()).toLocaleDateString()}
                           </div>
                         </div>
                       </div>
