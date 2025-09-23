@@ -15,14 +15,13 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis',
-    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'https://api.proairesume.online'),
-    'import.meta.env.VITE_API_AUDIENCE': JSON.stringify(process.env.VITE_API_AUDIENCE || 'https://api.proairesume.online'),
-    'import.meta.env.VITE_STRIPE_PUBLIC_KEY': JSON.stringify(process.env.VITE_STRIPE_PUBLIC_KEY || ''),
     'import.meta.env.VITE_GTM_ID': JSON.stringify(process.env.VITE_GTM_ID || 'G-XF74RC576V'),
   },
   resolve: {
     alias: {
       crypto: 'crypto-browserify',
+      // Force axios to skip fetch adapter (prevents destructuring error in some prod envs)
+      'axios/lib/adapters/fetch.js': '/src/shims/axios-fetch-adapter.js',
     },
   },
 });
