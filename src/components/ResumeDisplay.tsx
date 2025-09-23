@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { safeFetch, getApiAudience } from '../utils/api';
 
 interface ResumeDisplayProps {
   resumeId: string;
@@ -7,7 +8,7 @@ interface ResumeDisplayProps {
 }
 
 const getResumeHTML = async (resumeId: string, template: string = 'colorful', token: string) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${resumeId}/html?template=${template}`, {
+  const response = await safeFetch(`/api/resumes/${resumeId}/html?template=${template}`, {
     headers: {
       'Authorization': `Bearer ${token}`,
     },
@@ -31,7 +32,7 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ resumeId, template = 'col
       try {
         setLoading(true);
         setError(null);
-        const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
         const htmlContent = await getResumeHTML(resumeId, template, token as unknown as string);
         setHtml(htmlContent);
       } catch (err: any) {

@@ -40,7 +40,7 @@ const AppLogo: React.FC<AppLogoProps> = ({
 }) => {
   const isDark = useIsDarkMode();
   const src = isDark ? darkSrc : lightSrc;
-  return <img src={src} alt={alt} className={className} decoding="async" fetchPriority="high" />;
+  return <img src={src} alt={alt} className={className} decoding="async" fetchpriority="high" />;
 };
 
 export default AppLogo;

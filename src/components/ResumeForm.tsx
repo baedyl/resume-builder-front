@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+import { getApiUrl, getApiAudience } from '../utils/api';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingOverlay from './LoadingOverlay';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -219,7 +220,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   // Existing useEffect hooks (unchanged)
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/skills`)
+    fetch(`${getApiUrl()}/api/skills`)
       .then((res) => res.json())
       .then((data: Skill[]) => setSkills(data))
       .catch((error: Error) => {
@@ -333,7 +334,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     }
     
     const summary = getValues('summary');
-    const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
     if (!summary) {
       toast.error('Please enter a summary to enhance.');
       return;
@@ -343,7 +344,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     // Track AI enhancement attempt
     trackAIEnhancement('summary', selectedLanguage, true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/resumes/enhance-summary`, {
+      const response = await axios.post(`${getApiUrl()}/api/resumes/enhance-summary`, {
         summary,
         language: selectedLanguage,
       }, {
@@ -431,10 +432,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       const currentDescription = getValues(`workExperience.${index}.description`);
       const jobTitle = getValues(`workExperience.${index}.jobTitle`);
       const company = getValues(`workExperience.${index}.company`);
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/resumes/enhance-description`,
+        `${getApiUrl()}/api/resumes/enhance-description`,
         {
           description: currentDescription,
           jobTitle,
@@ -615,7 +616,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   // Function to save resume
   const saveResume = async (data: ResumeFormData) => {
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
       setIsSaving(true);
 
       // Build payload matching API expectations (strings where required)
@@ -659,8 +660,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       };
 
       const url = currentResumeId
-        ? `${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}`
-        : `${import.meta.env.VITE_API_URL}/api/resumes`;
+        ? `${getApiUrl()}/api/resumes/${currentResumeId}`
+        : `${getApiUrl()}/api/resumes`;
 
       const response = await axios({
         method: currentResumeId ? 'put' : 'post',
@@ -767,7 +768,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     }
 
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
       setIsLoading(true);
       setFormError(null);
 
@@ -822,7 +823,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       
       if (currentResumeId) {
         // For existing resumes - send full data to ensure latest edits (including skills) are reflected
-        response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}/html-pdf`, {
+        response = await fetch(`${getApiUrl()}/api/resumes/${currentResumeId}/html-pdf`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -837,7 +838,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         });
       } else {
         // For new resumes - send full resume data with template
-        response = await fetch(`${import.meta.env.VITE_API_URL}/api/resumes/save-and-html-pdf`, {
+        response = await fetch(`${getApiUrl()}/api/resumes/save-and-html-pdf`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -1085,7 +1086,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const generatePdfForPreview = async (data: ResumeFormData) => {
     try {
       setIsGeneratingPdf(true);
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
 
       // Format the data for PDF generation
       const formattedData = {
@@ -1134,8 +1135,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
       // Always POST full form data so preview reflects unsaved changes (e.g., skills)
       const endpoint = currentResumeId 
-        ? `${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}/html?template=${selectedTemplate}`
-        : `${import.meta.env.VITE_API_URL}/api/resumes/new/html?template=${selectedTemplate}`;
+        ? `${getApiUrl()}/api/resumes/${currentResumeId}/html?template=${selectedTemplate}`
+        : `${getApiUrl()}/api/resumes/new/html?template=${selectedTemplate}`;
       
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -1288,7 +1289,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
     const formData = new FormData();
 
     // Validate file type
@@ -1312,7 +1313,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     // Call API endpoint to upload file to OpenAI
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/resumes/upload`,
+        `${getApiUrl()}/api/resumes/upload`,
         formData,
         {
           headers: {

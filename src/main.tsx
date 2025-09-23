@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Auth0Provider } from '@auth0/auth0-react';
 import './index.css';
 import App from './App';
+import { getApiAudience } from './utils/api';
 
 // Defer Google Tag Manager initialization to avoid blocking initial render
 const initializeGTM = () => {
@@ -27,12 +28,10 @@ createRoot(document.getElementById('root')).render(
     <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN}
       clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-      redirectUri={window.location.origin + '/callback'}
       cacheLocation="localstorage"
-      audience={import.meta.env.VITE_API_AUDIENCE}
       authorizationParams={{
-        redirect_uri: window.location.origin,
-        audience: import.meta.env.VITE_API_AUDIENCE, // Explicitly set audience here
+        redirect_uri: window.location.origin + '/callback',
+        audience: getApiAudience(), // Explicitly set audience here
       }}
     >
       <App />

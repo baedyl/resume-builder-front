@@ -15,6 +15,12 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis',
+    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'https://api.proairesume.online'),
+    'import.meta.env.VITE_API_AUDIENCE': JSON.stringify(process.env.VITE_API_AUDIENCE || 'https://api.proairesume.online'),
+    'import.meta.env.VITE_STRIPE_PUBLIC_KEY': JSON.stringify(process.env.VITE_STRIPE_PUBLIC_KEY || ''),
+    'import.meta.env.VITE_AUTH0_DOMAIN': JSON.stringify(process.env.VITE_AUTH0_DOMAIN || 'dev-proairesume.us.auth0.com'),
+    'import.meta.env.VITE_AUTH0_CLIENT_ID': JSON.stringify(process.env.VITE_AUTH0_CLIENT_ID || 'your-auth0-client-id'),
+    'import.meta.env.VITE_GTM_ID': JSON.stringify(process.env.VITE_GTM_ID || 'G-XF74RC576V'),
   },
   resolve: {
     alias: {

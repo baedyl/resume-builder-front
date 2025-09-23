@@ -99,7 +99,7 @@ const NavBar: React.FC = () => {
               className="w-auto max-h-full"
               loading="eager"
               decoding="async"
-              fetchPriority="high"
+              fetchpriority="high"
             />
           </Link>
 

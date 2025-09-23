@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingOverlay from '../components/LoadingOverlay';
+import { getApiUrl, getApiAudience } from '../utils/api';
 import { ResumeFormData } from '../types/resume';
 
 interface PreviewEditorLocationState {
@@ -42,8 +43,8 @@ const PreviewEditor: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
-        const endpoint = `${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}/html?template=${selectedTemplate}`;
+        const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+        const endpoint = `${getApiUrl()}/api/resumes/${currentResumeId}/html?template=${selectedTemplate}`;
 
         const response = await fetch(endpoint, {
           method: 'POST',
@@ -132,9 +133,9 @@ const PreviewEditor: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const token = await getAccessTokenSilently({ audience: import.meta.env.VITE_API_AUDIENCE } as any);
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
       // Prefer existing endpoints used in the modal flow
-      const url = `${import.meta.env.VITE_API_URL}/api/resumes/${currentResumeId}/html-pdf`;
+      const url = `${getApiUrl()}/api/resumes/${currentResumeId}/html-pdf`;
 
       const response = await fetch(url, {
         method: 'POST',
