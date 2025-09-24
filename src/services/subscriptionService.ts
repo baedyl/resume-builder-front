@@ -46,7 +46,8 @@ class SubscriptionService {
   private async makeAuthenticatedRequest<T>(
     method: 'GET' | 'POST',
     endpoint: string,
-    data?: any
+    data?: any,
+    options?: { silent?: boolean }
   ): Promise<T> {
     try {
       const token = await this.getAccessToken();
@@ -65,19 +66,23 @@ class SubscriptionService {
       
       return response.data;
     } catch (error: any) {
-      console.error('API Error:', error);
-      console.error('Error Response:', error.response?.data);
-      console.error('Error Status:', error.response?.status);
-      console.error('Error Headers:', error.response?.headers);
-      
-      // Log the full error object for debugging
-      console.error('Full error object:', {
-        message: error.message,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
-        config: error.config
-      });
+      if (options?.silent) {
+        console.warn('API Warning (silent):', error?.message || error);
+      } else {
+        console.error('API Error:', error);
+        console.error('Error Response:', error.response?.data);
+        console.error('Error Status:', error.response?.status);
+        console.error('Error Headers:', error.response?.headers);
+        
+        // Log the full error object for debugging
+        console.error('Full error object:', {
+          message: error.message,
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          config: error.config
+        });
+      }
       
       const message = error.response?.data?.message || error.response?.data?.error || error.message || 'Request failed';
       const code = error.response?.data?.code || error.code;
@@ -228,16 +233,20 @@ class SubscriptionService {
       console.log('SubscriptionService.getSubscriptionStatus - Fetching from backend...');
       
       // First, call the debug endpoint to get detailed subscription information
-      try {
-        console.log('SubscriptionService.getSubscriptionStatus - Calling debug endpoint...');
-        const debugInfo = await this.makeAuthenticatedRequest<any>(
-          'POST',
-          SUBSCRIPTION_ENDPOINTS.SUBSCRIPTION_DEBUG
-        );
-        console.log('SubscriptionService.getSubscriptionStatus - Debug endpoint response:', debugInfo);
-      } catch (debugError) {
-        console.warn('SubscriptionService.getSubscriptionStatus - Debug endpoint failed:', debugError);
-        // Continue with normal flow even if debug fails
+      if (import.meta.env.DEV) {
+        try {
+          console.log('SubscriptionService.getSubscriptionStatus - Calling debug endpoint...');
+          const debugInfo = await this.makeAuthenticatedRequest<any>(
+            'POST',
+            SUBSCRIPTION_ENDPOINTS.SUBSCRIPTION_DEBUG,
+            undefined,
+            { silent: true }
+          );
+          console.log('SubscriptionService.getSubscriptionStatus - Debug endpoint response:', debugInfo);
+        } catch (debugError) {
+          console.warn('SubscriptionService.getSubscriptionStatus - Debug endpoint failed (silent):', (debugError as any)?.message || debugError);
+          // Continue with normal flow even if debug fails
+        }
       }
       
       const status = await this.makeAuthenticatedRequest<SubscriptionStatus>(

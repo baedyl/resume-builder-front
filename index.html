@@ -254,7 +254,7 @@
         try {
           // Only run if axios is present on window (in case of early load by other scripts)
           if (window.axios && window.axios.defaults) {
-            window.axios.defaults.adapter = undefined; // undefined makes axios pick default browser XHR adapter
+            window.axios.defaults.adapter = 'xhr';
           }
         } catch (_) {
           // ignore

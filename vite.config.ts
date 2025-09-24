@@ -14,7 +14,6 @@ export default defineConfig({
     include: ['react', 'react-dom', 'react-router-dom'],
   },
   define: {
-    global: 'globalThis',
     'import.meta.env.VITE_GTM_ID': JSON.stringify(process.env.VITE_GTM_ID || 'G-XF74RC576V'),
   },
   resolve: {
@@ -22,8 +21,10 @@ export default defineConfig({
       crypto: 'crypto-browserify',
       // Force axios to skip fetch adapter (prevents destructuring error in some prod envs)
       'axios/lib/adapters/fetch.js': '/src/shims/axios-fetch-adapter.js',
+      'axios/lib/adapters/fetch/index.js': '/src/shims/axios-fetch-adapter.js',
+      'axios/lib/adapters/fetch': '/src/shims/axios-fetch-adapter.js',
       'axios/adapters/fetch': '/src/shims/axios-fetch-adapter.js',
-      'axios/dist/browser/axios.cjs': '/src/shims/axios-fetch-adapter.js',
+      'axios/dist/esm/adapters/fetch.js': '/src/shims/axios-fetch-adapter.js',
     },
   },
 });
