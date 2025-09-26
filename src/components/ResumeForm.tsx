@@ -41,6 +41,9 @@ const WorkExperienceSchema = z.object({
   ]).optional(),
   isCurrent: z.boolean().default(false),
   description: z.string().optional(),
+  companyDescription: z.string().optional(),
+  techStack: z.union([z.string(), z.array(z.string())]).optional(),
+  location: z.string().optional(),
 }).refine(
   (data) => {
     if (!data.endDate || data.endDate === 'Present') return true;
@@ -55,6 +58,7 @@ const EducationSchema = z.object({
   degree: z.string().min(1, 'Degree is required'),
   major: z.string().optional(),
   graduationYear: z.number().int().min(1900, 'Graduation year must be a valid year').max(9999, 'Graduation year must be a valid year').optional(),
+  startYear: z.number().int().min(1900, 'Start year must be a valid year').max(9999, 'Start year must be a valid year').optional(),
 });
 
 const SkillSchema = z.object({
@@ -157,8 +161,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       website: '',
       summary: '',
       skills: [],
-      workExperience: [{ company: '', jobTitle: '', startDate: '', endDate: '', isCurrent: false, description: '' }],
-      education: [{ institution: '', degree: '', major: '', graduationYear: undefined }],
+      workExperience: [{ company: '', jobTitle: '', startDate: '', endDate: '', isCurrent: false, description: '', companyDescription: '', techStack: '', location: '' }],
+      education: [{ institution: '', degree: '', major: '', graduationYear: undefined, startYear: undefined }],
       languages: [],
       certifications: [],
       language: 'en',
@@ -591,6 +595,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       endDate: exp.endDate === 'Present' ? 'Present' : (exp.endDate ? formatDateToYYYYMM(exp.endDate) : ''),
       isCurrent: exp.isCurrent || (!exp.endDate || exp.endDate === ''),
       location: exp.location || '',
+      companyDescription: (exp as any).companyDescription || '',
+      techStack: Array.isArray((exp as any).techStack)
+        ? (exp as any).techStack.join(', ')
+        : (((exp as any).techStack as any) || ''),
     }));
 
     // Format dates in certifications
@@ -641,6 +649,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           startDate: exp.startDate?.toString() || '',
           endDate: exp.endDate?.toString() || '',
           description: exp.description?.toString() || '',
+          companyDescription: (exp as any).companyDescription?.toString() || '',
+          techStack: Array.isArray((exp as any).techStack)
+            ? (exp as any).techStack.join(', ')
+            : ((exp as any).techStack?.toString() || ''),
           isCurrent: Boolean(exp.isCurrent),
         })),
         education: (data.education || []).map(edu => ({
@@ -649,6 +661,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           institution: edu.institution?.toString() || '',
           graduationYear: (edu.graduationYear !== undefined && edu.graduationYear !== null && edu.graduationYear !== ('' as any))
             ? (typeof edu.graduationYear === 'number' ? edu.graduationYear : Number(edu.graduationYear))
+            : undefined,
+          startYear: (edu.startYear !== undefined && edu.startYear !== null && edu.startYear !== ('' as any))
+            ? (typeof edu.startYear === 'number' ? edu.startYear : Number(edu.startYear))
             : undefined,
         })),
         languages: (data.languages || []).map(l => ({ name: l.name?.toString() || '', proficiency: l.proficiency?.toString() || '' })),
@@ -793,6 +808,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           startDate: exp.startDate,
           endDate: exp.endDate || '',
           description: exp.description || '',
+          companyDescription: (exp as any).companyDescription || '',
+          techStack: Array.isArray((exp as any).techStack)
+            ? (exp as any).techStack.join(', ')
+            : ((exp as any).techStack?.toString() || ''),
           isCurrent: exp.isCurrent || false
         })),
         education: data.education.map(edu => ({
@@ -800,6 +819,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           major: edu.major || '',
           institution: edu.institution,
           graduationYear: edu.graduationYear || 0,
+          startYear: edu.startYear || 0,
           gpa: edu.gpa || 0,
           description: edu.description || ''
         })),

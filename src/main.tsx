@@ -1,5 +1,6 @@
 import './shims/axios-xhr-setup';
 import { StrictMode } from 'react';
+import ErrorBoundary from './components/ErrorBoundary';
 import { createRoot } from 'react-dom/client';
 import { Auth0Provider } from '@auth0/auth0-react';
 import './index.css';
@@ -69,6 +70,8 @@ const AppWithAuth = () => {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AppWithAuth />
+    <ErrorBoundary>
+      <AppWithAuth />
+    </ErrorBoundary>
   </StrictMode>
 );

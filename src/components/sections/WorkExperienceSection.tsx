@@ -6,10 +6,13 @@ interface WorkExperienceField {
   id: string;
   company?: string;
   jobTitle?: string;
+  location?: string;
   startDate?: string;
   endDate?: string;
   isCurrent?: boolean;
   description?: string;
+  companyDescription?: string;
+  techStack?: string | string[];
 }
 
 interface Props {
@@ -136,6 +139,17 @@ const WorkExperienceSection: React.FC<Props> = ({
                   )}
                 </div>
                 <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Location (Optional)</label>
+                  <input
+                    {...register(`workExperience.${index}.location` as const)}
+                    className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors ${errors.workExperience?.[index]?.location ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'}`}
+                    placeholder="City, Country (e.g., Paris, France)"
+                  />
+                  {errors.workExperience?.[index]?.location && (
+                    <p className="mt-1 text-xs sm:text-sm text-red-600 dark:text-red-400 transition-colors">{errors.workExperience[index].location.message}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
                   <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Start Date</label>
                   <input
                     {...register(`workExperience.${index}.startDate` as const)}
@@ -196,6 +210,26 @@ const WorkExperienceSection: React.FC<Props> = ({
                   rows={4}
                 />
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Company Description (Optional)</label>
+                  <textarea
+                    {...register(`workExperience.${index}.companyDescription` as const)}
+                    className="w-full p-3 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
+                    placeholder="Briefly describe the company (size, industry, mission)"
+                    rows={3}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Tech Stack (Optional)</label>
+                  <input
+                    {...register(`workExperience.${index}.techStack` as const)}
+                    className="w-full p-3 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
+                    placeholder="Comma-separated (e.g., React, TypeScript, Node.js)"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">We’ll format this as a list on export.</p>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => handleEnhanceDescription(index)}
@@ -212,7 +246,7 @@ const WorkExperienceSection: React.FC<Props> = ({
       </div>
       <button
         type="button"
-        onClick={() => appendWorkExperience({ company: '', jobTitle: '', startDate: '', endDate: '', isCurrent: false, description: '' })}
+        onClick={() => appendWorkExperience({ company: '', jobTitle: '', startDate: '', endDate: '', isCurrent: false, description: '', companyDescription: '', techStack: '', location: '' })}
         className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm sm:text-base font-medium transition-colors"
       >
         + Add Experience
