@@ -76,7 +76,6 @@ const WorkExperienceSection: React.FC<Props> = ({
       <div className="space-y-4">
         {workExperienceFields.map((field, index) => {
           const isCurrent = watch(`workExperience.${index}.isCurrent`);
-          const endDate = watch(`workExperience.${index}.endDate`);
           
           return (
             <div key={field.id} className="p-4 sm:p-6 border border-gray-200 dark:border-gray-700 rounded-lg space-y-4 bg-white dark:bg-gray-800 transition-colors">
@@ -115,6 +114,7 @@ const WorkExperienceSection: React.FC<Props> = ({
                   Remove
                 </button>
               </div>
+              {/* Row 1: Company + Company Description */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Company</label>
@@ -127,6 +127,18 @@ const WorkExperienceSection: React.FC<Props> = ({
                     <p className="mt-1 text-xs sm:text-sm text-red-600 dark:text-red-400 transition-colors">{errors.workExperience[index].company.message}</p>
                   )}
                 </div>
+                <div className="space-y-2">
+                  <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Company Description (Optional)</label>
+                  <input
+                    {...register(`workExperience.${index}.companyDescription` as const)}
+                    className="w-full p-3 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
+                    placeholder="e.g., Series A fintech with 120 employees"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Job Title + Location */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Job Title</label>
                   <input
@@ -149,6 +161,10 @@ const WorkExperienceSection: React.FC<Props> = ({
                     <p className="mt-1 text-xs sm:text-sm text-red-600 dark:text-red-400 transition-colors">{errors.workExperience[index].location.message}</p>
                   )}
                 </div>
+              </div>
+
+              {/* Row 3: Start Date + End Date */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Start Date</label>
                   <input
@@ -166,18 +182,6 @@ const WorkExperienceSection: React.FC<Props> = ({
                 <div className="space-y-2">
                   <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">End Date</label>
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id={`current-${index}`}
-                        checked={isCurrent}
-                        onChange={(e) => handleCurrentJobChange(index, e.target.checked)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <label htmlFor={`current-${index}`} className="text-sm text-gray-700 dark:text-gray-300 transition-colors">
-                        Current Job
-                      </label>
-                    </div>
                     {isCurrent ? (
                       <input
                         {...register(`workExperience.${index}.endDate` as const)}
@@ -195,12 +199,28 @@ const WorkExperienceSection: React.FC<Props> = ({
                         max={currentDate}
                       />
                     )}
+                    {index === 0 && (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`current-${index}`}
+                          checked={isCurrent}
+                          onChange={(e) => handleCurrentJobChange(index, e.target.checked)}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <label htmlFor={`current-${index}`} className="text-sm text-gray-700 dark:text-gray-300 transition-colors">
+                          Current Job
+                        </label>
+                      </div>
+                    )}
                   </div>
                   {errors.workExperience?.[index]?.endDate && (
                     <p className="mt-1 text-xs sm:text-sm text-red-600 dark:text-red-400 transition-colors">{errors.workExperience[index].endDate.message}</p>
                   )}
                 </div>
               </div>
+
+              {/* Description */}
               <div className="space-y-2">
                 <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Description</label>
                 <textarea
@@ -210,25 +230,16 @@ const WorkExperienceSection: React.FC<Props> = ({
                   rows={4}
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Company Description (Optional)</label>
-                  <textarea
-                    {...register(`workExperience.${index}.companyDescription` as const)}
-                    className="w-full p-3 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
-                    placeholder="Briefly describe the company (size, industry, mission)"
-                    rows={3}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Tech Stack (Optional)</label>
-                  <input
-                    {...register(`workExperience.${index}.techStack` as const)}
-                    className="w-full p-3 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
-                    placeholder="Comma-separated (e.g., React, TypeScript, Node.js)"
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400">We’ll format this as a list on export.</p>
-                </div>
+
+              {/* Tech Stack / Tools */}
+              <div className="space-y-2">
+                <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Tech Stack / Tools (Optional)</label>
+                <input
+                  {...register(`workExperience.${index}.techStack` as const)}
+                  className="w-full p-3 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
+                  placeholder="Comma-separated (e.g., React, TypeScript, Node.js)"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400">We’ll format this as a list on export.</p>
               </div>
               <button
                 type="button"
