@@ -655,17 +655,19 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             : ((exp as any).techStack?.toString() || ''),
           isCurrent: Boolean(exp.isCurrent),
         })),
-        education: (data.education || []).map(edu => ({
-          degree: edu.degree?.toString() || '',
-          major: (edu as any).major?.toString() || '',
-          institution: edu.institution?.toString() || '',
-          graduationYear: (edu.graduationYear !== undefined && edu.graduationYear !== null && edu.graduationYear !== ('' as any))
-            ? (typeof edu.graduationYear === 'number' ? edu.graduationYear : Number(edu.graduationYear))
-            : undefined,
-          startYear: (edu.startYear !== undefined && edu.startYear !== null && edu.startYear !== ('' as any))
-            ? (typeof edu.startYear === 'number' ? edu.startYear : Number(edu.startYear))
-            : undefined,
-        })),
+        education: (data.education || []).map(edu => {
+          const gradVal = (edu as any).graduationYear;
+          const startVal = (edu as any).startYear;
+          const gradNum = typeof gradVal === 'number' ? gradVal : Number(gradVal);
+          const startNum = typeof startVal === 'number' ? startVal : Number(startVal);
+          return {
+            degree: edu.degree?.toString() || '',
+            major: (edu as any).major?.toString() || '',
+            institution: edu.institution?.toString() || '',
+            graduationYear: (gradVal !== undefined && gradVal !== null && gradVal !== ('' as any) && Number.isFinite(gradNum)) ? gradNum : undefined,
+            startYear: (startVal !== undefined && startVal !== null && startVal !== ('' as any) && Number.isFinite(startNum)) ? startNum : undefined,
+          };
+        }),
         languages: (data.languages || []).map(l => ({ name: l.name?.toString() || '', proficiency: l.proficiency?.toString() || '' })),
         certifications: (data.certifications || []).map(c => ({
           name: c.name?.toString() || '',
@@ -818,8 +820,8 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           degree: edu.degree,
           major: edu.major || '',
           institution: edu.institution,
-          graduationYear: edu.graduationYear || 0,
-          startYear: edu.startYear || 0,
+          graduationYear: (edu.graduationYear !== undefined && edu.graduationYear !== null && edu.graduationYear !== ('' as any)) ? edu.graduationYear : undefined,
+          startYear: (edu.startYear !== undefined && edu.startYear !== null && edu.startYear !== ('' as any)) ? edu.startYear : undefined,
           gpa: edu.gpa || 0,
           description: edu.description || ''
         })),
