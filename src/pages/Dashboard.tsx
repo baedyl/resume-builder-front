@@ -148,7 +148,7 @@ const Dashboard: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <Link to="/my-resumes" className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer block focus:outline-none focus:ring-2 focus:ring-blue-500">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Total Resumes</p>
@@ -156,9 +156,9 @@ const Dashboard: React.FC = () => {
               </div>
               <FaFileAlt className="text-blue-600 dark:text-blue-400 text-2xl" />
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <Link to="/cover-letters" className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer block focus:outline-none focus:ring-2 focus:ring-blue-500">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Cover Letters</p>
@@ -166,9 +166,9 @@ const Dashboard: React.FC = () => {
               </div>
               <FaEnvelope className="text-green-600 dark:text-green-400 text-2xl" />
             </div>
-          </div>
+          </Link>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <Link to="/job-tracker" className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer block focus:outline-none focus:ring-2 focus:ring-blue-500">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Job Applications</p>
@@ -176,7 +176,7 @@ const Dashboard: React.FC = () => {
               </div>
               <FaBriefcase className="text-purple-600 dark:text-purple-400 text-2xl" />
             </div>
-          </div>
+          </Link>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
