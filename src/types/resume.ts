@@ -11,6 +11,10 @@ export interface WorkExperience {
   endDate?: string;
   description?: string;
   isCurrent?: boolean;
+  // New optional fields aligned with API
+  companyDescription?: string;
+  // Accept either array (API shape) or string (form raw input); form will convert to array on submit
+  techStack?: string[] | string;
 }
 
 export interface Education {
@@ -18,6 +22,7 @@ export interface Education {
   major?: string | null;
   institution: string;
   graduationYear?: number | null;
+  startYear?: number | null;
   gpa?: number | null;
   description?: string | null;
 }

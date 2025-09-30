@@ -5,6 +5,7 @@ import { GTMProvider } from './contexts/GTMContext';
 import { lazy, Suspense } from 'react';
 import LoadingOverlay from './components/LoadingOverlay';
 import SEO from './components/SEO';
+import ScrollToTop from './components/ScrollToTop';
 
 // Lazy load non-critical components to improve initial render performance
 const ResumeForm = lazy(() => import('./components/ResumeForm'));
@@ -388,6 +389,7 @@ function App() {
       <GTMProvider>
         <SubscriptionProvider>
           <SEO />
+          <ScrollToTop />
           <div className="min-h-screen flex flex-col">
             <Suspense fallback={<div className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"></div>}>
               <NavBar />
