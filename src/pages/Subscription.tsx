@@ -17,6 +17,9 @@ const Subscription: React.FC = () => {
   } = useSubscription();
   
   const [actionLoading, setActionLoading] = useState(false);
+  const now = new Date();
+  const subscriptionEndDate = subscription?.subscriptionEnd ? new Date(subscription.subscriptionEnd) : null;
+  const isExpired = Boolean(subscriptionEndDate && subscriptionEndDate.getTime() < now.getTime());
 
   const handleUpgrade = async (): Promise<void> => {
     try {
@@ -139,6 +142,29 @@ const Subscription: React.FC = () => {
               )}
             </div>
           )}
+
+          {/* Expired banner */}
+          {isExpired && (
+            <div className="mt-4 p-3 rounded bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-sm text-yellow-800 dark:text-yellow-200">
+              Your subscription expired on {formatDate(subscription!.subscriptionEnd!)}.
+              <div className="mt-2">
+                <button
+                  onClick={handleUpgrade}
+                  disabled={actionLoading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {actionLoading ? (
+                    <>
+                      <FaSpinner className="animate-spin inline mr-2" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Renew Subscription'
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Pricing Card */}
@@ -173,7 +199,7 @@ const Subscription: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="space-y-3">
-              {!isPremium ? (
+            {!isPremium ? (
                 <button
                   onClick={handleUpgrade}
                   disabled={actionLoading}
@@ -187,7 +213,7 @@ const Subscription: React.FC = () => {
                   ) : (
                     <>
                       <FaCrown className="inline mr-2" />
-                      Upgrade to Premium
+                    {isExpired ? 'Renew Subscription' : 'Upgrade to Premium'}
                     </>
                   )}
                 </button>
