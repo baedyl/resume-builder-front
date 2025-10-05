@@ -75,3 +75,15 @@ createRoot(document.getElementById('root')).render(
     </ErrorBoundary>
   </StrictMode>
 );
+
+// Remove the minimal boot loader after first paint
+try {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const boot = document.getElementById('boot-loader');
+      if (boot && boot.parentNode) {
+        boot.parentNode.removeChild(boot);
+      }
+    });
+  });
+} catch {}

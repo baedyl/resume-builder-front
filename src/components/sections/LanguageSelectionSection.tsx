@@ -6,9 +6,23 @@ interface LanguageOption {
   flag: string;
 }
 
+// United Nations most spoken/official languages list (practical subset for resumes)
+// Source: UN official languages plus other widely spoken languages
 const languageOptions: LanguageOption[] = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'zh', name: 'Chinese (Mandarin)', flag: '🇨🇳' },
+  { code: 'hi', name: 'Hindi', flag: '🇮🇳' },
+  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
   { code: 'fr', name: 'French', flag: '🇫🇷' },
+  { code: 'ar', name: 'Arabic', flag: '🇦🇪' },
+  { code: 'bn', name: 'Bengali', flag: '🇧🇩' },
+  { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
+  { code: 'ru', name: 'Russian', flag: '🇷🇺' },
+  { code: 'ur', name: 'Urdu', flag: '🇵🇰' },
+  { code: 'id', name: 'Indonesian', flag: '🇮🇩' },
+  { code: 'de', name: 'German', flag: '🇩🇪' },
+  { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
+  { code: 'tr', name: 'Turkish', flag: '🇹🇷' },
 ];
 
 interface LanguageSelectionSectionProps {

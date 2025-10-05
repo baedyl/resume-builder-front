@@ -16,12 +16,14 @@ import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSubscription } from '../contexts/SubscriptionContext';
+// import { useNavigate } from 'react-router-dom';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 const JobTracker: React.FC = () => {
   const { getAccessTokenSilently } = useAuth0();
   const { isPremium, isLoading: subscriptionLoading, subscription } = useSubscription();
   const jobService = createJobService(getAccessTokenSilently);
+  // const navigate = useNavigate();
   const [jobs, setJobs] = useState<JobApplication[]>([]);
   const [stats, setStats] = useState<JobStats | null>(null);
   const [filters, setFilters] = useState<JobFilters>({});
@@ -30,6 +32,7 @@ const JobTracker: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobApplication | null>(null);
   const [usingMockData, setUsingMockData] = useState(false);
+  const [subscriptionExpired, setSubscriptionExpired] = useState<null | { message: string; upgradeUrl?: string }>(null);
 
   // Debug subscription status
   useEffect(() => {
@@ -66,8 +69,16 @@ const JobTracker: React.FC = () => {
           return;
         } catch (err: any) {
           // If we get a 403 "Premium subscription required" error, fall back to mock data
-          if (err?.response?.status === 403 && err?.response?.data?.error === 'Premium subscription required') {
+          if (err?.response?.status === 403 && (err?.response?.data?.error === 'Premium subscription required' || err?.response?.data?.error === 'Your premium subscription has expired')) {
             console.warn('Backend returned 403 for premium user, falling back to mock data');
+            if (err?.response?.data?.error === 'Your premium subscription has expired') {
+              const details = err?.response?.data?.details || {};
+              const upgradeUrl = err?.response?.data?.upgradeUrl || '/pricing';
+              setSubscriptionExpired({ message: details?.message || err?.response?.data?.error, upgradeUrl });
+              // Do not show toast; we will render PremiumGate overlay
+              setUsingMockData(false);
+              return; // stop here so we don't render mock
+            }
             setUsingMockData(true);
             // Continue to mock data fallback below
           } else {
@@ -78,7 +89,7 @@ const JobTracker: React.FC = () => {
       }
       
       // Use mock data as fallback
-      if (usingMockData || !isPremium) {
+      if (usingMockData || (!isPremium && !subscriptionExpired)) {
         const [jobsData, statsData] = await Promise.all([
           mockJobService.getJobs(filters),
           mockJobService.getStats()
@@ -172,11 +183,30 @@ const JobTracker: React.FC = () => {
     return <LoadingOverlay />;
   }
 
-  // Show mock data warning if we're using fallback
-  const showMockWarning = usingMockData && isPremium;
+  // Show mock data warning if we're using fallback and subscription isn't expired
+  const showMockWarning = usingMockData && isPremium && !subscriptionExpired;
+
+  if (subscriptionExpired) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <PremiumGate
+          feature="Job Application Tracking"
+          description={FEATURE_DESCRIPTIONS.JOB_TRACKER}
+          forceGate
+          gateTitle="Subscription Expired"
+          gateMessage={subscriptionExpired.message}
+          upgradeUrl={subscriptionExpired.upgradeUrl}
+          showPreview={false}
+        >
+          <div />
+        </PremiumGate>
+        <ToastContainer position="top-right" autoClose={3000} />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-6 sm:py-8 px-2 sm:px-4 lg:px-8 transition-colors duration-300">
       <PremiumGate 
         feature="Job Application Tracking" 
         description={FEATURE_DESCRIPTIONS.JOB_TRACKER}
@@ -190,15 +220,17 @@ const JobTracker: React.FC = () => {
                   <Breadcrumbs />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                  <button
-                    onClick={() => setShowAddModal(true)}
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Add Application
-                  </button>
+                  {isPremium && !usingMockData && (
+                    <button
+                      onClick={() => setShowAddModal(true)}
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                    >
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Add Application
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

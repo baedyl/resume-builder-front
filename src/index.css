@@ -10,7 +10,7 @@ body {
   @apply bg-gray-50 text-gray-900 transition-colors duration-300;
 }
 
-dark body {
+.dark body {
   @apply bg-gray-900 text-gray-100;
 }
 
@@ -27,7 +27,7 @@ dark body {
   transition: background 0.3s, color 0.3s;
 }
 
-dark .resume-preview {
+.dark .resume-preview {
   background: #18181b;
   color: #f3f4f6;
   box-shadow: 0 4px 16px -1px rgba(0,0,0,0.5);
@@ -85,7 +85,7 @@ dark .resume-preview {
   transition: background 0.3s;
 }
 
-dark .modal-overlay {
+.dark .modal-overlay {
   background-color: rgba(24, 24, 27, 0.8);
 }
 
@@ -100,7 +100,7 @@ dark .modal-overlay {
   transition: background 0.3s, color 0.3s;
 }
 
-dark .modal-content {
+.dark .modal-content {
   background-color: #23272f;
   color: #f3f4f6;
 }

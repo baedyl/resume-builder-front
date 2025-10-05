@@ -5,6 +5,7 @@ import { encodeId } from '../utils/urlId';
 import { CoverLetterFormData } from './CoverLetterForm';
 import { format } from 'date-fns';
 import LoadingOverlay from './LoadingOverlay';
+import PremiumGate from './PremiumGate';
 import { getApiUrl, getApiAudience } from '../utils/api';
 
 interface CoverLetterSummary {
@@ -15,10 +16,16 @@ interface CoverLetterSummary {
   fullName?: string;
 }
 
-const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetterFormData) => void }> = ({ onSelectCoverLetter }) => {
+type CoverLetterListProps = {
+  onSelectCoverLetter: (coverLetter: CoverLetterFormData) => void;
+  onExpired?: (info: { message: string; upgradeUrl?: string }) => void;
+};
+
+const CoverLetterList: React.FC<CoverLetterListProps> = ({ onSelectCoverLetter, onExpired }) => {
   const [coverLetters, setCoverLetters] = useState<CoverLetterSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expiredGate, setExpiredGate] = useState<null | { message: string; upgradeUrl?: string }>(null);
   const { getAccessTokenSilently } = useAuth0();
 
   const fetchCoverLetters = async () => {
@@ -30,9 +37,16 @@ const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetter
         },
       });
       setCoverLetters(response.data);
-    } catch (err) {
-      setError('Failed to load cover letters');
-      console.error('Error fetching cover letters:', err);
+    } catch (err: any) {
+      const data = err?.response?.data;
+      if (data?.error === 'Your premium subscription has expired') {
+        const info = { message: data?.details?.message || data?.error, upgradeUrl: data?.upgradeUrl || '/pricing' };
+        setExpiredGate(info);
+        try { onExpired && onExpired(info); } catch {}
+      } else {
+        setError('Failed to load cover letters');
+        console.error('Error fetching cover letters:', err);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +87,22 @@ const CoverLetterList: React.FC<{ onSelectCoverLetter: (coverLetter: CoverLetter
 
   if (error) {
     return <div className="text-center py-4 text-red-600">{error}</div>;
+  }
+
+  if (expiredGate) {
+    return (
+      <PremiumGate
+        feature="Cover Letter Generation"
+        description={undefined}
+        forceGate
+        gateTitle="Subscription Expired"
+        gateMessage={expiredGate.message}
+        upgradeUrl={expiredGate.upgradeUrl}
+        showPreview={false}
+      >
+        <div />
+      </PremiumGate>
+    );
   }
 
   return (

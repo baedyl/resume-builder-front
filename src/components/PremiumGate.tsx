@@ -11,13 +11,22 @@ interface PremiumGateProps {
   feature: string;
   description?: string;
   showPreview?: boolean;
+  // Optional: force gate even if user is premium (e.g., expired subscription)
+  forceGate?: boolean;
+  gateTitle?: string;
+  gateMessage?: string;
+  upgradeUrl?: string; // optional custom upgrade/renew URL
 }
 
 const PremiumGate: React.FC<PremiumGateProps> = ({ 
   children, 
   feature, 
   description,
-  showPreview = true 
+  showPreview = true,
+  forceGate = false,
+  gateTitle,
+  gateMessage,
+  upgradeUrl,
 }) => {
   const { isPremium, isLoading, upgradeToProduction } = useSubscription();
   const [upgrading, setUpgrading] = useState(false);
@@ -70,7 +79,7 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
   }
 
   // Allow premium users full access
-  if (isPremium) {
+  if (isPremium && !forceGate) {
     return <>{children}</>;
   }
 
@@ -91,7 +100,7 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
       )}
       
       {/* Premium overlay */}
-      <div className={`${showPreview ? 'absolute inset-0' : ''} bg-gradient-to-br from-gray-900/95 to-blue-900/95 backdrop-blur-sm flex items-center justify-center min-h-[400px]`}>
+      <div className={`${showPreview ? 'absolute inset-0' : ''} bg-gradient-to-br from-gray-900/95 to-blue-900/95 backdrop-blur-sm flex items-center justify-center min-h-[550px]`}>
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 sm:p-8 max-w-md mx-4 text-center shadow-2xl border border-gray-200 dark:border-gray-700">
           {/* Premium icon */}
           <div className="flex justify-center mb-6">
@@ -103,11 +112,15 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
           
           {/* Content */}
           <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-            Premium Feature
+            {gateTitle || 'Premium Feature'}
           </h3>
           
           <p className="text-gray-600 dark:text-gray-300 mb-2 font-medium">
-            <strong>{feature}</strong> requires a premium subscription.
+            {gateMessage ? (
+              <span>{gateMessage}</span>
+            ) : (
+              <span><strong>{feature}</strong> requires a premium subscription.</span>
+            )}
           </p>
           
           {description && (
@@ -119,7 +132,13 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
           {/* Upgrade button */}
           <div className="space-y-4">
             <button
-              onClick={handleUpgrade}
+              onClick={() => {
+                if (upgradeUrl) {
+                  try { window.location.assign(upgradeUrl); } catch { window.location.href = upgradeUrl; }
+                  return;
+                }
+                handleUpgrade();
+              }}
               disabled={upgrading}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               aria-label={upgrading ? 'Processing upgrade...' : 'Upgrade to Premium'}
@@ -132,7 +151,7 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
               ) : (
                 <>
                   <FaCrown className="inline mr-2" />
-                  Upgrade to Premium
+                  {gateTitle?.toLowerCase().includes('expired') ? 'Renew Subscription' : 'Upgrade to Premium'}
                 </>
               )}
             </button>

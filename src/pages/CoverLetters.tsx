@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CoverLetterList from '../components/CoverLetterList';
 import PremiumGate from '../components/PremiumGate';
 import { FEATURE_DESCRIPTIONS } from '../constants/subscription';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useSubscription } from '../contexts/SubscriptionContext';
 import { getApiUrl, getApiAudience } from '../utils/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,6 +22,9 @@ const CoverLetters: React.FC = () => {
   const [savedId, setSavedId] = useState<string | null>(null);
   const [isEdit, setIsEdit] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
+  const navigate = useNavigate();
+  const [subscriptionExpired, setSubscriptionExpired] = useState<null | { message: string; expiredDate?: string; upgradeUrl?: string }>(null);
+  const { isPremium } = useSubscription();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -73,7 +78,15 @@ const CoverLetters: React.FC = () => {
       setEditableCover(coverLetter);
       setSavedId(response.data.record?.id || response.data.id || form.id);
     } catch (err: any) {
-      setFormError(err.response?.data?.error || err.message || 'Failed to generate cover letter.');
+      const data = err?.response?.data;
+      if (data?.error === 'Your premium subscription has expired') {
+        const details = data?.details || {};
+        const upgradeUrl = data?.upgradeUrl || '/pricing';
+        setSubscriptionExpired({ message: details?.message || data.error, expiredDate: details?.expiredDate, upgradeUrl });
+        toast.error(details?.message || data.error);
+      } else {
+        setFormError(data?.error || err.message || 'Failed to generate cover letter.');
+      }
     } finally {
       setLoading(false);
     }
@@ -109,7 +122,15 @@ const CoverLetters: React.FC = () => {
       link.click();
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
-      setFormError(err.response?.data?.error || err.message || 'Failed to generate PDF.');
+      const data = err?.response?.data;
+      if (data?.error === 'Your premium subscription has expired') {
+        const details = data?.details || {};
+        const upgradeUrl = data?.upgradeUrl || '/pricing';
+        setSubscriptionExpired({ message: details?.message || data.error, expiredDate: details?.expiredDate, upgradeUrl });
+        toast.error(details?.message || data.error);
+      } else {
+        setFormError(data?.error || err.message || 'Failed to generate PDF.');
+      }
     } finally {
       setPdfLoading(false);
     }
@@ -132,7 +153,15 @@ const CoverLetters: React.FC = () => {
       });
       toast.success('Cover letter updated successfully!');
     } catch (err: any) {
-      setFormError(err.response?.data?.error || err.message || 'Failed to update cover letter.');
+      const data = err?.response?.data;
+      if (data?.error === 'Your premium subscription has expired') {
+        const details = data?.details || {};
+        const upgradeUrl = data?.upgradeUrl || '/pricing';
+        setSubscriptionExpired({ message: details?.message || data.error, expiredDate: details?.expiredDate, upgradeUrl });
+        toast.error(details?.message || data.error);
+      } else {
+        setFormError(data?.error || err.message || 'Failed to update cover letter.');
+      }
     } finally {
       setLoading(false);
     }
@@ -154,6 +183,10 @@ const CoverLetters: React.FC = () => {
       <PremiumGate 
         feature="Cover Letter Generation" 
         description={FEATURE_DESCRIPTIONS.COVER_LETTERS}
+        forceGate={Boolean(subscriptionExpired)}
+        gateTitle={subscriptionExpired ? 'Subscription Expired' : undefined}
+        gateMessage={subscriptionExpired ? subscriptionExpired.message : undefined}
+        upgradeUrl={subscriptionExpired?.upgradeUrl}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Sticky Action Bar */}
@@ -164,7 +197,7 @@ const CoverLetters: React.FC = () => {
                   <Breadcrumbs />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                  {!showForm && (
+                  {!showForm && isPremium && !subscriptionExpired && (
                     <button
                       onClick={() => setShowForm(true)}
                       className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
@@ -193,6 +226,19 @@ const CoverLetters: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-400 mt-2">
                   Generate and manage AI-powered cover letters
                 </p>
+                {subscriptionExpired && (
+                  <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">{subscriptionExpired.message}</p>
+                    <div className="mt-2 flex gap-2">
+                      <button
+                        onClick={() => navigate(subscriptionExpired.upgradeUrl || '/pricing')}
+                        className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                      >
+                        Renew subscription
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -285,7 +331,10 @@ const CoverLetters: React.FC = () => {
               )}
             </>
           ) : (
-            <CoverLetterList onSelectCoverLetter={handleEdit} />
+            <CoverLetterList 
+              onSelectCoverLetter={handleEdit}
+              onExpired={(info) => setSubscriptionExpired({ message: info.message, upgradeUrl: info.upgradeUrl })}
+            />
           )}
         </div>
       </PremiumGate>

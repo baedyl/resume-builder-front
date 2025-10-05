@@ -1530,6 +1530,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 </div>
               </div>
               <PersonalInfoSection />
+              {/* Resume Language moved back to Step 3 */}
               <LanguagesSection
                 register={register}
                 errors={errors}
