@@ -133,6 +133,16 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
           <div className="space-y-4">
             <button
               onClick={() => {
+                const isExpiredContext = !!(forceGate && (
+                  (gateTitle && gateTitle.toLowerCase().includes('expired')) ||
+                  (gateMessage && gateMessage.toLowerCase().includes('expired'))
+                ));
+                // For expired subscriptions, ALWAYS launch checkout directly
+                if (isExpiredContext) {
+                  handleUpgrade();
+                  return;
+                }
+                // Otherwise, if a specific upgradeUrl was provided, use it; fallback to checkout
                 if (upgradeUrl) {
                   try { window.location.assign(upgradeUrl); } catch { window.location.href = upgradeUrl; }
                   return;
