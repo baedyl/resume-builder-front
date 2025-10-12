@@ -174,7 +174,7 @@ const PremiumGate: React.FC<PremiumGateProps> = ({
               <p>Cancel anytime • Instant access to all features</p>
               {isPromotionalPricingActive() && (
                 <p className="text-green-600 dark:text-green-400 font-medium">
-                  🎉 Limited time offer until September 30th!
+                  🎉 Limited time offer until October 30th!
                 </p>
               )}
             </div>
