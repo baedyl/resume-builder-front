@@ -106,7 +106,7 @@ const Article: React.FC = () => {
               Back to Blog
             </Link>
             
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-4 min-h-[28px]">
               <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm font-medium rounded-full">
                 {article.metadata.category || article.metadata.section}
               </span>

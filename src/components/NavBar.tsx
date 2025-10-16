@@ -96,7 +96,7 @@ const NavBar: React.FC = () => {
             <img 
               src={isDarkMode ? "/logo_dark_small.svg" : "/logo_white_small.svg"} 
               alt="Resume Builder" 
-              className="w-auto max-h-full"
+              className="w-[180px] h-10"
               loading="eager"
               decoding="async"
               fetchpriority="high"
