@@ -72,17 +72,14 @@
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
     
-    <!-- Resource hints for critical resources -->
-    <link rel="preload" href="/src/main.tsx" as="script" />
-    <link rel="modulepreload" href="/src/main.tsx" />
+    <!-- Resource hints for critical resources (avoid dev-only src preloads) -->
     <link rel="preload" href="/logo_white_small.svg" as="image" />
     <link rel="preload" href="/logo_dark_small.svg" as="image" />
     
     <!-- Preload critical fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&display=swap" />
     
-    <!-- Critical CSS preload -->
-    <link rel="preload" href="/src/index.css" as="style" />
+    <!-- Critical CSS is handled by bundler in production -->
     
     <!-- Critical CSS inline for faster FCP -->
     <style>

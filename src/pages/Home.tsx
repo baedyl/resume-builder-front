@@ -15,7 +15,7 @@ const Home: React.FC = () => {
       
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" aria-hidden="true"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-5 hidden sm:block" aria-hidden="true"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm font-medium mb-8">
