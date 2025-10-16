@@ -88,7 +88,9 @@ const NavBar: React.FC = () => {
   ];
 
   return (
-    <nav className="bg-white dark:bg-gray-900 dark:text-gray-100 shadow-md sticky top-0 z-50 transition-colors">
+    <>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-blue-600 focus:text-white focus:px-3 focus:py-2 focus:rounded">Skip to content</a>
+      <nav className="bg-white dark:bg-gray-900 dark:text-gray-100 shadow-md sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* App Logo */}
@@ -111,6 +113,7 @@ const NavBar: React.FC = () => {
                 key={link.label}
                 to={link.to}
                 className={`text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors ${location.pathname === link.to ? 'text-blue-500 dark:text-blue-400 font-semibold' : ''}`}
+                aria-current={location.pathname === link.to ? 'page' : undefined}
               >
                 {link.label}
               </Link>
@@ -202,7 +205,7 @@ const NavBar: React.FC = () => {
             className="md:hidden text-gray-700 dark:text-gray-200"
             aria-label="Open Menu"
           >
-            <FaBars />
+            <FaBars aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -238,7 +241,8 @@ const NavBar: React.FC = () => {
           </div>
         </div>
       )}
-    </nav>
+      </nav>
+    </>
   );
 };
 
