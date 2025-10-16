@@ -270,13 +270,14 @@ const Blog: React.FC = () => {
                       </span>
 
                       <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                        <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                        <button aria-label="Save article" className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                           <FaBookmark />
                         </button>
                         <button 
                           className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                           onClick={(e) => handleShare(article, e)}
                           title="Share on Twitter"
+                          aria-label="Share on Twitter"
                         >
                           <FaShare />
                         </button>

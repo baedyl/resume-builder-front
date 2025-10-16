@@ -169,10 +169,12 @@ const Article: React.FC = () => {
                   src={article.metadata.image}
                   alt={article.metadata.title}
                   className="w-full h-full object-cover"
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
+                  fetchpriority="high"
                   width={1200}
                   height={630}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
                   onError={(e) => {
                     const img = e.currentTarget as HTMLImageElement;
                     if (img.src !== '/og-image.jpg') {
