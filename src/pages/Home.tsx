@@ -73,7 +73,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* What is an AI Resume Builder */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-16 bg-white dark:bg-gray-800" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-10 items-start">
             <div>
@@ -104,7 +104,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Why We're Different Section */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-16 bg-white dark:bg-gray-800" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -176,7 +176,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Lightweight Comparison (Value, not brand) */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-16 bg-white dark:bg-gray-800" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Choose the AI Resume Builder That Fits Your Goals</h2>
           <div className="grid md:grid-cols-3 gap-6 text-sm">
@@ -209,7 +209,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* FAQ Section for "ai resume builder" intent */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-16 bg-white dark:bg-gray-800" data-cv="auto">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8">AI Resume Builder: Frequently Asked Questions</h2>
           <div className="space-y-6">
@@ -249,7 +249,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Stats Section - More Compelling */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-16 bg-white dark:bg-gray-800" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
@@ -277,7 +277,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Features Section - Outcome Focused */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900">
+      <section className="py-20 bg-gray-50 dark:bg-gray-900" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -354,7 +354,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Your Situation, Our Solution Section */}
-      <section className="py-20 bg-white dark:bg-gray-800">
+      <section className="py-20 bg-white dark:bg-gray-800" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -438,7 +438,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-white dark:bg-gray-800">
+      <section className="py-20 bg-white dark:bg-gray-800" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -481,7 +481,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Templates Section */}
-      <section id="templates" className="py-20 bg-gray-50 dark:bg-gray-900">
+      <section id="templates" className="py-20 bg-gray-50 dark:bg-gray-900" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -606,7 +606,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Social Proof - Specific Outcomes */}
-      <section className="py-20 bg-white dark:bg-gray-800">
+      <section className="py-20 bg-white dark:bg-gray-800" data-cv="auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -685,7 +685,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600">
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600" data-cv="auto">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Stop Sending Resumes That Get Rejected
