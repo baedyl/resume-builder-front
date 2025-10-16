@@ -145,7 +145,7 @@ const Article: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <button aria-label="Save article" className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                   <FaBookmark />
                 </button>
                 <button 
@@ -169,7 +169,11 @@ const Article: React.FC = () => {
                   src={article.metadata.image}
                   alt={article.metadata.title}
                   className="w-full h-full object-cover"
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="high"
+                  width={1200}
+                  height={630}
                   onError={(e) => {
                     const img = e.currentTarget as HTMLImageElement;
                     if (img.src !== '/og-image.jpg') {

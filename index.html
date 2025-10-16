@@ -126,8 +126,8 @@
       .flex { display: flex; }
       .flex-col { flex-direction: column; }
       .items-center { align-items: center; }
-      .justify-center { justify-center: center; }
-      .justify-between { justify-between: space-between; }
+      .justify-center { justify-content: center; }
+      .justify-between { justify-content: space-between; }
       .text-center { text-align: center; }
 
       /* Critical typography */
@@ -289,5 +289,27 @@
       Loading…
     </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Remove boot loader as soon as React root mounts to reduce CLS
+      (function(){
+        const root = document.getElementById('root');
+        const boot = document.getElementById('boot-loader');
+        if (!root || !boot) return;
+        const obs = new MutationObserver(() => {
+          if (root.childElementCount > 0) {
+            boot.parentNode && boot.parentNode.removeChild(boot);
+            obs.disconnect();
+          }
+        });
+        obs.observe(root, { childList: true });
+        // Safety timeout
+        setTimeout(() => {
+          if (boot && boot.parentNode) {
+            boot.parentNode.removeChild(boot);
+            obs.disconnect();
+          }
+        }, 4000);
+      })();
+    </script>
   </body>
 </html>
