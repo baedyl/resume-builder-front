@@ -169,9 +169,8 @@ const Article: React.FC = () => {
                   src={article.metadata.image}
                   alt={article.metadata.title}
                   className="w-full h-full object-cover"
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
-                  fetchpriority="high"
                   width={1200}
                   height={630}
                   onError={(e) => {
