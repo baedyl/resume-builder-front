@@ -78,12 +78,8 @@
     <link rel="preload" href="/logo_white_small.svg" as="image" />
     <link rel="preload" href="/logo_dark_small.svg" as="image" />
     
-    <!-- Load Google Fonts without render-blocking -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
-    </noscript>
+    <!-- Preload critical fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&display=swap" />
     
     <!-- Critical CSS preload -->
     <link rel="preload" href="/src/index.css" as="style" />
@@ -294,31 +290,25 @@
     </div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Hide boot loader as soon as React root mounts (avoid layout shifts)
+      // Remove boot loader as soon as React root mounts to reduce CLS
       (function(){
         const root = document.getElementById('root');
         const boot = document.getElementById('boot-loader');
         if (!root || !boot) return;
-        const hideBoot = () => {
-          // Do not remove immediately; hide to avoid measurable shifts
-          boot.style.opacity = '0';
-          boot.style.visibility = 'hidden';
-          boot.style.pointerEvents = 'none';
-          // Defer display:none slightly so opacity change happens first
-          requestAnimationFrame(() => { boot.style.display = 'none'; });
-        };
         const obs = new MutationObserver(() => {
           if (root.childElementCount > 0) {
-            hideBoot();
+            boot.parentNode && boot.parentNode.removeChild(boot);
             obs.disconnect();
           }
         });
         obs.observe(root, { childList: true });
         // Safety timeout
         setTimeout(() => {
-          hideBoot();
-          obs.disconnect();
-        }, 3000);
+          if (boot && boot.parentNode) {
+            boot.parentNode.removeChild(boot);
+            obs.disconnect();
+          }
+        }, 4000);
       })();
     </script>
   </body>

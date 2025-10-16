@@ -194,7 +194,7 @@ const Blog: React.FC = () => {
                 >
                   {/* Article Image */}
                   {article.metadata.image && (
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-48 overflow-hidden" style={{contain: 'content'}}>
                       <img
                         src={article.metadata.image}
                         alt={article.metadata.title}
