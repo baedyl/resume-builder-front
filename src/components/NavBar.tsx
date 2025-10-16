@@ -100,6 +100,8 @@ const NavBar: React.FC = () => {
               loading="eager"
               decoding="async"
               fetchpriority="high"
+              width={180}
+              height={40}
             />
           </Link>
 
@@ -144,6 +146,8 @@ const NavBar: React.FC = () => {
                       className="h-8 w-8 rounded-full object-cover border-2 border-transparent hover:border-blue-500 transition-colors" 
                       loading="lazy"
                       decoding="async"
+                      width={32}
+                      height={32}
                       referrerPolicy="no-referrer"
                     />
                   ) : (

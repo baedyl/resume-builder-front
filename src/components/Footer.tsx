@@ -14,6 +14,10 @@ const Footer: React.FC = () => {
                   src="/logo_dark_small.svg"
                   alt="Resume Builder"
                   className="h-16 sm:h-20 w-auto mr-3"
+                  width={180}
+                  height={40}
+                  loading="lazy"
+                  decoding="async"
                 />
               </Link>
             </div>
