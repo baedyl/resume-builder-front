@@ -11,7 +11,7 @@ const Blog: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const articlesPerPage = 10;
+  const articlesPerPage = 9;
 
   useEffect(() => {
     const loadArticles = async () => {
