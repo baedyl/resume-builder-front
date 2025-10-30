@@ -28,7 +28,7 @@ export const metadata = {
 export const content = `
 <div class="mb-8">
   <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">If your resume feels like it goes into a black hole, you're not alone. Most employers use Applicant Tracking Systems (ATS) to scan and rank resumes before a human ever looks. The upside: once you understand how ATS reads — and what it skips — you can reliably get seen. This blueprint explains the essentials and gives you a fast tailoring workflow using <strong>ProAI Resume Online</strong>.</p>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">You'll learn what ATS actually does, which formatting rules matter, how to map keywords from job descriptions, the right section order, safe file types, and a repeatable 10-step checklist. Plus, short examples and image placeholders you can adapt.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">You'll learn what ATS actually does, which formatting rules matter, how to map keywords from job descriptions, the right section order, safe file types, and a repeatable 10-step checklist. Plus, short examples and image placeholders you can adapt. For more context, read our guides on <a href="/blog/what-is-an-ats-resume-2025" class="text-blue-600 dark:text-blue-400 hover:underline">what is an ATS resume</a>, <a href="/blog/5-ats-mistakes-that-get-resumes-rejected" class="text-blue-600 dark:text-blue-400 hover:underline">common ATS mistakes</a>, and <a href="/blog/the-ultimate-guide-to-ats-optimized-resumes" class="text-blue-600 dark:text-blue-400 hover:underline">the ultimate ATS guide</a>.</p>
 </div>
 
 <div class="mb-10">

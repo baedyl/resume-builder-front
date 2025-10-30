@@ -89,6 +89,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Make Your Headline ATS & Recruiter-Friendly</h2>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Your headline needs to work for both algorithms and humans. Learn more about <a href="/blog/resume-keyword-optimization-tips" class="text-blue-600 dark:text-blue-400 hover:underline">keyword optimization</a> to ensure your profile gets discovered.</p>
   <div class="grid md:grid-cols-2 gap-6">
     <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">Do</h3>
@@ -102,7 +103,7 @@ export const content = `
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Avoid</h3>
       <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-        <li>“Aspiring,” “Future,” or “Wannabe” qualifiers</li>
+        <li>"Aspiring," "Future," or "Wannabe" qualifiers</li>
         <li>Vague buzzwords without proof</li>
         <li>Overstuffing with 10+ skills</li>
         <li>Inside jokes or cryptic titles</li>
@@ -125,6 +126,6 @@ Cybersecurity Analyst | Security+, Splunk | Incident Response & Playbooks</code>
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Final Take</h2>
-  <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Drop “aspiring.” Lead with proof, direction, and value. Your headline is a positioning statement—make it work for you.</p>
+  <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Drop "aspiring." Lead with proof, direction, and value. Your headline is a positioning statement—make it work for you. For more tips on standing out, check out our guide on <a href="/blog/make-linkedin-profile-stand-out" class="text-blue-600 dark:text-blue-400 hover:underline">making your LinkedIn profile stand out</a> and learn <a href="/blog/how-to-quit-a-job-you-just-started" class="text-blue-600 dark:text-blue-400 hover:underline">how to handle career transitions gracefully</a>.</p>
 </div>
 `;

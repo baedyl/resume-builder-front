@@ -25,7 +25,7 @@ export const content = `
 <div class="mb-8">
   <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's digital hiring landscape, your resume must first impress a machine before it reaches human eyes. Applicant Tracking Systems (ATS) are the gatekeepers that determine whether your application makes it to a recruiter's desk or gets filtered out automatically.</p>
   
-  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will teach you everything you need to know about creating ATS-optimized resumes that not only pass through automated screening but also stand out to human recruiters.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will teach you everything you need to know about creating ATS-optimized resumes that not only pass through automated screening but also stand out to human recruiters. For a deeper dive, also check out <a href="/blog/what-is-an-ats-resume-2025" class="text-blue-600 dark:text-blue-400 hover:underline">what is an ATS resume</a> and <a href="/blog/beat-the-bots-in-2025-ats-friendly-resume-blueprint" class="text-blue-600 dark:text-blue-400 hover:underline">the ATS-friendly resume blueprint</a>.</p>
 </div>
 
 <div class="mb-12">
@@ -83,7 +83,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Keyword Optimization Strategies</h2>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Keywords are the foundation of ATS optimization. Understanding how to identify and incorporate the right keywords can dramatically improve your resume's performance.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Keywords are the foundation of ATS optimization. Understanding how to identify and incorporate the right keywords can dramatically improve your resume's performance. For advanced techniques, see our <a href="/blog/resume-keyword-optimization-tips" class="text-blue-600 dark:text-blue-400 hover:underline">keyword optimization tips</a>.</p>
 
   <div class="space-y-6">
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
@@ -152,7 +152,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Common ATS Mistakes to Avoid</h2>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Many job seekers unknowingly make mistakes that can cause their resumes to be rejected by ATS systems.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Many job seekers unknowingly make mistakes that can cause their resumes to be rejected by ATS systems. Learn about the most critical errors in our guide on <a href="/blog/5-ats-mistakes-that-get-resumes-rejected" class="text-blue-600 dark:text-blue-400 hover:underline">5 ATS mistakes that get resumes rejected</a>.</p>
 
   <div class="space-y-6">
     <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6">
