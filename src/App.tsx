@@ -4,6 +4,7 @@ import { SubscriptionProvider } from './contexts/SubscriptionContext';
 import { GTMProvider } from './contexts/GTMContext';
 import { lazy, Suspense } from 'react';
 import LoadingOverlay from './components/LoadingOverlay';
+import PageLoadingOverlay from './components/PageLoadingOverlay';
 import SEO from './components/SEO';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -390,6 +391,7 @@ function App() {
         <SubscriptionProvider>
           <SEO />
           <ScrollToTop />
+          <PageLoadingOverlay />
           <div className="min-h-screen flex flex-col">
             <Suspense fallback={<div className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"></div>}>
               <NavBar />
