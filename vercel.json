@@ -1,5 +1,11 @@
 {
+  "functions": {
+    "api/og-meta.js": {
+      "maxDuration": 10
+    }
+  },
   "rewrites": [
+    { "source": "/blog/:slug", "destination": "/api/og-meta?slug=:slug" },
     { "source": "/(.*)", "destination": "/" }
   ],
   "headers": [
