@@ -6,7 +6,7 @@ export const metadata = {
   date: "August 8, 2025",
   readTime: "6 min read",
   category: "career-branding",
-  image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop",
+  image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761844282/ProAI_Resume_Article_Cover_Template_3_ifimvh.svg",
   rating: 4.8,
   ratingCount: 93,
   tableOfContents: [

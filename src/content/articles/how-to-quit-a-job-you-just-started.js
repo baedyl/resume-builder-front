@@ -5,8 +5,8 @@ export const metadata = {
   authorTitle: "AI Career Strategist",
   date: "August 12, 2025",
   readTime: "9 min read",
-  category: "career-advice",
-  image: "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2070&auto=format&fit=crop",
+  category: "career-branding",
+  image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761844282/ProAI_Resume_Article_Cover_Template_3_ifimvh.svg",
   rating: 4.8,
   ratingCount: 96,
   tableOfContents: [
