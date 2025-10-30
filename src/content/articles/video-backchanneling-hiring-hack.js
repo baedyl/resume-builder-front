@@ -6,7 +6,7 @@ export const metadata = {
   date: "October 12, 2025",
   readTime: "9 min read",
   category: "job-search",
-  image: "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?q=80&w=2000&auto=format&fit=crop",
+  image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761801583/White_and_Orange_Purple_Gradient_Brutalist_Blogs_Post_LinkedIn_Cover_378_x_200_px_2_n2dmhi.svg",
   rating: 4.9,
   ratingCount: 163,
   tableOfContents: [
