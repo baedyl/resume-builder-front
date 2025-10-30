@@ -5,9 +5,9 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 dark:bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-2 lg:col-span-2">
             <div className="flex items-center mb-4">
               <Link to="/" className="flex items-center transition duration-300 hover:opacity-80">
                 <img
@@ -84,6 +84,43 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
+          {/* Blog Categories */}
+          <div>
+            <h4 className="text-lg font-semibold text-white mb-4">Blog Categories</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/blog" className="text-gray-300 hover:text-white transition-colors">
+                  All Articles
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog/category/ats-optimization" className="text-gray-300 hover:text-white transition-colors">
+                  ATS Optimization
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog/category/ai-resume" className="text-gray-300 hover:text-white transition-colors">
+                  AI Resume Builder
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog/category/career-branding" className="text-gray-300 hover:text-white transition-colors">
+                  Career Branding
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog/category/job-search" className="text-gray-300 hover:text-white transition-colors">
+                  Job Search
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog/category/resume-tips" className="text-gray-300 hover:text-white transition-colors">
+                  Resume Tips
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Company Links */}
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">Company</h4>
@@ -91,11 +128,6 @@ const Footer: React.FC = () => {
               <li>
                 <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
                   About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" className="text-gray-300 hover:text-white transition-colors">
-                  Blog
                 </Link>
               </li>
               <li>

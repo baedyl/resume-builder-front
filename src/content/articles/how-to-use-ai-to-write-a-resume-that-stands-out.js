@@ -25,7 +25,7 @@ export const content = `
 <div class="mb-8">
   <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Artificial Intelligence has revolutionized the way we approach resume writing, offering unprecedented opportunities to create compelling, optimized content that stands out in today's competitive job market. As AI tools become more sophisticated, job seekers are discovering powerful new ways to craft resumes that not only pass through Applicant Tracking Systems (ATS) but also resonate with human recruiters.</p>
 
-  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will show you how to leverage AI technology to create a resume that truly stands out, while maintaining the personal touch that makes you unique.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will show you how to leverage AI technology to create a resume that truly stands out, while maintaining the personal touch that makes you unique. For more on AI resume creation, explore our <a href="/blog/ai-resume-builder-free-guide" class="text-blue-600 dark:text-blue-400 hover:underline">free AI resume builder guide</a> and the <a href="/blog/how-to-use-ai-to-write-a-resume-complete-guide" class="text-blue-600 dark:text-blue-400 hover:underline">complete guide to using AI for resumes</a>.</p>
 </div>
 
 <div class="mb-12">
@@ -37,7 +37,7 @@ export const content = `
     <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
       <li><strong>Keyword Optimization:</strong> AI can identify the most relevant keywords from job descriptions</li>
       <li><strong>Content Enhancement:</strong> Suggests stronger action verbs and impactful phrasing</li>
-      <li><strong>ATS Compatibility:</strong> Ensures your resume passes through automated screening systems</li>
+      <li><strong>ATS Compatibility:</strong> Ensures your resume passes through automated screening systems (learn more about <a href="/blog/the-ultimate-guide-to-ats-optimized-resumes" class="text-blue-600 dark:text-blue-400 hover:underline">ATS optimization</a>)</li>
       <li><strong>Industry Insights:</strong> Provides data-driven recommendations based on successful resumes</li>
     </ul>
   </div>

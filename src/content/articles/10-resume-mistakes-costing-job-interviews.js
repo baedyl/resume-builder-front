@@ -27,7 +27,7 @@ export const content = `
 <div class="mb-8">
   <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's competitive job market, your resume is often the first and only chance you get to make a lasting impression on potential employers. With recruiters spending an average of just 6-7 seconds scanning each resume, even minor mistakes can cost you valuable opportunities.</p>
   
-  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will walk you through the 10 most common resume mistakes that are silently sabotaging your job search, along with proven strategies to fix them and dramatically improve your interview success rate.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">This comprehensive guide will walk you through the 10 most common resume mistakes that are silently sabotaging your job search, along with proven strategies to fix them and dramatically improve your interview success rate. For a faster approach, check out our guide on <a href="/blog/how-to-tailor-your-resume-in-under-10-minutes" class="text-blue-600 dark:text-blue-400 hover:underline">how to tailor your resume quickly</a>.</p>
 </div>
 
 <div class="mb-12">
@@ -100,7 +100,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Poor Formatting and Design</h2>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Even the best content can be overlooked if it's presented in a confusing or unprofessional format.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Even the best content can be overlooked if it's presented in a confusing or unprofessional format. For ATS-friendly formatting rules, see our <a href="/blog/the-ultimate-guide-to-ats-optimized-resumes" class="text-blue-600 dark:text-blue-400 hover:underline">ultimate guide to ATS-optimized resumes</a>.</p>
 
   <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Common Formatting Mistakes:</h3>
@@ -145,7 +145,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Missing Keywords</h2>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's digital hiring landscape, failing to include relevant keywords can prevent your resume from being found by Applicant Tracking Systems (ATS).</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In today's digital hiring landscape, failing to include relevant keywords can prevent your resume from being found by Applicant Tracking Systems (ATS). Learn more about <a href="/blog/resume-keyword-optimization-tips" class="text-blue-600 dark:text-blue-400 hover:underline">keyword optimization strategies</a> to improve your resume's visibility.</p>
 
   <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
     <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">How to Identify Keywords:</h3>

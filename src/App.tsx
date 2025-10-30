@@ -25,6 +25,7 @@ const CoverLetterDetail = lazy(() => import('./pages/CoverLetterDetail'));
 const JobTracker = lazy(() => import('./pages/JobTracker'));
 const Blog = lazy(() => import('./pages/Blog'));
 const Article = lazy(() => import('./pages/Article'));
+const Category = lazy(() => import('./pages/Category'));
 const Subscription = lazy(() => import('./pages/Subscription'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Contact = lazy(() => import('./pages/Contact'));
@@ -440,6 +441,7 @@ function App() {
                     element={isAuthenticated ? <JobTracker /> : <Navigate to="/login" />}
                   />
                   <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/category/:category" element={<Category />} />
                   <Route path="/blog/:slug" element={<Article />} />
                   <Route path="/callback" element={<Callback />} />
                   <Route path="/preview-editor" element={<PreviewEditor />} />

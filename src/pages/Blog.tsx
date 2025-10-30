@@ -135,10 +135,50 @@ const Blog: React.FC = () => {
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 Career Blog
               </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
                 Expert advice on resume writing, job searching, and career development. 
                 Learn how to create ATS-optimized resumes and land your dream job.
               </p>
+              
+              {/* Category Buttons */}
+              <div className="flex flex-wrap justify-center gap-3 mt-8">
+                <Link 
+                  to="/blog/category/ats-optimization"
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  🎯 ATS Optimization
+                </Link>
+                <Link 
+                  to="/blog/category/ai-resume"
+                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
+                >
+                  🤖 AI Resume Builder
+                </Link>
+                <Link 
+                  to="/blog/category/career-branding"
+                  className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+                >
+                  ✨ Career Branding
+                </Link>
+                <Link 
+                  to="/blog/category/job-search"
+                  className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm"
+                >
+                  🔍 Job Search
+                </Link>
+                <Link 
+                  to="/blog/category/resume-tips"
+                  className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors shadow-sm"
+                >
+                  📝 Resume Tips
+                </Link>
+                <Link 
+                  to="/blog/category/cover-letter"
+                  className="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors shadow-sm"
+                >
+                  ✉️ Cover Letters
+                </Link>
+              </div>
             </div>
           </div>
         </div>

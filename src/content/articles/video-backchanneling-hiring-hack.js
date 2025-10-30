@@ -20,8 +20,8 @@ export const metadata = {
 
 export const content = `
 <div class="mb-8">
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In good times, an intro, event drop-in, or referral can open doors. Today, many teams are cautious and bandwidth is tight — even strong candidates fight inertia. That’s why a short, respectful, personalized video backchannel can outperform traditional networking. It’s fast to scan, human, and easy to share inside a hiring loop.</p>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Below is a practical playbook you can use this week. Keep it ethical, keep it brief, and make it about solving their problem — not about you.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">In good times, an intro, event drop-in, or referral can open doors. Today, many teams are cautious and bandwidth is tight — even strong candidates fight inertia. That's why a short, respectful, personalized video backchannel can outperform traditional networking. It's fast to scan, human, and easy to share inside a hiring loop.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Below is a practical playbook you can use this week. Keep it ethical, keep it brief, and make it about solving their problem — not about you. To pair with this approach, make sure your <a href="/blog/how-to-tailor-your-resume-in-under-10-minutes" class="text-blue-600 dark:text-blue-400 hover:underline">resume is tailored</a> and ready to send.</p>
 </div>
 
 <div class="mb-12">
@@ -199,7 +199,7 @@ That’s it. No heavy narrative. No long “why me” paragraphs. Just intrigue,
   </div>
   <div class="mb-12 mt-6">
     <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Final Thoughts</h2>
-    <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">In a market where everyone else is clinging to their jobs and playing it safe, visibility is your competitive advantage. Networking isn’t dead — it’s just less effective on its own. What will get you seen now is strategic backchanneling, with video as your amplifier.</p>
+    <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">In a market where everyone else is clinging to their jobs and playing it safe, visibility is your competitive advantage. Networking isn't dead — it's just less effective on its own. What will get you seen now is strategic backchanneling, with video as your amplifier. Combine this with a strong <a href="/blog/make-linkedin-profile-stand-out" class="text-blue-600 dark:text-blue-400 hover:underline">LinkedIn profile</a> and <a href="/blog/linkedin-resume-headline-stop-using-aspiring" class="text-blue-600 dark:text-blue-400 hover:underline">compelling headline</a> for maximum impact.</p>
   </div>
   <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-8 text-center text-white mt-8">
     <h3 class="text-2xl font-bold mb-3">Ready to turn one video into an interview?</h3>
