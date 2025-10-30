@@ -6,7 +6,7 @@ export const metadata = {
   date: "August 13, 2025",
   readTime: "8 min read",
   category: "ai-news",
-  image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=2070&auto=format&fit=crop",
+  image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761844679/ProAI_Resume_Article_Cover_Template_4_farx6a.svg",
   rating: 4.8,
   ratingCount: 72,
   tableOfContents: [

@@ -6,7 +6,7 @@ export const metadata = {
   date: "August 16, 2025",
   readTime: "10 min read",
   category: "resume-tips",
-  image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+  image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761843850/3_rv7jjp.svg",
   rating: 4.9,
   ratingCount: 127,
   tableOfContents: [

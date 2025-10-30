@@ -6,7 +6,7 @@ export const metadata = {
   date: "December 15, 2024",
   readTime: "15 min read",
   category: "ai-resume",
-  image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2126&q=80",
+  image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761844679/ProAI_Resume_Article_Cover_Template_4_farx6a.svg",
   rating: 4.9,
   ratingCount: 234,
   tableOfContents: [

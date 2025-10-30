@@ -6,7 +6,7 @@ export const metadata = {
   date: "October 30, 2025",
   readTime: "12 min read",
   category: "ats-optimization",
-  image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761801096/White_and_Orange_Purple_Gradient_Brutalist_Blogs_Post_LinkedIn_Cover_pkia3h.svg",
+  image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761843842/1_o02uum.svg",
   rating: 4.9,
   ratingCount: 187,
   tableOfContents: [
