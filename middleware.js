@@ -87,6 +87,14 @@ const articlesMetadata = {
     category: "ai-news",
     image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=630&fit=crop"
   },
+  'unlock-career-potential-best-ai-resume-builder': {
+    title: "Unlock Your Career Potential with the Best AI Resume Builder",
+    description: "Discover how AI Resume Builders revolutionize job applications with ATS-optimization, career branding, and personalized guidance that transforms generic resumes into compelling career narratives.",
+    author: "Emmanuel Dylan",
+    date: "2025-10-31",
+    category: "ai-resume",
+    image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761844679/ProAI_Resume_Article_Cover_Template_4_farx6a.svg"
+  },
 };
 
 export default async function middleware(request) {
