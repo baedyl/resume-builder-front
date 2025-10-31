@@ -4,6 +4,7 @@ export const metadata = {
   author: "Emmanuel Dylan",
   authorTitle: "Career Coach & AI Resume Expert",
   date: "October 31, 2025",
+  publishedTime: "2025-10-31T10:00:00.000Z",
   readTime: "11 min read",
   category: "ai-resume",
   image: "https://res.cloudinary.com/dssnz4eum/image/upload/v1761844679/ProAI_Resume_Article_Cover_Template_4_farx6a.svg",
