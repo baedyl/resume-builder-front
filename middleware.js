@@ -7,6 +7,14 @@ export const config = {
 
 // Article metadata mapping (keep this updated with your articles)
 const articlesMetadata = {
+  'turn-tasks-into-wins-bullet-formula-gets-interviews': {
+    title: "Turn Tasks Into Wins: The Bullet Formula That Gets Interviews",
+    description: "Master the STAR/PAR formula to transform boring task lists into quantified achievements. Learn the action–impact structure, discover metrics for every domain, and use ProAI to convert responsibilities into interview-winning bullets.",
+    author: "Emmanuel Dylan",
+    date: "2025-11-03",
+    category: "resume-optimization",
+    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&h=630&fit=crop"
+  },
   'beat-the-bots-in-2025-ats-friendly-resume-blueprint': {
     title: "Beat the Bots in 2025: The ATS‑Friendly Resume Blueprint",
     description: "Demystify ATS and follow a clear, 10‑step workflow to tailor your resume in minutes using ProAI — with formatting rules, keyword mapping, section order, file types, and examples.",
