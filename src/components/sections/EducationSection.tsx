@@ -81,7 +81,7 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
               <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Institution</label>
               <input
                 {...register(`education.${index}.institution` as const)}
-                className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.education?.[index]?.institution ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors ${errors.education?.[index]?.institution ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'}`}
                 placeholder="Institution"
               />
               {errors.education?.[index]?.institution && (
@@ -92,7 +92,7 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
               <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Degree</label>
               <input
                 {...register(`education.${index}.degree` as const)}
-                className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.education?.[index]?.degree ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors ${errors.education?.[index]?.degree ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'}`}
                 placeholder="Degree"
               />
               {errors.education?.[index]?.degree && (
@@ -104,13 +104,13 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
           {/* Row 2: Start Year (left) + Graduation Year (right) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="space-y-2">
-              <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Start Year (Optional)</label>
+              <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Start Year</label>
               <input
-                {...register(`education.${index}.startYear`, { valueAsNumber: true } as any)}
+                {...register(`education.${index}.startYear`, { valueAsNumber: true, required: 'Start year is required' } as any)}
                 type="number"
                 min="1900"
                 max="9999"
-                className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.education?.[index]?.startYear ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors ${errors.education?.[index]?.startYear ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'}`}
                 placeholder="YYYY"
               />
               {errors.education?.[index]?.startYear && (
@@ -124,7 +124,7 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
                 type="number"
                 min="1900"
                 max="9999"
-                className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base ${errors.education?.[index]?.graduationYear ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-colors ${errors.education?.[index]?.graduationYear ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'}`}
                 placeholder="YYYY"
               />
               {errors.education?.[index]?.graduationYear && (
@@ -138,7 +138,7 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
             <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Major (Optional)</label>
             <input
               {...register(`education.${index}.major` as const)}
-              className="w-full p-3 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+              className="w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 border-gray-300 dark:border-gray-600 transition-colors"
               placeholder="Major"
             />
           </div>
@@ -147,7 +147,7 @@ const EducationSection: React.FC<Props> = ({ register, errors, educationFields, 
       <button
         type="button"
         onClick={() => appendEducation({ institution: '', degree: '', major: '', graduationYear: undefined, startYear: undefined })}
-        className="text-blue-600 hover:text-blue-800 text-sm sm:text-base font-medium"
+        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm sm:text-base font-medium transition-colors"
       >
         + Add Education
       </button>

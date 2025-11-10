@@ -58,7 +58,30 @@ const EducationSchema = z.object({
   degree: z.string().min(1, 'Degree is required'),
   major: z.string().optional(),
   graduationYear: z.number().int().min(1900, 'Graduation year must be a valid year').max(9999, 'Graduation year must be a valid year').optional(),
-  startYear: z.number().int().min(1900, 'Start year must be a valid year').max(9999, 'Start year must be a valid year').optional(),
+  startYear: z.preprocess(
+    (val) => {
+      if (typeof val === 'number') {
+        return Number.isNaN(val) ? undefined : val;
+      }
+      if (typeof val === 'string') {
+        const trimmed = val.trim();
+        if (!trimmed) return undefined;
+        const parsed = Number(trimmed);
+        return Number.isNaN(parsed) ? val : parsed;
+      }
+      if (val === null || val === undefined) {
+        return undefined;
+      }
+      return val;
+    },
+    z.number({
+      required_error: 'Start year is required',
+      invalid_type_error: 'Start year must be a number',
+    })
+      .int('Start year must be a valid year')
+      .min(1900, 'Start year must be a valid year')
+      .max(9999, 'Start year must be a valid year')
+  ),
 });
 
 const SkillSchema = z.object({
@@ -134,6 +157,7 @@ const mockResumeData: ResumeFormData = {
       degree: "Bachelor of Science",
       major: "Computer Science",
       graduationYear: 2019,
+      startYear: 2015,
     },
   ],
   languages: [
@@ -622,7 +646,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   };
 
   // Function to save resume
-  const saveResume = async (data: ResumeFormData) => {
+  const saveResume = async (
+    data: ResumeFormData,
+    options?: { silent?: boolean }
+  ): Promise<{ success: boolean; id?: string | null }> => {
     try {
         const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
       setIsSaving(true);
@@ -690,11 +717,26 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
         },
       });
 
-      if (!currentResumeId) {
-        setCurrentResumeId(response.data.id);
+      let resultingId: string | null = currentResumeId;
+      const responseId: string | null =
+        response?.data?.id ??
+        response?.data?.resumeId ??
+        response?.data?.resume?.id ??
+        response?.data?.data?.id ??
+        null;
+
+      if (responseId) {
+        resultingId = responseId;
+        setCurrentResumeId(responseId);
+      } else if (!currentResumeId && resultingId) {
+        setCurrentResumeId(resultingId);
       }
 
-      toast.success('Resume saved successfully!');
+      if (!options?.silent) {
+        toast.success('Resume saved successfully!');
+      }
+
+      return { success: true, id: resultingId ?? null };
     } catch (error: any) {
       let message = error.response?.data?.error || error.message || 'Failed to save resume.';
       // If backend provides validation details, surface the first one
@@ -707,6 +749,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       }
       toast.error(message);
       console.error('Save error:', error?.response?.data || error);
+      return { success: false };
     } finally {
       setIsSaving(false);
     }
@@ -734,52 +777,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     // Track resume form submission
     trackResumeAction('form_submit', selectedTemplate, selectedLanguage);
 
+    const filteredData = buildFilteredResumeData(data);
+    const effectiveResumeId = filteredData.id ?? currentResumeId ?? null;
+
     if (!preview) {
       
-      const filteredData: ResumeFormData = {
-        ...data,
-        id: currentResumeId || undefined,
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone?.trim() || '',
-        address: data.address?.trim() || '',
-        linkedIn: data.linkedIn?.trim() || '',
-        website: data.website?.trim() || '',
-        summary: data.summary?.trim() || '',
-        skills: data.skills || [],
-        workExperience: data.workExperience
-          .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
-          .map(exp => ({
-            ...exp,
-            startDate: exp.startDate,
-            endDate: exp.endDate?.trim() || '',
-            isCurrent: exp.isCurrent || false
-          }))
-          .sort((a, b) => {
-            const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
-            const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
-            if (aEnd === bEnd) {
-              return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
-            }
-            return new Date(bEnd).getTime() - new Date(aEnd).getTime();
-          }),
-        education: data.education
-          .filter((edu) => edu.institution.trim() && edu.degree.trim())
-          .map(edu => ({
-            ...edu,
-            graduationYear: edu.graduationYear || undefined
-          })),
-        languages: data.languages
-          .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
-        certifications: data.certifications
-          .filter((cert) => cert.name.trim())
-          .map(cert => ({
-            ...cert,
-            issuer: cert.issuer?.trim() || '',
-            issueDate: cert.issueDate?.trim() || ''
-          })),
-      };
-
       setPreview(filteredData);
       return;
     }
@@ -791,19 +793,19 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
       // Format the data consistently for both new and existing resumes
       const formattedData = {
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone || '',
-        address: data.address || '',
-        linkedIn: data.linkedIn || '',
-        website: data.website || '',
-        summary: data.summary || '',
+        fullName: filteredData.fullName,
+        email: filteredData.email,
+        phone: filteredData.phone || '',
+        address: filteredData.address || '',
+        linkedIn: filteredData.linkedIn || '',
+        website: filteredData.website || '',
+        summary: filteredData.summary || '',
         template: selectedTemplate,
-        skills: data.skills.map(skill => ({
+        skills: filteredData.skills.map(skill => ({
           id: skill.id,
           name: skill.name
         })),
-        workExperience: data.workExperience.map(exp => ({
+        workExperience: filteredData.workExperience.map(exp => ({
           jobTitle: exp.jobTitle,
           company: exp.company,
           location: exp.location || '',
@@ -816,7 +818,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
             : ((exp as any).techStack?.toString() || ''),
           isCurrent: exp.isCurrent || false
         })),
-        education: data.education.map(edu => ({
+        education: filteredData.education.map(edu => ({
           degree: edu.degree,
           major: edu.major || '',
           institution: edu.institution,
@@ -825,11 +827,11 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           gpa: edu.gpa || 0,
           description: edu.description || ''
         })),
-        languages: data.languages.map(lang => ({
+        languages: filteredData.languages.map(lang => ({
           name: lang.name,
           proficiency: lang.proficiency
         })),
-        certifications: data.certifications
+        certifications: filteredData.certifications
           .filter((cert) => cert.name.trim())
           .map(cert => ({
             ...cert,
@@ -843,9 +845,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
       // Use the correct PDF endpoints with full, up-to-date form data
       let response;
       
-      if (currentResumeId) {
+      if (effectiveResumeId) {
         // For existing resumes - send full data to ensure latest edits (including skills) are reflected
-        response = await fetch(`${getApiUrl()}/api/resumes/${currentResumeId}/html-pdf`, {
+        response = await fetch(`${getApiUrl()}/api/resumes/${effectiveResumeId}/html-pdf`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -1032,9 +1034,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
   // Ensure consistent payload across actions
   const buildFilteredResumeData = (data: ResumeFormData): ResumeFormData => {
+    const resolvedResumeId = data.id ?? currentResumeId ?? undefined;
     return {
       ...data,
-      id: currentResumeId || undefined,
+      id: resolvedResumeId,
       fullName: data.fullName,
       email: data.email,
       phone: data.phone?.trim() || '',
@@ -1105,7 +1108,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     };
   }, [pdfUrl]);
 
-  const generatePdfForPreview = async (data: ResumeFormData) => {
+  const generatePdfForPreview = async (data: ResumeFormData, resumeIdOverride?: string | null) => {
     try {
       setIsGeneratingPdf(true);
         const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
@@ -1155,9 +1158,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           })),
       };
 
+      const effectiveResumeId = resumeIdOverride ?? currentResumeId;
       // Always POST full form data so preview reflects unsaved changes (e.g., skills)
-      const endpoint = currentResumeId 
-        ? `${getApiUrl()}/api/resumes/${currentResumeId}/html?template=${selectedTemplate}`
+      const endpoint = effectiveResumeId 
+        ? `${getApiUrl()}/api/resumes/${effectiveResumeId}/html?template=${selectedTemplate}`
         : `${getApiUrl()}/api/resumes/new/html?template=${selectedTemplate}`;
       
       const response = await fetch(endpoint, {
@@ -1239,68 +1243,24 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const handlePreviewClick = async () => {
     try {
       const formData = getValues();
+      const filteredData = buildFilteredResumeData(formData);
+
+      const saveResult = await saveResume(filteredData, { silent: true });
+      if (!saveResult.success) {
+        return;
+      }
+
+      const resolvedResumeId = saveResult.id ?? currentResumeId ?? null;
+      const previewData: ResumeFormData = {
+        ...filteredData,
+        id: resolvedResumeId ?? undefined,
+      };
 
       if (!preview) {
-        const filteredData: ResumeFormData = {
-          ...formData,
-          id: currentResumeId || undefined,
-          fullName: formData.fullName,
-          email: formData.email,
-          phone: formData.phone?.trim() || '',
-          address: formData.address?.trim() || '',
-          linkedIn: formData.linkedIn?.trim() || '',
-          website: formData.website?.trim() || '',
-          summary: formData.summary?.trim() || '',
-          skills: formData.skills || [],
-          workExperience: formData.workExperience
-            .filter((exp) => exp.company.trim() && exp.jobTitle.trim() && exp.startDate.trim())
-            .map(exp => ({
-              ...exp,
-              startDate: exp.startDate,
-              endDate: exp.endDate?.trim() || '',
-              isCurrent: exp.isCurrent || false
-            }))
-            .sort((a, b) => {
-              const aEnd = a.isCurrent || !a.endDate ? '9999-12' : a.endDate;
-              const bEnd = b.isCurrent || !b.endDate ? '9999-12' : b.endDate;
-              if (aEnd === bEnd) {
-                return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
-              }
-              return new Date(bEnd).getTime() - new Date(aEnd).getTime();
-            }),
-          education: formData.education
-            .filter((edu) => edu.institution.trim() && edu.degree.trim())
-            .map(edu => ({
-              ...edu,
-              graduationYear: edu.graduationYear || undefined
-            })),
-          languages: formData.languages
-            .filter((lang) => lang.name.trim() && lang.proficiency.trim()),
-          certifications: formData.certifications
-            .filter((cert) => cert.name.trim())
-            .map(cert => ({
-              ...cert,
-              issuer: cert.issuer?.trim() || '',
-              issueDate: cert.issueDate?.trim() || ''
-            })),
-        };
-
-        // If editing an existing resume, save latest changes first so preview reflects them
-        if (currentResumeId) {
-          try {
-            await saveResume(filteredData);
-          } catch (e) {
-            // If save fails, stop preview generation
-            return;
-          }
-        }
-
-        // Generate HTML preview behind an overlay, then open modal
-        await generatePdfForPreview(filteredData);
-        setPreview(filteredData);
+        await generatePdfForPreview(previewData, resolvedResumeId);
+        setPreview(previewData);
       } else {
-        // Always use server-side HTML→PDF for clean, headerless PDFs matching the template
-        await onSubmit(formData);
+        await onSubmit(previewData);
       }
     } catch (error) {
       console.error('Error in handlePreviewClick:', error);
@@ -1646,11 +1606,17 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                         onClick={async () => {
                           const data = getValues();
                           const filteredData: ResumeFormData = buildFilteredResumeData(data);
-                          if (currentResumeId) {
-                            try { await saveResume(filteredData); } catch { return; }
+                          const saveResult = await saveResume(filteredData, { silent: true });
+                          if (!saveResult.success) {
+                            return;
                           }
+                          const resolvedResumeId = saveResult.id ?? currentResumeId ?? null;
+                          const editorData: ResumeFormData = {
+                            ...filteredData,
+                            id: resolvedResumeId ?? undefined,
+                          };
                           navigate('/preview-editor', {
-                            state: { formData: filteredData, selectedTemplate, selectedLanguage, currentResumeId },
+                            state: { formData: editorData, selectedTemplate, selectedLanguage, currentResumeId: resolvedResumeId },
                           });
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-b-lg"

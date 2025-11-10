@@ -13,7 +13,7 @@ const SummarySection: React.FC<Props> = ({ onEnhance, isEnhancing }) => {
       <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200 transition-colors">Professional Summary (Optional)</label>
       <textarea
         {...register('summary')}
-        className="w-full p-3 sm:p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+        className="w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 border-gray-300 dark:border-gray-600 transition-colors"
         placeholder="Professional Summary"
         rows={5}
       />
