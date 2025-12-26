@@ -40,7 +40,7 @@ const Contact: React.FC = () => {
 
     try {
       // Create mailto link with form data
-      const mailtoLink = `mailto:contact@mhabil.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+      const mailtoLink = `mailto:emma@mhabil.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
         `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
       )}`;
 
@@ -60,7 +60,7 @@ const Contact: React.FC = () => {
 
     } catch (error) {
       console.error('Error opening email client:', error);
-      toast.error('Failed to open email client. Please send an email directly to contact@mhabil.com');
+      toast.error('Failed to open email client. Please send an email directly to emma@mhabil.com');
     } finally {
       setIsSubmitting(false);
     }
@@ -184,10 +184,10 @@ const Contact: React.FC = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-900 dark:text-white">Email</p>
                     <a 
-                      href="mailto:contact@mhabil.com" 
+                      href="mailto:emma@mhabil.com" 
                       className="text-blue-600 dark:text-blue-400 hover:underline"
                     >
-                      contact@mhabil.com
+                      emma@mhabil.com
                     </a>
                   </div>
                 </div>
