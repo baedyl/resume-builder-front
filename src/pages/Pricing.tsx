@@ -1,9 +1,50 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getCurrentPrice, isPromotionalPricingActive } from '../constants/subscription';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getCurrentPrice, isPromotionalPricingActive, STRIPE_PRICE_IDS } from '../constants/subscription';
+import { useSubscription } from '../contexts/SubscriptionContext';
 
 const Pricing: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  const { upgradeToProduction } = useSubscription();
+  const navigate = useNavigate();
+  const [isUpgrading, setIsUpgrading] = useState(false);
+
+  const handleSubscribe = async (planName: string) => {
+    if (planName === 'Basic') {
+      if (isAuthenticated) {
+        navigate('/dashboard');
+      } else {
+        navigate('/register');
+      }
+      return;
+    }
+
+    if (!isAuthenticated) {
+      await loginWithRedirect({
+        appState: { returnTo: '/pricing' }
+      });
+      return;
+    }
+
+    if (planName === 'Professional') {
+      try {
+        setIsUpgrading(true);
+        await upgradeToProduction(STRIPE_PRICE_IDS.PREMIUM_MONTHLY);
+      } catch (error) {
+        console.error('Upgrade failed:', error);
+        setIsUpgrading(false);
+        // You might want to show a toast notification here
+      }
+    }
+    
+    // For Exclusive plan or others without specific handling yet
+    if (planName === 'Exclusive') {
+       // Placeholder or contact sales logic
+       navigate('/contact');
+    }
+  };
 
   const plans = [
     {
@@ -43,9 +84,9 @@ const Pricing: React.FC = () => {
         'ATS optimization'
       ],
       limitations: [],
-      cta: 'Start Free Trial',
+      cta: 'Upgrade Now',
       popular: true,
-      trial: true
+      trial: false
     },
     {
       name: 'Exclusive',
@@ -64,9 +105,9 @@ const Pricing: React.FC = () => {
         'LinkedIn profile optimization'
       ],
       limitations: [],
-      cta: 'Start Free Trial',
+      cta: 'Contact Sales',
       popular: false,
-      trial: true
+      trial: false
     }
   ];
 
@@ -214,18 +255,19 @@ const Pricing: React.FC = () => {
                     )}
                   </div>
 
-                  <Link
-                    to="/register"
+                  <button
+                    onClick={() => handleSubscribe(plan.name)}
+                    disabled={isUpgrading && plan.name === 'Professional'}
                     className={`w-full py-3 px-6 rounded-md font-medium transition-colors inline-block text-center ${
                       plan.popular
                         ? 'bg-blue-600 text-white hover:bg-blue-700'
                         : plan.price === 0
                         ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
                         : 'bg-blue-600 text-white hover:bg-blue-700'
-                    }`}
+                    } ${isUpgrading && plan.name === 'Professional' ? 'opacity-75 cursor-not-allowed' : ''}`}
                   >
-                    {plan.cta}
-                  </Link>
+                    {isUpgrading && plan.name === 'Professional' ? 'Processing...' : plan.cta}
+                  </button>
                 </div>
 
                 {/* Features */}
@@ -436,16 +478,6 @@ const Pricing: React.FC = () => {
               <p className="text-gray-600 dark:text-gray-300">
                 Yes! Our Basic plan is completely free and includes resume generation with limited AI enhancement. 
                 You can create and download your resume without any cost.
-              </p>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Do you offer a free trial?
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Yes. Professional and Exclusive plans come with a 7-day free trial. 
-                You can cancel at any time during those 7 days without being charged.
               </p>
             </div>
             

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,12 +9,14 @@ import { getApiUrl, getApiAudience } from '../utils/api';
 import LoadingOverlay from './LoadingOverlay';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaDownload, FaEdit, FaPaperPlane, FaTrash } from 'react-icons/fa';
 
 interface Resume {
   id: string;
   fullName: string;
   summary?: string;
   language?: string;
+  template?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,8 +25,18 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
+
+  const safeFilename = useMemo(() => {
+    return (name: string) =>
+      (name || 'Resume')
+        .replace(/[^a-zA-Z0-9\- ]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/ /g, '-');
+  }, []);
 
   const formatDateToYYYYMM = (dateString: string | undefined) => {
     if (!dateString || !dateString.trim()) return '';
@@ -73,7 +85,7 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
         },
       });
       toast.success('Resume deleted successfully!');
-      setResumes(resumes.filter(resume => resume.id !== id));
+      setResumes((prev) => prev.filter(resume => resume.id !== id));
     } catch (err) {
       setError('Failed to delete resume');
       console.error('Error deleting resume:', err);
@@ -91,6 +103,92 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
       state: { resumeLanguage: language || 'en' } 
     });
   };
+
+  const downloadPdfFromResponse = async (response: Response): Promise<Blob> => {
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/pdf')) {
+      const arrayBuffer = await response.arrayBuffer();
+      return new Blob([arrayBuffer], { type: 'application/pdf' });
+    }
+    if (contentType.includes('application/json')) {
+      const json = await response.json();
+      const base64Pdf = json.pdfBase64 || json.pdf || json.data?.pdfBase64 || json.data?.pdf;
+      if (base64Pdf && typeof base64Pdf === 'string') {
+        const bytes = Uint8Array.from(atob(base64Pdf), c => c.charCodeAt(0));
+        return new Blob([bytes], { type: 'application/pdf' });
+      }
+      throw new Error('Unexpected JSON response when PDF was expected');
+    }
+    return await response.blob();
+  };
+
+  const handleDownload = async (resume: Resume) => {
+    if (downloadingId) return;
+    setDownloadingId(resume.id);
+    try {
+      const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
+      const url = `${getApiUrl()}/api/resumes/${resume.id}/html-pdf`;
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/pdf, application/json;q=0.9, */*;q=0.8',
+        },
+        body: JSON.stringify({
+          template: resume.template || 'modern',
+          language: resume.language || 'en',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('PDF generation failed');
+      }
+
+      const blob = await downloadPdfFromResponse(response);
+      const urlObj = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = urlObj;
+      link.download = `${safeFilename(resume.fullName)}.pdf`;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        window.URL.revokeObjectURL(urlObj);
+        if (link.parentNode) link.parentNode.removeChild(link);
+      }, 5000);
+    } catch (err: any) {
+      const message = err?.message || 'Failed to download resume';
+      toast.error(message);
+      console.error('Error downloading resume:', err);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  const ActionIconButton: React.FC<{
+    label: string;
+    onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    disabled?: boolean;
+    icon: React.ReactNode;
+    colorClassName: string;
+  }> = ({ label, onClick, disabled, icon, colorClassName }) => (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      disabled={disabled}
+      onClick={onClick}
+      className={`relative group inline-flex items-center justify-center p-2 rounded-md border border-transparent hover:border-gray-200 dark:hover:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      <span className={colorClassName}>{icon}</span>
+      <span className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+        {label}
+      </span>
+    </button>
+  );
 
   if (isLoading) {
     return <div aria-live="polite" aria-busy={true}>
@@ -134,34 +232,44 @@ const ResumeList: React.FC<{ onSelectResume: (resume: ResumeFormData) => void }>
                   )}
                 </p>
               </div>
-              <div className="flex gap-2">
-                <button
+              <div className="flex items-center gap-1 sm:gap-2" onClick={(e) => e.stopPropagation()}>
+                <ActionIconButton
+                  label={downloadingId === resume.id ? 'Downloading…' : 'Download'}
+                  disabled={downloadingId === resume.id}
+                  colorClassName="text-gray-700 dark:text-gray-200"
+                  icon={<FaDownload />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDownload(resume);
+                  }}
+                />
+                <ActionIconButton
+                  label="Apply"
+                  colorClassName="text-green-600 dark:text-green-400"
+                  icon={<FaPaperPlane />}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleApply(resume.id, resume.language);
                   }}
-                  className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm sm:text-base"
-                >
-                  Apply
-                </button>
-                <button
+                />
+                <ActionIconButton
+                  label="Edit"
+                  colorClassName="text-blue-600 dark:text-blue-400"
+                  icon={<FaEdit />}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleEdit(resume.id);
                   }}
-                  className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm sm:text-base"
-                >
-                  Edit
-                </button>
-                <button
+                />
+                <ActionIconButton
+                  label="Delete"
+                  colorClassName="text-red-600 dark:text-red-400"
+                  icon={<FaTrash />}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDelete(resume.id);
                   }}
-                  className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm sm:text-base"
-                >
-                  Delete
-                </button>
+                />
               </div>
             </div>
           ))}
