@@ -62,8 +62,8 @@ export const getDebugInfo = () => {
 export const PROMOTIONAL_PRICING = {
   START_DATE: new Date('2025-07-07'), // Set to a past date to enable promotion
   END_DATE: new Date('2025-10-30'),
-  PROMOTIONAL_PRICE: 12.50, // 50% off $24.99
-  REGULAR_PRICE: 24.99
+  PROMOTIONAL_PRICE: 12.50, // 50% off $12.50
+  REGULAR_PRICE: 12.50
 } as const;
 
 // Function to check if promotional pricing is active

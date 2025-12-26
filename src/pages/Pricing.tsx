@@ -140,7 +140,7 @@ const Pricing: React.FC = () => {
               <span className="text-2xl">🎉</span>
             </div>
             <p className="text-sm mt-1 opacity-90">
-              Get the Professional plan for just $12.50/month instead of $24.99/month. Offer ends soon!
+              Get the Professional plan for just $12.50/month instead of $12.50/month. Offer ends soon!
             </p>
           </div>
         </div>
@@ -221,7 +221,7 @@ const Pricing: React.FC = () => {
                                 $12.50
                               </span>
                               <span className="text-lg text-gray-500 line-through">
-                                $24.99
+                                $12.50
                               </span>
                             </div>
                             <div className="text-gray-600 dark:text-gray-300">
