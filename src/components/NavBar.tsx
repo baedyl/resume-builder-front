@@ -82,6 +82,7 @@ const NavBar: React.FC = () => {
     { label: 'Home', to: '/dashboard' },
     { label: 'Resumes', to: '/my-resumes' },
     { label: 'Cover Letters', to: '/cover-letters' },
+    ...(isAuthenticated ? [{ label: 'Jobs', to: '/jobs' }] : []),
     { label: 'Job Tracker', to: '/job-tracker' },
     { label: 'Blog', to: '/blog' },
     { label: 'Contact', to: '/contact' },
@@ -101,7 +102,7 @@ const NavBar: React.FC = () => {
               className="w-auto max-h-full"
               loading="eager"
               decoding="async"
-              fetchpriority="high"
+              fetchPriority="high"
             />
           </Link>
 
