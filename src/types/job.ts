@@ -88,4 +88,81 @@ export interface JobDeadline {
   position: string;
   deadline: string;
   daysUntil: number;
-} 
+}
+
+// Job Opportunities Types
+export interface JobOpportunity {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  description: string;
+  requirements?: string;
+  salary?: {
+    min?: number;
+    max?: number;
+    currency?: string;
+  };
+  jobType: 'full-time' | 'part-time' | 'contract' | 'freelance' | 'internship';
+  experienceLevel: 'entry' | 'mid' | 'senior' | 'executive';
+  skills: string[];
+  postedDate: string;
+  applicationDeadline?: string;
+  applicationUrl?: string;
+  source: string;
+  isActive: boolean;
+  matchScore?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface JobSearchFilters {
+  search?: string;
+  location?: string;
+  jobType?: string;
+  experienceLevel?: string;
+  skills?: string[];
+  salaryMin?: number;
+  salaryMax?: number;
+  postedWithin?: number; // days
+  company?: string;
+  source?: string[];
+  sortBy?: 'date' | 'relevance' | 'salary';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface JobSearchResponse {
+  jobs: JobOpportunity[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    hasMore: boolean;
+  };
+}
+
+export interface JobApplicationRequest {
+  jobId: string;
+  resumeId?: number;
+  coverLetter?: string;
+  notes?: string;
+}
+
+export interface JobApplicationResponse {
+  id: string;
+  jobId: string;
+  userId: string;
+  status: 'applied' | 'viewed' | 'shortlisted' | 'interview' | 'offer' | 'rejected';
+  appliedAt: string;
+  resumeId?: string;
+  coverLetterId?: string;
+  notes?: string;
+  updatedAt: string;
+}
+
+export interface JobSourceStats {
+  source: string;
+  totalJobs: number;
+  activeJobs: number;
+  lastSync: string;
+}

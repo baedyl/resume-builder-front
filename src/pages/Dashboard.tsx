@@ -5,7 +5,8 @@ import { getApiUrl, getApiAudience } from '../utils/api';
 import Breadcrumbs from '../components/Breadcrumbs';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { Link } from 'react-router-dom';
-import { FaFileAlt, FaMagic, FaEnvelope, FaBriefcase, FaCrown, FaBook, FaChartBar, FaCheckCircle, FaClock, FaTimes, FaHandshake, FaPause } from 'react-icons/fa';
+import { FaFileAlt, FaMagic, FaEnvelope, FaBriefcase, FaCrown, FaBook, FaChartBar, FaCheckCircle, FaClock, FaTimes, FaHandshake, FaPause, FaSearch } from 'react-icons/fa';
+import JobMatches from '../components/JobMatches';
 
 type DashboardStats = {
   user?: {
@@ -46,7 +47,8 @@ const Dashboard: React.FC = () => {
 
   const firstName = useMemo(() => {
     const name = (user?.name || user?.given_name || '').trim();
-    return name ? name.split(' ')[0] : 'there';
+    const first = name ? name.split(' ')[0] : 'there';
+    return first.charAt(0).toUpperCase() + first.slice(1);
   }, [user]);
 
   useEffect(() => {
@@ -130,7 +132,7 @@ const Dashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Greeting + Important Actions */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Mornin' {firstName}! 👋</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Greetings {firstName.charAt(0).toUpperCase() + firstName.slice(1).split('@')[0].split(' ')[0]}! 👋</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">Take a look into your career workspace</p>
         </div>
 
@@ -204,7 +206,7 @@ const Dashboard: React.FC = () => {
                 </div>
               ))}
             </div>
-            
+
             {/* Metrics Summary */}
             <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -224,6 +226,11 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Job Matches */}
+        <div className="mb-8">
+          <JobMatches />
+        </div>
 
         {/* Subscription Status */}
         {stats?.user && (
@@ -284,6 +291,14 @@ const Dashboard: React.FC = () => {
               <FaEnvelope className="text-green-600 dark:text-green-400 text-xl group-hover:scale-110 transition-transform" />
             </Link>
 
+            <Link to="/jobs" className="group flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <div>
+                <p className="font-medium text-gray-900 dark:text-white">Job Search</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Find and apply to new opportunities</p>
+              </div>
+              <FaSearch className="text-indigo-600 dark:text-indigo-400 text-xl group-hover:scale-110 transition-transform" />
+            </Link>
+
             <Link to="/job-tracker" className="group flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <div>
                 <p className="font-medium text-gray-900 dark:text-white">Job Tracker</p>
@@ -315,5 +330,6 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
 
 
