@@ -35,6 +35,7 @@ const Footer = lazy(() => import('./components/Footer'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const JobSearch = lazy(() => import('./pages/JobSearch'));
 const JobDetail = lazy(() => import('./pages/JobDetail'));
+const LinkedInCallback = lazy(() => import('./components/LinkedInCallback'));
 
 // Import icons directly since they're used in the About component
 import { FaUsers, FaRocket, FaLightbulb, FaHeart, FaCode, FaSearch, FaPalette, FaChartLine } from 'react-icons/fa';
@@ -448,6 +449,7 @@ function App() {
                   <Route path="/blog/category/:category" element={<Category />} />
                   <Route path="/blog/:slug" element={<Article />} />
                   <Route path="/callback" element={<Callback />} />
+                  <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
                   <Route path="/preview-editor" element={<PreviewEditor />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/about" element={<About />} />
