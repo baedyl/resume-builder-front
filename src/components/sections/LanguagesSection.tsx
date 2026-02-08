@@ -17,7 +17,7 @@ interface Props {
 }
 
 const LanguagesSection: React.FC<Props> = ({ register, errors, languageFields, appendLanguage, removeLanguage }) => {
-  const { setValue, getValues } = useFormContext();
+  const { setValue, getValues, watch } = useFormContext();
 
   const moveLanguage = (fromIndex: number, toIndex: number) => {
     if (toIndex < 0 || toIndex >= languageFields.length) return;
@@ -51,7 +51,10 @@ const LanguagesSection: React.FC<Props> = ({ register, errors, languageFields, a
               <select
                 {...register(`languages.${index}.name`)}
                 className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 ${errors.languages?.[index]?.name ? 'border-red-500' : 'border-gray-300'}`}
-                defaultValue={getValues(`languages.${index}.name`) || ''}
+                value={(() => {
+                  const val = watch(`languages.${index}.name`);
+                  return val ? val.charAt(0).toUpperCase() + val.slice(1) : '';
+                })()}
               >
                 <option value="">Select a language</option>
                 <option value="English">English</option>
@@ -84,7 +87,7 @@ const LanguagesSection: React.FC<Props> = ({ register, errors, languageFields, a
               <select
                 {...register(`languages.${index}.proficiency`)}
                 className={`w-full p-3 sm:p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base bg-white dark:bg-gray-800 ${errors.languages?.[index]?.proficiency ? 'border-red-500' : 'border-gray-300'}`}
-                defaultValue={getValues(`languages.${index}.proficiency`) || ''}
+                value={watch(`languages.${index}.proficiency`) || ''}
               >
                 <option value="">Select proficiency</option>
                 <option value="Native">Native</option>
