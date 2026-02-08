@@ -17,21 +17,11 @@ interface Props {
   educationFields: EducationField[];
   appendEducation: (value: any) => void;
   removeEducation: (index: number) => void;
+  moveEducation: (from: number, to: number) => void;
 }
 
-const EducationSection: React.FC<Props> = ({ register, errors, educationFields, appendEducation, removeEducation }) => {
-  const { setValue, getValues } = useFormContext();
+const EducationSection: React.FC<Props> = ({ register, errors, educationFields, appendEducation, removeEducation, moveEducation }) => {
 
-  const moveEducation = (fromIndex: number, toIndex: number) => {
-    if (toIndex < 0 || toIndex >= educationFields.length) return;
-    
-    const currentValues = getValues('education');
-    const newValues = [...currentValues];
-    const [movedItem] = newValues.splice(fromIndex, 1);
-    newValues.splice(toIndex, 0, movedItem);
-    
-    setValue('education', newValues);
-  };
 
   return (
     <div className="space-y-4">

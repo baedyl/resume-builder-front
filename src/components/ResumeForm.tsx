@@ -202,7 +202,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
     name: 'workExperience',
   });
 
-  const { fields: educationFields, append: appendEducation, remove: removeEducation } = useFieldArray({
+  const { fields: educationFields, append: appendEducation, remove: removeEducation, move: moveEducation } = useFieldArray({
     control,
     name: 'education',
   });
@@ -231,7 +231,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
   const { getAccessTokenSilently, user } = useAuth0();
   const { isPremium, upgradeToProduction } = useSubscription();
   const { trackResumeAction, trackAIEnhancement, trackButtonClick } = useGTMContext();
-  const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  const [selectedTemplate, setSelectedTemplate] = useState(initialData?.template || 'minimal');
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const modalRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
@@ -1548,6 +1548,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
                 educationFields={educationFields as any}
                 appendEducation={appendEducation}
                 removeEducation={removeEducation}
+                moveEducation={moveEducation}
               />
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 transition-colors">Certifications (Optional)</h3>
               <CertificationsSection
