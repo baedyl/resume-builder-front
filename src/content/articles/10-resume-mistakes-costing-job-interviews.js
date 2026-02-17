@@ -205,7 +205,7 @@ export const content = `
 
 <div class="mb-12">
   <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Conclusion</h2>
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Avoiding these common resume mistakes can significantly improve your chances of landing interviews and ultimately securing your dream job. Remember, your resume is often your first impression on potential employers, so it's worth investing the time to get it right.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Avoiding these common resume mistakes can significantly improve your chances of landing interviews and ultimately securing your dream job. Remember, your resume is often your first impression on potential employers, so it's worth investing the time to get it right. <a href="/ai-resume-builder" class="text-blue-600 dark:text-blue-400 hover:underline">Explore our AI resume builder</a> for guided improvements and ATS-friendly formatting.</p>
 
   <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">Take the time to review and revise your resume regularly, and don't hesitate to seek feedback from trusted colleagues or professional resume writers. With attention to detail and a commitment to continuous improvement, you can create a resume that truly stands out in today's competitive job market.</p>
 </div>

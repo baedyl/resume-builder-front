@@ -29,6 +29,14 @@ const AIResumeBuilder: React.FC = () => {
               Experience the future of resume creation with our cutting-edge AI technology. Get intelligent suggestions, 
               real-time optimization, and professional templates designed to help you stand out in today's competitive job market.
             </p>
+            <div className="mb-8">
+              <Link
+                to="/blog/how-to-use-ai-to-write-a-resume-that-stands-out"
+                className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+              >
+                See how our AI can help you write a standout resume
+              </Link>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <a
                 href="/resume"

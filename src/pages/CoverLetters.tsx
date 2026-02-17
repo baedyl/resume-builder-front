@@ -226,6 +226,12 @@ const CoverLetters: React.FC = () => {
                 <p className="text-gray-600 dark:text-gray-400 mt-2">
                   Generate and manage AI-powered cover letters
                 </p>
+                <a
+                  href="/blog/how-to-write-a-cover-letter-2025"
+                  className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline mt-3"
+                >
+                  Find expert advice on crafting cover letters.
+                </a>
                 {subscriptionExpired && (
                   <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded">
                     <p className="text-sm text-yellow-800 dark:text-yellow-200">{subscriptionExpired.message}</p>

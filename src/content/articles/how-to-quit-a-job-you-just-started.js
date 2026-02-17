@@ -21,7 +21,7 @@ export const metadata = {
 
 export const content = `
 <div class="mb-8">
-  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Started a new job and already thinking about quitting? You're not alone. Sometimes the role, culture, or reality simply doesn't match the offer. The key is to make a thoughtful decision and exit professionally so you protect your reputation and momentum.</p>
+  <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">Started a new job and already thinking about quitting? You're not alone. Sometimes the role, culture, or reality simply doesn't match the offer. The key is to make a thoughtful decision and exit professionally so you protect your reputation and momentum. <a href="/about" class="text-blue-600 dark:text-blue-400 hover:underline">Learn more about us</a> to see how we support career transitions.</p>
   
   <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">This guide will help you navigate this challenging situation while maintaining your professional reputation. For more career advice, see our guides on <a href="/blog/10-resume-mistakes-costing-job-interviews" class="text-blue-600 dark:text-blue-400 hover:underline">avoiding resume mistakes</a> and <a href="/blog/how-to-write-a-cover-letter-2025" class="text-blue-600 dark:text-blue-400 hover:underline">writing compelling cover letters</a> for your next opportunity.</p>
 </div>
@@ -186,5 +186,4 @@ Thank you for understanding,
   </div>
 </div>
 `;
-
 

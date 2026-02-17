@@ -139,6 +139,12 @@ const Blog: React.FC = () => {
                 Expert advice on resume writing, job searching, and career development. 
                 Learn how to create ATS-optimized resumes and land your dream job.
               </p>
+              <Link
+                to="/blog"
+                className="inline-flex items-center text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+              >
+                Visit our blog for the latest tips and insights on resume building.
+              </Link>
               
               {/* Category Buttons */}
               <div className="flex flex-wrap justify-center gap-3 mt-8">

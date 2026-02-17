@@ -22,7 +22,7 @@ export const content = `
 <div class="mb-8">
   <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300">A great cover letter turns a good application into a compelling one. In 2025, recruiters still rely on cover letters to understand your story, motivation, and the value you'll bring to the role — especially when candidates have similar resumes.</p>
 
-  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">In this guide, you'll learn what a cover letter is, how it differs from a motivation letter, how to write one step-by-step, how to email it properly, and see strong examples you can adapt. If you’re also updating your resume, try our <a href="/resume" class="text-blue-600 hover:text-blue-700">free AI resume builder</a> for ATS-friendly formatting and keyword suggestions.</p>
+  <p class="text-lg leading-relaxed mb-8 text-gray-700 dark:text-gray-300">In this guide, you'll learn what a cover letter is, how it differs from a motivation letter, how to write one step-by-step, how to email it properly, and see strong examples you can adapt. If you want hands-on help, <a href="/cover-letters" class="text-blue-600 hover:text-blue-700">Check out our cover letter services</a>. If you’re also updating your resume, try our <a href="/resume" class="text-blue-600 hover:text-blue-700">free AI resume builder</a> for ATS-friendly formatting and keyword suggestions.</p>
 </div>
 
 <div class="mb-12">
@@ -217,5 +217,4 @@ Sam Rivera</code></pre>
   </div>
 </div>
 `;
-
 

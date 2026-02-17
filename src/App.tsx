@@ -321,6 +321,14 @@ const Terms = () => {
         >
           Click here to view Terms of Service
         </a>
+        <div className="mt-3">
+          <a
+            href="/privacy"
+            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 inline-block"
+          >
+            View our Privacy Policy
+          </a>
+        </div>
       </div>
     </div>
   );
