@@ -205,7 +205,7 @@ Sam Rivera</code></pre>
     </div>
   </div>
 
-  <p class="text-sm text-gray-500 dark:text-gray-400 mt-4">Keep learning: explore more <a href="/blog" class="text-blue-600 hover:text-blue-700">career articles</a> or try our <a href="/cover-letters" class="text-blue-600 hover:text-blue-700">AI cover letter generator</a>.</p>
+  <p class="text-sm text-gray-500 dark:text-gray-400 mt-4">Keep learning: explore more <a href="/blog" class="text-blue-600 hover:text-blue-700">career articles</a> or try our <a href="/cover-letters" class="text-blue-600 hover:text-blue-700">AI cover letter generator</a>. Want to dive deeper? <a href="/blog/category/cover-letter" class="text-blue-600 hover:text-blue-700">Explore more about cover letters</a> in our dedicated category.</p>
 </div>
 
 <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-8 border border-blue-200 dark:border-blue-800">

@@ -18,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSubscription } from '../contexts/SubscriptionContext';
 // import { useNavigate } from 'react-router-dom';
 import Breadcrumbs from '../components/Breadcrumbs';
+import { Link } from 'react-router-dom';
 
 const JobTracker: React.FC = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -247,7 +248,7 @@ const JobTracker: React.FC = () => {
                   Job Tracker
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 mt-2">
-                  Track your job applications and stay organized
+                  Track your job applications and stay organized. <Link to="/blog/category/resume-tips" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium">Get tips for your resume</Link> to improve your applications.
                 </p>
                 {showMockWarning && (
                   <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded text-sm text-yellow-800 dark:text-yellow-200">

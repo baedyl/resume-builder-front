@@ -510,7 +510,7 @@ const Pricing: React.FC = () => {
               Ready to build your professional resume?
             </h2>
             <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-              Join thousands of professionals who have landed their dream jobs with our resume builder.
+              Join thousands of professionals who have landed their dream jobs with our resume builder. Our Professional and Exclusive plans also include AI-powered cover letter generation — <Link to="/cover-letters" className="text-white underline font-semibold hover:text-blue-200 transition-colors">learn about our cover letter services</Link>.
             </p>
             <Link
               to="/register"

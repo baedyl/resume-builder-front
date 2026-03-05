@@ -397,8 +397,8 @@ export const content = `
   <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-8 text-center text-white">
     <h3 class="text-2xl font-bold mb-3">Ready to Create Your Professional Resume?</h3>
     <p class="text-lg mb-6 opacity-90">Join thousands of professionals who have already landed their dream jobs with our AI resume builder.</p>
-    <a href="/resume" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-      Start Building Your Resume Now
+    <a href="/my-resumes" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+      Create your resume now
     </a>
   </div>
 </div>
