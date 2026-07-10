@@ -21,6 +21,16 @@ const getResumeHTML = async (resumeId: string, template: string = 'colorful', to
   return response.text();
 };
 
+const cleanTrailingSeparators = (html: string): string => {
+  let cleaned = html;
+  // Remove trailing " | " or "| " sequences before <br>, </p>, </div>, or end of string
+  // Handles patterns like: "email | | ", "email | | <br>", "email | </p>"
+  cleaned = cleaned.replace(/(\s*\|\s*){1,}(?=\s*(?:<br\s*\/?>|<\/p>|<\/div>|$))/gi, '');
+  // Clean up any remaining trailing whitespace before those tags
+  cleaned = cleaned.replace(/\s+(?=(?:<br\s*\/?>|<\/p>|<\/div>))/g, '');
+  return cleaned;
+};
+
 const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ resumeId, template = 'colorful' }) => {
   const [html, setHtml] = useState('');
   const [loading, setLoading] = useState(true);
@@ -34,7 +44,7 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ resumeId, template = 'col
         setError(null);
         const token = await getAccessTokenSilently({ audience: getApiAudience() } as any);
         const htmlContent = await getResumeHTML(resumeId, template, token as unknown as string);
-        setHtml(htmlContent);
+        setHtml(cleanTrailingSeparators(htmlContent));
       } catch (err: any) {
         setError(err.message || 'Failed to load resume preview');
         console.error('Error fetching resume HTML:', err);

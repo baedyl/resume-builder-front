@@ -489,10 +489,18 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
           responseData = response.data;
         }
       } else if (response.data && typeof response.data === 'object' && response.data.data) {
-        // Handle nested data format: { data: "{\"enhanced_description\": \"...\"}" }
+        // Handle nested data format: { data: "{\"enhanced_description\": \"...\"}" } or { data: "```json\n{...}\n```" }
         if (typeof response.data.data === 'string') {
           try {
-            responseData = JSON.parse(response.data.data);
+            // Extract JSON from markdown code blocks if present
+            const dataStr = response.data.data;
+            const jsonMatch = dataStr.match(/```json\s*([\s\S]*?)\s*```/) || dataStr.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              const jsonStr = jsonMatch[1] || jsonMatch[0];
+              responseData = JSON.parse(jsonStr);
+            } else {
+              responseData = JSON.parse(dataStr);
+            }
           } catch (error) {
             console.error('Error parsing nested response data:', error);
             responseData = response.data.data;
@@ -1335,46 +1343,47 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ initialData }) => {
 
         // Transform the data to match our form structure
         const resumeData: ResumeFormData = {
-          fullName: cleanValue(parsedData.personal_info?.name || parsedData.personal_info?.fullName),
-          email: cleanValue(parsedData.personal_info?.email),
-          phone: cleanValue(parsedData.personal_info?.phone),
-          address: cleanValue(parsedData.personal_info?.location || parsedData.personal_info?.address),
-          linkedIn: cleanValue(parsedData.personal_info?.linkedin_url || parsedData.personal_info?.linkedIn),
-          website: cleanValue(parsedData.personal_info?.website),
-          summary: cleanValue(parsedData.professional_summary || parsedData.summary),
-          skills: parsedData.skills?.technical_skills?.map((skill: string, index: number) => ({
+          fullName: cleanValue(parsedData.fullName || parsedData.personal_info?.name || parsedData.personal_info?.fullName),
+          email: cleanValue(parsedData.email || parsedData.personal_info?.email),
+          phone: cleanValue(parsedData.phone || parsedData.personal_info?.phone),
+          address: cleanValue(parsedData.address || parsedData.personal_info?.location || parsedData.personal_info?.address),
+          linkedIn: cleanValue(parsedData.linkedIn || parsedData.personal_info?.linkedin_url || parsedData.personal_info?.linkedIn),
+          website: cleanValue(parsedData.website || parsedData.personal_info?.website),
+          summary: cleanValue(parsedData.summary || parsedData.professional_summary),
+          skills: parsedData.skills?.map((skill: any, index: number) => ({
+            id: skill.id || -index - 1,
+            name: cleanValue(skill.name || skill)
+          })) || parsedData.skills?.technical_skills?.map((skill: string, index: number) => ({
             id: -index - 1,
             name: skill
-          })) || parsedData.skills?.map((skill: any, index: number) => ({
-            id: skill.id || -index - 1,
-            name: skill.name
           })) || [],
-          workExperience: parsedData.work_experience?.map((exp: any) => ({
+          workExperience: (parsedData.workExperience || parsedData.work_experience)?.map((exp: any) => ({
             company: cleanValue(exp.company),
-            jobTitle: cleanValue(exp.position || exp.jobTitle),
-            startDate: formatDateToYYYYMM(cleanValue(exp.start_date || exp.startDate)),
-            endDate: cleanValue(exp.end_date || exp.endDate) === 'Present' ? 'Present' : formatDateToYYYYMM(cleanValue(exp.end_date || exp.endDate)),
-            isCurrent: !exp.end_date && !exp.endDate,
+            jobTitle: cleanValue(exp.jobTitle || exp.position),
+            startDate: formatDateToYYYYMM(cleanValue(exp.startDate || exp.start_date)),
+            endDate: cleanValue(exp.endDate || exp.end_date) === 'Present' ? 'Present' : formatDateToYYYYMM(cleanValue(exp.endDate || exp.end_date)),
+            isCurrent: exp.isCurrent !== undefined ? exp.isCurrent : (!exp.endDate && !exp.end_date),
             location: cleanValue(exp.location || ''),
-            description: exp.responsibilities ? exp.responsibilities.join('\n') : cleanValue(exp.description)
+            description: exp.description || (exp.responsibilities ? exp.responsibilities.join('\n') : '')
           })) || [],
           education: parsedData.education?.map((edu: any) => ({
             institution: cleanValue(edu.institution),
             degree: cleanValue(edu.degree),
-            major: cleanValue(edu.field_of_study || edu.major),
-            graduationYear: edu.graduation_year || edu.graduationYear || undefined
+            major: cleanValue(edu.major || edu.field_of_study),
+            startYear: edu.startYear || edu.start_year || undefined,
+            graduationYear: edu.graduationYear || edu.graduation_year || undefined
           })) || [],
-          languages: parsedData.skills?.languages?.map((lang: string) => ({
-            name: cleanValue(lang),
-            proficiency: 'Fluent' // Default proficiency since it's not provided
-          })) || parsedData.languages?.map((lang: any) => ({
+          languages: parsedData.languages?.map((lang: any) => ({
             name: cleanValue(lang.name),
-            proficiency: cleanValue(lang.proficiency)
+            proficiency: cleanValue(lang.proficiency || 'Fluent')
+          })) || parsedData.skills?.languages?.map((lang: string) => ({
+            name: cleanValue(lang),
+            proficiency: 'Fluent'
           })) || [],
           certifications: parsedData.certifications?.map((cert: any) => ({
             name: cleanValue(cert.name),
-            issuer: cleanValue(cert.issuing_organization || cert.issuer),
-            issueDate: cleanValue(cert.date_obtained || cert.issue_date || cert.issueDate)
+            issuer: cleanValue(cert.issuer || cert.issuing_organization),
+            issueDate: cleanValue(cert.issueDate || cert.date_obtained || cert.issue_date)
           })) || []
         };
 
