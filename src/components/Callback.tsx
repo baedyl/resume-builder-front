@@ -4,61 +4,74 @@ import { useNavigate } from 'react-router-dom';
 import LoadingOverlay from './LoadingOverlay';
 
 const Callback = () => {
-    const { handleRedirectCallback, isAuthenticated, error } = useAuth0();
+    const { handleRedirectCallback, isAuthenticated, isLoading, error } = useAuth0();
     const navigate = useNavigate();
-    const [isProcessing, setIsProcessing] = useState(true);
-
-    // Debug logging
-    console.log('Callback Component Debug:');
-    console.log('- isProcessing:', isProcessing);
-    console.log('- isAuthenticated:', isAuthenticated);
-    console.log('- error:', error);
-    console.log('- current URL:', window.location.href);
+    const [hasHandled, setHasHandled] = useState(false);
+    const [callbackError, setCallbackError] = useState<Error | null>(null);
 
     useEffect(() => {
         const processCallback = async () => {
+            const url = new URL(window.location.href);
+            const hasCode = url.searchParams.has('code');
+            const hasState = url.searchParams.has('state');
+
+            if (!hasCode || !hasState) {
+                console.warn('Callback page reached without Auth0 code/state params');
+                setHasHandled(true);
+                return;
+            }
+
             try {
-                console.log('Starting to process callback...');
-                // Process the authentication callback
-                await handleRedirectCallback();
-                console.log('handleRedirectCallback completed successfully');
-                setIsProcessing(false);
+                const result = await handleRedirectCallback();
+                console.log('Auth0 callback succeeded:', result);
             } catch (err) {
-                console.error('Error handling callback:', err);
-                setIsProcessing(false);
+                console.error('Auth0 callback error:', err);
+                setCallbackError(err instanceof Error ? err : new Error(String(err)));
+            } finally {
+                setHasHandled(true);
             }
         };
         processCallback();
     }, [handleRedirectCallback]);
 
     useEffect(() => {
-        console.log('Navigation effect triggered:');
-        console.log('- isProcessing:', isProcessing);
-        console.log('- isAuthenticated:', isAuthenticated);
-        
-        // Once processing is complete, check authentication and navigate
-        if (!isProcessing && isAuthenticated) {
-            console.log('Redirecting to /dashboard...');
-            // Force a small delay to ensure Auth0 state is fully updated
-            setTimeout(() => {
-                console.log('Executing navigation to /dashboard');
-                navigate('/dashboard', { replace: true });
-            }, 100);
-        } else if (!isProcessing) {
-            console.log('Redirecting to / (not authenticated)');
-            navigate('/', { replace: true }); // Redirect to home or an error page if not authenticated
-        }
-    }, [isProcessing, isAuthenticated, navigate]);
+        if (!hasHandled || isLoading) return;
 
-    // Display any Auth0 errors
-    if (error) {
-        return <div>Error: {error.message}</div>;
+        if (isAuthenticated) {
+            navigate('/dashboard', { replace: true });
+        } else {
+            navigate('/', { replace: true });
+        }
+    }, [hasHandled, isLoading, isAuthenticated, navigate]);
+
+    const displayError = callbackError || error;
+
+    if (displayError) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+                <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md max-w-md">
+                    <h1 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">
+                        Authentication Error
+                    </h1>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">
+                        {displayError.message}
+                    </p>
+                    <button
+                        onClick={() => navigate('/login')}
+                        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+                    >
+                        Back to Login
+                    </button>
+                </div>
+            </div>
+        );
     }
 
-    // Show loading state while processing
-    return <div aria-live="polite" aria-busy={true}>
-        <LoadingOverlay />
-    </div>
+    return (
+        <div aria-live="polite" aria-busy={true}>
+            <LoadingOverlay />
+        </div>
+    );
 };
 
 export default Callback;

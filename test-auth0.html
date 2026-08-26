@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><title>Auth0 Test</title></head>
+<body>
+  <button onclick="login()">Login</button>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+  <script>
+    const auth0 = new Auth0Client({
+      domain: 'dev-v3pu2a2b.us.auth0.com',
+      clientId: 'uW0qdiCf46z5z4ArPgdiLezfUlPxRMAt',
+      authorizationParams: {
+        redirect_uri: window.location.origin + window.location.pathname
+      }
+    });
+
+    async function login() {
+      try {
+        await auth0.loginWithRedirect();
+      } catch (err) {
+        console.error('Login error:', err);
+        alert(err.message);
+      }
+    }
+
+    // Handle callback
+    if (window.location.search.includes('code=')) {
+      auth0.handleRedirectCallback().then(() => {
+        alert('Login successful!');
+      }).catch(err => {
+        console.error('Callback error:', err);
+        alert('Callback error: ' + err.message);
+      });
+    }
+  </script>
+</body>
+</html>

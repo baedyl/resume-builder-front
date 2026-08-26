@@ -6,7 +6,7 @@ export const getApiUrl = (): string => {
   if (!apiUrl) {
     console.warn('VITE_API_URL is not defined. Using fallback URL.');
     // Return a fallback URL or throw an error based on your needs
-    return 'https://api.proairesume.online'; // Replace with your actual API URL
+    return 'https://api.proairesume.app'; // Replace with your actual API URL
   }
   
   return apiUrl;
@@ -17,7 +17,7 @@ export const getApiAudience = (): string => {
   
   if (!audience) {
     console.warn('VITE_API_AUDIENCE is not defined. Using fallback audience.');
-    return 'https://api.proairesume.online'; // Replace with your actual audience
+    return 'api.proairesume.app'; // Replace with your actual audience
   }
   
   return audience;

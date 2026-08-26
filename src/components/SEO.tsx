@@ -18,8 +18,8 @@ const SEO: React.FC<SEOProps> = ({
   title = 'AI Resume Builder - Free Professional Resume Creator with AI',
   description = 'Create professional, ATS-optimized resumes with AI assistance. Free AI resume builder with templates, cover letters, and job tracking. Build your resume in minutes!',
   keywords = 'ai resume builder, ai resume builder free, free resume builder, AI resume creator, professional resume builder, ATS optimized resume, resume templates, cover letter generator, job application tracker, career tools, job search, resume maker, cv builder',
-  image = 'https://proairesume.online/og-image.jpg',
-  url = 'https://proairesume.online',
+  image = 'https://www.proairesume.app/og-image.jpg',
+  url = 'https://www.proairesume.app',
   type = 'website',
   author = 'AI Resume Builder',
   publishedTime,
@@ -28,8 +28,8 @@ const SEO: React.FC<SEOProps> = ({
   tags = []
 }) => {
   const fullTitle = title.includes('AI Resume Builder') ? title : `${title} | AI Resume Builder`;
-  const fullUrl = url.startsWith('http') ? url : `https://proairesume.online${url}`;
-  const fullImage = image.startsWith('http') ? image : `https://proairesume.online${image}`;
+  const fullUrl = url.startsWith('http') ? url : `https://www.proairesume.app${url}`;
+  const fullImage = image.startsWith('http') ? image : `https://www.proairesume.app${image}`;
 
   return (
     <>
@@ -88,7 +88,7 @@ const SEO: React.FC<SEOProps> = ({
           "@type": "WebApplication",
           "name": "AI Resume Builder",
           "description": "Free AI-powered resume builder with professional templates and ATS optimization",
-          "url": "https://proairesume.online",
+          "url": "https://www.proairesume.app",
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web Browser",
           "offers": {

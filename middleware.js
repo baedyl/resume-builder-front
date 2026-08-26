@@ -149,7 +149,7 @@ export default async function middleware(request) {
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://proairesume.online/blog/${slug}" />
+  <meta property="og:url" content="https://www.proairesume.app/blog/${slug}" />
   <meta property="og:title" content="${article.title}" />
   <meta property="og:description" content="${article.description}" />
   <meta property="og:image" content="${article.image}" />
@@ -164,7 +164,7 @@ export default async function middleware(request) {
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://proairesume.online/blog/${slug}" />
+  <meta name="twitter:url" content="https://www.proairesume.app/blog/${slug}" />
   <meta name="twitter:title" content="${article.title}" />
   <meta name="twitter:description" content="${article.description}" />
   <meta name="twitter:image" content="${article.image}" />
@@ -176,7 +176,7 @@ export default async function middleware(request) {
   <meta property="og:image:secure_url" content="${article.image}" />
   
   <!-- Canonical URL -->
-  <link rel="canonical" href="https://proairesume.online/blog/${slug}" />
+  <link rel="canonical" href="https://www.proairesume.app/blog/${slug}" />
 </head>
 <body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; line-height: 1.6; color: #1f2937;">
   <article>
@@ -211,14 +211,14 @@ export default async function middleware(request) {
       <p style="margin: 0; color: white; font-size: 1rem; line-height: 1.6;">
         <strong style="font-size: 1.125rem;">📖 Read the Full Article</strong><br/>
         This is a preview for social media sharing. 
-        <a href="https://proairesume.online/blog/${slug}" style="color: #fde047; text-decoration: none; font-weight: 600; border-bottom: 2px solid #fde047;">
+        <a href="https://www.proairesume.app/blog/${slug}" style="color: #fde047; text-decoration: none; font-weight: 600; border-bottom: 2px solid #fde047;">
           Click here to read the complete article →
         </a>
       </p>
     </div>
     
     <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e5e7eb; text-align: center;">
-      <a href="https://proairesume.online" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.875rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); transition: transform 0.2s;">
+      <a href="https://www.proairesume.app" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.875rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); transition: transform 0.2s;">
         🚀 Try ProAI Resume Builder Free
       </a>
     </footer>
