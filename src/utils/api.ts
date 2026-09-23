@@ -9,7 +9,8 @@ export const getApiUrl = (): string => {
     return 'https://api.proairesume.app'; // Replace with your actual API URL
   }
   
-  return apiUrl;
+  // Strip trailing slashes so `${getApiUrl()}/api/...` never produces `//api/...`
+  return apiUrl.replace(/\/+$/, '');
 };
 
 export const getApiAudience = (): string => {

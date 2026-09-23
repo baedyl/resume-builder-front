@@ -34,7 +34,7 @@ const LinkedInCallback: React.FC = () => {
       try {
         const token = await getAccessTokenSilently();
         const redirectUri = `${window.location.origin}/auth/linkedin/callback`;
-        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const apiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
         
         const response = await fetch(`${apiUrl}/api/auth/linkedin/import`, {
           method: 'POST',
